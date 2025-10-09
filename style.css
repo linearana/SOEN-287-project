@@ -1,4 +1,5 @@
-.topnav {
+
+nav {
     background-color: #6a121b;
     color: #fff;
     padding: 0 24px;
@@ -6,39 +7,36 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
-
-.topnav a {
+nav a {
     color: #fff;
     text-decoration: none;
     font-size: 1rem;
     margin-left: 16px;
 }
 
-.header-logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+nav a:hover {
+    text-decoration: underline;
 }
 
-.header-menu {
-    list-style: none;
-    display: flex;
-    gap: 32px;
+nav ul {
+    list-style-type: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
 }
 
-.header-menu li {
-    display: inline;
+nav li {
+    margin-left: 16px;
 }
+.user-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    margin-left: 450px;
+    padding: 24px;
 
-.header-menu a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.2s;
-}
-
-.header-menu a:hover {
-    color: #f39c12;
 }
