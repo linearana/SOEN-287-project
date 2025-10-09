@@ -1,0 +1,44 @@
+.topnav {
+    background-color: #6a121b;
+    color: #fff;
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topnav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 16px;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.header-menu {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+.header-menu li {
+    display: inline;
+}
+
+.header-menu a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.header-menu a:hover {
+    color: #f39c12;
+}
