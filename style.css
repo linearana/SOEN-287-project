@@ -1,4 +1,9 @@
-
+.head {
+    background-color: #cde6ff;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+}
 nav {
     background-color: #6a121b;
     color: #fff;
