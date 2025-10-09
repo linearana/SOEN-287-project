@@ -38,33 +38,33 @@ nav li {
 .user-pic {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    position: absolute;
+    border-radius: 50%;;
     margin-left: 550px;
     padding: 24px;
 
 }
 /*
 .nav-right {
-    position: absolute;
+    position: relative;
     top: 100%;
     right: 10%;
     width: 320px;
 }
 
 .dropdown{
+    position: absolute;
     background: #fff;
     padding: 20px;
     margin: 10px;
 }
 
+.user-info h2 {
+   color: black;    
+}
+
 .user-info {
     display: flex;
     align-items: center;
-}
-
-.user-info h3 {
-   font-weight: 500;
 }
 
 .user-pic-small {
