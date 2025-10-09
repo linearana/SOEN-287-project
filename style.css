@@ -1,5 +1,5 @@
 .hero {
-    background-color: #d3eff9;
+    background-color: #fff;
     padding: 16px;
     position: relative;
 }
@@ -72,3 +72,16 @@ nav li {
     border-radius: 50%;
     margin-right: 15px;
 }*/
+
+.cards {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card-image {
+    width: 100%;
+    display: block;
+}
