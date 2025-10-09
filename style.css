@@ -40,11 +40,11 @@ nav li {
     height: 40px;
     border-radius: 50%;
     position: absolute;
-    margin-left: 450px;
+    margin-left: 550px;
     padding: 24px;
 
 }
-
+/*
 .nav-right {
     position: absolute;
     top: 100%;
@@ -71,4 +71,4 @@ nav li {
     width: 60px;
     border-radius: 50%;
     margin-right: 15px;
-}
+}*/
