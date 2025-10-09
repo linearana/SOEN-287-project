@@ -1,7 +1,6 @@
-.head {
-    background-color: #cde6ff;
+.hero {
+    background-color: #d3eff9;
     padding: 16px;
-    text-align: center;
     position: relative;
 }
 nav {
@@ -44,4 +43,32 @@ nav li {
     margin-left: 450px;
     padding: 24px;
 
+}
+
+.nav-right {
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 320px;
+}
+
+.dropdown{
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info h3 {
+   font-weight: 500;
+}
+
+.user-pic-small {
+    width: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
 }
