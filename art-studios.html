@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <img src="images/concordia fine arts.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    <div>
+    <nav>
+      <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="resources.html" class="active">Resources</a></li>
+     <!-- <a href="login.html">Login</a>
+      <a href="register.html">Register</a> -->
+      <li><a href ="login.html" style="text-align:right;">Sign in</a> </li>
+      </ul>
+    </nav>
+    </div>
+    <div>
+      <nav>
+        <a href="admin-home.html">Admin Home</a>
+        <a href="user-home.html">User Home</a>
+      </nav>
+    </div>
+  </header>
+    <h2> Art Studios for Sunday, October 26 2025</h2>
+    <h1> Studio Rules</h1>
+    <p> Eligibility: Rooms are available to all Fine Arts students, faculty, and staff.  All Fine Arts users must get prior approval. <br>
+        Duration: Bookings are for a maximum of 5 hours per session and one session per day. <br>
+        Advance Booking: Rooms can be reserved up to 7 days in advance. Walk-ins not available. <br>
+        Storage: Projects left behind will be removed after 24 hours unless labeled with your name and date. <br>
+        
+    </p>    
+      </body>
+      <!-- Daily grid (hourly) -->
+<div class="table-container"> 
+<table class="availabiliy-table" role="grid" aria-label="Daily room availability">
+<thead>
+<tr>
+<th scope="col">Space</th>
+<th scope="col">8am</th>
+<th scope="col">9am</th>
+<th scope="col">10am</th>
+<th scope="col">11am</th>
+<th scope="col">12pm</th>
+<th scope="col">1pm</th>
+<th scope="col">2pm</th>
+<th scope="col">3pm</th>
+<th scope="col">4pm</th>
+<th scope="col">5pm</th>
+<th scope="col">6pm</th>
+<th scope="col">7pm</th>
+<th scope="col">8pm</th>
+<th scope="col">9pm</th>
+<th scope="col">10pm</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<th scope="row" class = "room-name">EV 373 – Painting Room </th>
+<td class="free"></td>
+<td class="busy" colspan="5" title="Booked 9am–2pm"></td>
+<td class="free"></td>
+<td class="busy" colspan="3" title="Booked 3pm–6pm"></td>
+<td class="free" colspan="3"></td>
+<td class="pending" title="Grace period"></td>
+</tr>
+<tr>
+<th scope="row" class = "room-name">EV 634 – Ceramics</th>
+<td class="free" colspan="6"></td>
+<td class="busy" colspan="2" title="2–4pm"></td>
+<td class="pending" colspan="4" title = "Pending"></td>
+<td class="busy" colspan="2" title="9–11pm"></td>
+</tr>
+<tr>
+<th scope="row" class = "room-name">EV 590 – Digital Art</th>
+<td class="busy" colspan="8" title="8am–4pm"></td>
+<td class="free" colspan="4"></td>
+<td class="busy" colspan="3" title="7–10pm"></td>
+</tr>
+<tr>
+<th scope="row" class = "room-name">EV 367 – Sculpting</th>
+<td class="free" colspan="7"></td>
+<td class="busy" colspan="2" title="3–5pm"></td>
+<td class="free" colspan="5"></td>
+<td class="busy"></td>
+</tr>
+<tr>
+<th scope="row" class = "room-name">EV 492 – Pottery</th>
+<td class="busy" colspan="6" title="8am–2pm"></td>
+<td class="free" colspan="3"></td>
+<td class="busy" colspan="4" title="5–9pm"></td>
+<td class="free" colspan="2"></td>
+</tr>
+<tr>
+<th scope="row" class = "room-name">EV 544 – Woodshop</th>
+<td class="free" colspan="5"></td>
+<td class="pending" colspan="2" title="Pending"></td>
+<td class="free"></td>
+<td class="busy" colspan="4" title="5–9pm"></td>
+<td class="free" colspan="2"></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<!-- legend -->
+<div class="legend" aria-label="Legend">
+  <span class="tag"><span class="swatch free"></span> Available</span>
+  <span class="tag"><span class="swatch busy"></span> Booked</span> <br>
+  <span class="tag"><span class="swatch pending"></span> Pending</span>
+</div>
+
+<div>
+<textarea class="textbox" placeholder="Please enter your reason for booking an art studio."></textarea>
+</div>
+
+<div
+    style="text-align: center; padding: 10px;">
+  <button>Submit Times</button>
+</div>
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+</body>

@@ -89,22 +89,30 @@ nav li {
 /* Availability Table Styles */
 .table-container {
   width: 100%;
+  height: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
-  border: 1px solid #aaa;
+  overflow-y: hidden;       
+  justify-content: center; 
+  display:flex;
+  transform: scale(1.2); 
+  transform-origin: top center;
 }
+
 
 .availability-table {
   border-collapse: collapse;
   width: max-content;  
+  height:max-content;
   min-width: 100%;   
+
 }
 
 .availability-table th, .availability-table td {
     border: 0.5px solid black;
+    font-size: 1rem;
     border-spacing: 0px;
-    padding: 8px;
-    width: 25px;
+    padding: 10px 12px;
+    width: 35px;
     text-align: center;
 
 }
@@ -117,6 +125,7 @@ nav li {
     position: sticky;
     left: 0;
     background-color: white;
+
 }
 
 .book-room {
@@ -126,4 +135,100 @@ nav li {
     padding: 8px 12px;
     cursor: pointer;
     border-radius: 4px;
+}
+
+/* Availability colours */
+.free {
+  background-color: var(--free, #d4edda); 
+  cursor:pointer;
+}
+
+.busy {
+  background-color: var(--busy, #f8d7da); 
+  cursor: not-allowed;
+}
+
+.pending {
+    background-color: var(--pending,#fff3cd);
+    cursor: not-allowed;
+}
+body {
+  min-height: 100vh;
+  margin: 0;
+}
+
+header {
+  min-height: 50px;
+}
+
+footer {
+  min-height: 50px;
+  background: PapayaWhip;
+}
+
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 0.95rem;
+  margin: 15px auto;
+  width: 100%;           
+  position: relative;
+  padding: 20px;
+  
+}
+
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 16px;       
+  height: 16px;
+  border: 1px solid #555; /* subtle border so color squares are visible */
+  border-radius: 3px;      /* small rounding (optional) */
+}
+
+.swatch.free {
+  background-color: var(--free, #d4edda);
+}
+
+.swatch.busy {
+  background-color: var(--busy, #f8d7da);
+}
+
+.swatch.pending {
+    background-color: var(--pending, #fff3cd);
+}
+
+h1{
+    font-size: 25px;
+    padding: 1px;   
+    margin: 1px;
+}
+
+.textbox {
+    width: 250px;
+    height: 75px;
+    text-align: center;
+    resize: none;
+    margin: 0 auto;
+    display: block;
+    padding: 10px;
+    
 }
