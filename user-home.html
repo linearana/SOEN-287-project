@@ -13,29 +13,30 @@
     <div>
       <nav>
         <ul>
-        <li><a href="user-home.html">Home</a></li>
-        <li><a href="user-resources.html" class="active">Resources</a></li>
-        <li><a href="bookings.html">Bookings</a> </li>
-        <li><a href="home.html">Log Out</a> </li>
+          <li><a href="user-home.html" class="active">Home</a></li>
+          <li><a href="user-resources.html">Resources</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+          <li><a href="#" id="logoutBtn">Log Out</a></li>
         </ul>
-        <a href = "user-profile.html"><img src="images/user.png" alt ="User Icon" class="user-pic"></a>
-
-       <!-- <div claass="nav-right">
-          <div class="dropdown">
-            <div class="user-info">
-              <img src="images/user.png" alt="User Icon" class="user-pic-small">
-              <h2>John Doe</h2>
-            </div>
-          </div>
-        </div>-->
+        <a href="user-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
       </nav>
     </div>
   </header>
-  <body>
-    <h2>Welcome to the Campus Resource Booking System</h2>
+
+  <main>
+    <h2 id="welcomeMessage">Welcome to the Campus Resource Booking System</h2>
     <p>Book study rooms, labs, and more!</p>
-  </body>
+
+    <section id="myBookings">
+      <h3>My Bookings</h3>
+      <ul id="bookingList"></ul>
+    </section>
+  </main>
+
   <footer>
     <p>© 2025 Campus Booking System</p>
   </footer>
+
+  <script src="js/user.js"></script>
 </body>
+</html>
