@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Availability | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #eee; }
+    .available { background: #c8f7c5; cursor: pointer; }
+    .unavailable { background: #f7c5c5; color: #555; }
+    .booked { background: #999; color: white; }
+    #message { margin-top: 20px; font-weight: bold; }
+    .date-picker { margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Resource Availability</h1>
+    <nav>
+      <a href="home.html">Home</a> |
+      <a href="resources.html">Resources</a> |
+      <a href="login.html">Sign in</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2 id="resourceTitle">Study Rooms</h2>
+
+    <!-- Date picker -->
+    <div class="date-picker">
+      <label for="date">Choose a date: </label>
+      <input type="date" id="date" name="date">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th>12:00</th>
+          <th>13:00</th>
+          <th>14:00</th>
+          <th>15:00</th>
+          <th>16:00</th>
+          <th>17:00</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>LB 251 – Linda Kay</td>
+          <td class="available" data-room="LB 251" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 251" data-time="15">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 251" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>LB 259 – Croatia</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 259" data-time="13">Available</td>
+          <td class="available" data-room="LB 259" data-time="14">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 259" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>LB 311 – Haiti</td>
+          <td class="available" data-room="LB 311" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 311" data-time="14">Available</td>
+          <td class="unavailable">X</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 311" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>LB 315 – Australia</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 315" data-time="13">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 315" data-time="15">Available</td>
+          <td class="available" data-room="LB 315" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>LB 328 – Zimbabwe</td>
+          <td class="available" data-room="LB 328" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="LB 328" data-time="15">Available</td>
+          <td class="available" data-room="LB 328" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="message"></div>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
+  <script>
+    // 🔹 Login check
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("⚠️ You must be logged in to book a resource.");
+      window.location.href = "login.html";
+    }
+
+    // 🔹 Booking type (instant or request)
+    const resourceType = "instant"; // change to "request" for equipment
+
+    const messageBox = document.getElementById("message");
+    let hasBooked = false; // track if user already booked
+
+    document.querySelectorAll(".available").forEach(cell => {
+      cell.addEventListener("click", () => {
+        if (hasBooked) {
+          alert("⚠️ You can only book one slot at a time.");
+          return;
+        }
+
+        const room = cell.dataset.room;
+        const time = cell.dataset.time;
+        const date = document.getElementById("date").value || "selected date";
+
+        if (resourceType === "instant") {
+          cell.classList.remove("available");
+          cell.classList.add("booked");
+          cell.textContent = "Booked";
+          messageBox.textContent = `✅ Booking confirmed for ${room} at ${time}:00 on ${date}`;
+        } else {
+          cell.classList.remove("available");
+          cell.classList.add("booked");
+          cell.textContent = "Pending";
+          messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${date} (awaiting admin approval)`;
+        }
+
+        hasBooked = true; // prevent further bookings
+      });
+    });
+  </script>
+</body>
+</html>

@@ -3,88 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> student Resources | Campus Booking</title>
+  <title>Resources | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Quick inline styles for demo — move to style.css */
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .card {
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 10px 0 5px;
+    }
+    .card p {
+      font-size: 0.9rem;
+      padding: 0 10px;
+      color: #555;
+    }
+    .card button {
+      margin: 10px 0 15px;
+      padding: 8px 12px;
+      border: none;
+      background: #800000;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background: #a00000;
+    }
+  </style>
 </head>
 <body>
   <header>
-        <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
-    <h1>Campus Resource Booking</h1> 
-
-    <div>
-      <nav>
-       <ul>
-        <li><a href="user-home.html">Home</a></li>
-        <li><a href="user-resources.html" class="active">Resources</a></li>
-        <!-- <a href="login.html">Login</a>
-       <a href="register.html">Register</a> -->
-        <li><a href ="bookings.html">Bookings</a> </li>
-        <li><a href="home.html">Log Out</a> </li>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
+    <h1>Campus Resource Booking</h1>
+    <nav>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="resources.html" class="active">Resources</a></li>
+        <li><a href="login.html">Sign in</a></li>
       </ul>
-      <a href = "user-profile.html"><img src="images/user.png" alt ="User Icon" class="user-pic"></a>
-      </nav>
-    </div>
+    </nav>
   </header>
 
   <main>
-    <h2>Welcome to the Campus Resource Booking System</h2>
-    <p>Book study rooms, labs, and more!</p>
+    <h2>Available Resources</h2>
     <div class="cards">
+      <!-- Card 1 -->
       <div class="card">
-        <img src="images/study-room.jpg" alt="Study Room" class="card-image">
+        <img src="images/study-room.jpg" alt="Study Room">
         <h3>Study Rooms</h3>
-        <p>Quiet rooms with Wi-Fi and whiteboards.</p>
-          <a href="study-rooms.html"><button>View Availability</button></a> 
-      </div>
-      <div class="card">
-        <img src="images/lab.jpg" alt="Engineering Lab" class="card-image">
-        <h3>Engineering Labs</h3>
-        <p>Equipped for mechanical and electrical experiments.</p>
-        <button>View Availability</button>
-      </div>
-      <div class="card">
-        <img src="images/art-studio.jpg" alt="Art Studio" class="card-image">
-        <h3>Art Studios</h3>
-        <p>Spaces for painting, sculpting, and other art projects.</p>
-        <a href="art-studios.html"><button>View Availability</button></a> 
-        </div>
-      <div class="card">
-        <img src="images/conference-room.jpg" alt="Film Equipment" class="card-image">
-        <h3>Film Equipment</h3>
-        <p>Cameras, lighting, and sound equipment for film projects.</p>
-        <button>View Availability</button>
-        </div>
-    </div>
-<!--
-    <section class="resourses">
-      <h2>Available Resources</h2>
-    <label>Date: <input type="date"></label>
-      <label>Building:
-        <select>
-          <option>All</option>
-          <option>Library</option>
-          <option>Engineering</option>
-          <option>Fine Arts</option>
-        </select>
-      </label>
-    </section>
-
-    <section class="resource-list">
-      <div class="resource-card">
-        <img src="images/library.jpg" alt="Library Study Room">
-        <h3>Library Study Rooms</h3>
-        <p>Quiet rooms with Wi-Fi and whiteboards.</p>
-        <button>View Availability</button>
+        <p>Quiet rooms with Wi-Fi and whiteboards for group or solo study.</p>
+         <a href="availability.html"><button>View Availability</button></a>
       </div>
 
-      <div class="resource-card">
+      <!-- Card 2 -->
+      <div class="card">
         <img src="images/lab.jpg" alt="Engineering Lab">
         <h3>Engineering Labs</h3>
-        <p>Equipped for mechanical and electrical experiments.</p>
-        <button>View Availability</button>
+        <p>Equipped for mechanical, electrical, and computer experiments.</p>
+         <a href="availability.html"><button>View Availability</button></a>
       </div>
-       Add more resources here
-    </section>-->
+
+      <!-- Card 3 -->
+      <div class="card">
+        <img src="images/art-studio.jpg" alt="Art Studio">
+        <h3>Art Studios</h3>
+        <p>Spaces for painting, sculpting, and creative projects.</p>
+         <a href="availability.html"><button>View Availability</button></a>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <img src="images/film-equipment.jpg" alt="Film Equipment">
+        <h3>Film Equipment</h3>
+        <p>Cameras, lighting, and sound kits for film and media projects.</p>
+         <a href="availability.html"><button>View Availability</button></a>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card">
+        <img src="images/conference-room.jpg" alt="Conference Room">
+        <h3>Conference Rooms</h3>
+        <p>Professional spaces for meetings, presentations, and workshops.</p>
+         <a href="availability.html"><button>View Availability</button></a>
+      </div>
+    </div>
   </main>
 
   <footer>
