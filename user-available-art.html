@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Availability | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    <div>
+      <nav>
+        <ul>
+          <li><a href="user-home.html" class="active">Home</a></li>
+          <li><a href="user-resources.html">Resources</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+          <li><a href="#" id="logoutBtn">Log Out</a></li>
+        </ul>
+        <a href="user-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h2 id="resourceTitle">Art Studios</h2>
+
+    <!-- Date picker -->
+    <div class="date-picker">
+      <label for="date">Choose a date: </label>
+      <input type="date" id="date" name="date">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th>12:00</th>
+          <th>13:00</th>
+          <th>14:00</th>
+          <th>15:00</th>
+          <th>16:00</th>
+          <th>17:00</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>FA 3-546 - Ceramics</td>
+          <td class="available" data-room="NI 160" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="NI 160" data-time="15">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 160" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>FA 3-547 - Ceramics</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="NI 368" data-time="13">Available</td>
+          <td class="available" data-room="NI 368" data-time="14">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 368" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>FA 5-101 Pottery</td>
+          <td class="available" data-room="LB 311" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="pending">Pending</td>
+          <td class="unavailable">X</td>
+          <td class="pending">pending</td>
+          <td class="available" data-room="LB 311" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>VA M2-797 - Mozaic</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 555" data-time="13">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 555" data-time="15">Available</td>
+          <td class="available" data-room="NI 555" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>NI 1553</td>
+          <td class="available" data-room="NI 1552" data-time="12">Available</td>
+          <td class="pending">Pending</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="LB 328" data-time="15">Available</td>
+          <td class="available" data-room="LB 328" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="message"></div>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+<script src="user-request.js"></script>
+  <script src="logout.js"></script>
+</body>
+</html>

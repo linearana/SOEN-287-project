@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    
+    <!-- Main navigation -->
+    <nav>
+      <ul>
+        <li><a href="home.html" class="active">Home</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="login.html" style="float:right;">Sign in</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+  <h2 id="resourceTitle">Conference Rooms</h2>
+
+  <!-- Date picker -->
+  <div class="date-picker">
+    <label for="date">Choose a date: </label>
+    <input type="date" id="date" name="date">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Room</th>
+        <th>12:00</th>
+        <th>13:00</th>
+        <th>14:00</th>
+        <th>15:00</th>
+        <th>16:00</th>
+        <th>17:00</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>LB 251 – Linda Kay</td>
+      <td class="available" data-room="LB 251" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 251" data-time="15">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 251" data-time="17">Available</td>
+    </tr>
+    <tr>
+      <td>LB 259 – Croatia</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 259" data-time="13">Available</td>
+      <td class="available" data-room="LB 259" data-time="14">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 259" data-time="16">Available</td>
+      <td class="unavailable">X</td>
+    </tr>
+    <tr>
+      <td>LB 311 – Haiti</td>
+      <td class="available" data-room="LB 311" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 311" data-time="14">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 311" data-time="17">Available</td>
+    </tr>
+    <tr>
+      <td>LB 315 – Australia</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 315" data-time="13">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 315" data-time="15">Available</td>
+      <td class="available" data-room="LB 315" data-time="16">Available</td>
+      <td class="unavailable">X</td>
+    </tr>
+    <tr>
+      <td>LB 328 – Zimbabwe</td>
+      <td class="available" data-room="LB 328" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="LB 328" data-time="15">Available</td>
+      <td class="available" data-room="LB 328" data-time="16">Available</td>
+      <td class="unavailable">X</td>
+    </tr>
+  </table>
+
+  <div id="message"></div>
+</main>
+
+<footer>
+  <p>© 2025 Campus Booking System</p>
+</footer>
+  <script src="user-instant.js"></script>
+  <script src="logout.js"></script>
+</body>
+</html>
