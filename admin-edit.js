@@ -27,6 +27,11 @@
           cell.classList.add("booked");
           cell.textContent = "Unavailable";
           messageBox.textContent = `✅ Availability removed for ${room} at ${time}:00 on ${date}`;
-      }
+        } else {
+          cell.classList.remove("available");
+          cell.classList.add("booked");
+          cell.textContent = "Pending";
+          messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${date} (awaiting admin approval)`;
+        }
+      })
     });
-}  );
