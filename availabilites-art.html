@@ -3,87 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> student Resources | Campus Booking</title>
+  <title>Home | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-        <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
-    <h1>Campus Resource Booking</h1> 
-
-    <div>
-      <nav>
-       <ul>
-        <li><a href="user-home.html">Home</a></li>
-        <li><a href="user-resources.html" class="active">Resources</a></li>
-        <!-- <a href="login.html">Login</a>
-       <a href="register.html">Register</a> -->
-        <li><a href ="bookings.html">Bookings</a> </li>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    
+    <!-- Main navigation -->
+    <nav>
+      <ul>
+        <li><a href="home.html" class="active">Home</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="login.html" style="float:right;">Sign in</a></li>
       </ul>
-      <img src="images/user.png" alt ="User Icon" class="user-pic">
-      </nav>
-    </div>
+    </nav>
   </header>
-    <h2>Art Rooms Availabilities</h2>
-    <div class="table-container">
-        <table class="availability-table">
-        <thead>
-            <tr>
-                <th class="room-name">Room Name</th>
-                <th colspan="2">8am</th>
-                <th colspan="2">9am</th>
-                <th colspan="2">10am</th>
-                <th colspan="2">11am</th>
-                <th colspan="2">12pm</th>
-                <th colspan="2">1pm</th>
-                <th colspan="2">2pm</th>
-                <th colspan="2">3pm</th>
-                <th colspan="2">4pm</th>
-                <th colspan="2">5pm</th>
-                <th colspan="2">6pm</th>
-                <th colspan="2">7pm</th>
-                <th colspan="2">8pm</th>
-                <th colspan="2">9pm</th>
-                <th colspan="2">10pm</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="room-name">Painting room A607</td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td>
-            </tr>
-            <tr>
-                <td class="room-name">Pottery room A608</td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td>
-            </tr>
-            <tr>
-                <td class="room-name">Sculpting room D458</td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td><td></td><td></td>
-                <td></td><td></td>
-            </tr>
-        </tbody>
-        </table>
+
+  <main>
+    <h2 id="resourceTitle">Art Studios</h2>
+
+    <!-- Date picker -->
+    <div class="date-picker">
+      <label for="date">Choose a date: </label>
+      <input type="date" id="date" name="date">
     </div>
-    <button class="book-room">Book a room</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th>12:00</th>
+          <th>13:00</th>
+          <th>14:00</th>
+          <th>15:00</th>
+          <th>16:00</th>
+          <th>17:00</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>FA 3-546 - Ceramics</td>
+          <td class="available" data-room="NI 160" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="NI 160" data-time="15">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 160" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>FA 3-547 - Ceramics</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="NI 368" data-time="13">Available</td>
+          <td class="available" data-room="NI 368" data-time="14">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 368" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>FA 5-101 Pottery</td>
+          <td class="available" data-room="LB 311" data-time="12">Available</td>
+          <td class="unavailable">X</td>
+          <td class="pending">Pending</td>
+          <td class="unavailable">X</td>
+          <td class="pending">pending</td>
+          <td class="available" data-room="LB 311" data-time="17">Available</td>
+        </tr>
+        <tr>
+          <td>VA M2-797 - Mozaic</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 555" data-time="13">Available</td>
+          <td class="unavailable">X</td>
+          <td class="available" data-room="NI 555" data-time="15">Available</td>
+          <td class="available" data-room="NI 555" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+        <tr>
+          <td>NI 1553</td>
+          <td class="available" data-room="NI 1552" data-time="12">Available</td>
+          <td class="pending">Pending</td>
+          <td class="pending">Pending</td>
+          <td class="available" data-room="LB 328" data-time="15">Available</td>
+          <td class="available" data-room="LB 328" data-time="16">Available</td>
+          <td class="unavailable">X</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="message"></div>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
 </body>
 </html>
