@@ -8,6 +8,9 @@
     // 🔹 Booking type (instant or request)
     const resourceType = "instant"; // change to "request" for equipment
 
+    const messageBox = document.getElementById("message");
+    let hasBooked = false; // track if user already booked
+
     document.querySelectorAll(".available").forEach(cell => {
       cell.addEventListener("click", () => {
         if (hasBooked) {
@@ -19,10 +22,11 @@
         const time = cell.dataset.time;
         const date = document.getElementById("date").value || "selected date";
 
-        (resourceType === "instant") {
+        if (resourceType === "instant") {
           cell.classList.remove("available");
-          cell.classList.add("unavailable");
+          cell.classList.add("booked");
           cell.textContent = "Unavailable";
           messageBox.textContent = `✅ Availability removed for ${room} at ${time}:00 on ${date}`;
-      })
+      }
     });
+}  );
