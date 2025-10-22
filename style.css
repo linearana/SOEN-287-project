@@ -241,7 +241,7 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
     color: #555;
 }
 
-.card button {
+.card button, .card input[type="button"] {
   margin: 10px 0 15px;
   padding: 8px 12px;
   border: none;
@@ -251,6 +251,14 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
   cursor: pointer;
 }
 
-.card button:hover {
+.card button:hover, .card input[type="button"]:hover {
   background: #a00000;
+}
+
+/* Update admin resources */
+.card.disabled {
+  opacity: 0.4; 
+  pointer-events: none;
+  filter: grayscale(40%);
+  transition: opacity 0.3s;
 }

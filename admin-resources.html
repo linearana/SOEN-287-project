@@ -29,7 +29,8 @@
         <img src="images/study-room.jpg" alt="Study Room">
         <h3>Study Rooms</h3>
         <p>Quiet rooms with Wi-Fi and whiteboards for group or solo study.</p>
-         <a href="availability-admin-study.html"><button>Edit</button></a>
+         <a href="admin-availability-studyRooms.html"><button>Edit</button></a>
+        <button type="button" id="buttonDisable" onclick="disableResource(this)">Disable</button>
       </div>
 
       <!-- Card 2 -->
@@ -37,7 +38,8 @@
         <img src="images/lab.jpg" alt="Engineering Lab">
         <h3>Engineering Labs</h3>
         <p>Equipped for mechanical, electrical, and computer experiments.</p>
-         <a href="availabilities-labs.html"><button>View Availability</button></a>
+         <a href="availability-admin-study.html"><button>Edit</button></a>
+         <button type="button" id="buttonDisable" onclick="disableResource(this)">Disable</button>
       </div>
 
       <!-- Card 3 -->
@@ -45,7 +47,8 @@
         <img src="images/art-studio.jpg" alt="Art Studio">
         <h3>Art Studios</h3>
         <p>Spaces for painting, sculpting, and creative projects.</p>
-         <a href="availabilites-art.html"><button>View Availability</button></a>
+         <a href="availability-admin-art.html"><button>Edit</button></a>
+         <button type="button" id="buttonDisable" onclick="disableResource(this)">Disable</button>
       </div>
 
       <!-- Card 4 -->
@@ -53,14 +56,16 @@
         <img src="images/film-equipment.jpg" alt="Film Equipment">
         <h3>Film Equipment</h3>
         <p>Cameras, lighting, and sound kits for film and media projects.</p>
-        <a href="availabilities-equipment.html"><button>View Availability</button></a>
+          <a href="availability-admin-film.html"><button>Edit</button></a>
+          <button type="button" id="buttonDisable" onclick="disableResource(this)">Disable</button>
       </div>
       <!-- Card 5 -->
       <div class="card">
         <img src="images/conference-room.jpg" alt="Conference Room">
         <h3>Conference Rooms</h3>
         <p>Professional spaces for meetings, presentations, and workshops.</p>
-         <a href="availability-converence.html"><button>View Availability</button></a>
+         <a href="availability-admin-conference.html"><button>Edit</button></a>
+         <button type="button" id="buttonDisable" onclick="disableResource(this)">Disable</button>
       </div>
     </div>
   </main>
@@ -69,5 +74,6 @@
     <p>© 2025 Campus Booking System</p>
   </footer>
   <script src="logout.js"></script>
+  <script src="admin-edit.js"></script>
 </body>
 </html>
