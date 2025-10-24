@@ -195,9 +195,9 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
     th, td { border: 1px solid #ccc; padding: 8px; }
     th { background: #eee; }
     .available { background: #c8f7c5; cursor: pointer; }
-    .unavailable { background: #f7c5c5; color: #555; }
+    .unavailable { background: #999; color: #fff; }
     .pending { background: #f7f1c5; color: #2c2c2c; }
-    .booked { background: #999; color: white; }
+    .booked { background: #f7c5c5; color: #555; }
     #message { margin-top: 20px; font-weight: bold; }
     .date-picker { margin: 15px 0; }
 

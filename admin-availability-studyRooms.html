@@ -8,19 +8,17 @@
 </head>
 <body>
    <header>
-    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
-    <h1>Campus Resource Booking!</h1>
-    <div>
-      <nav>
-        <ul>
-          <li><a href="user-home.html" class="active">Home</a></li>
-          <li><a href="user-resources.html">Resources</a></li>
-          <li><a href="bookings.html">Bookings</a></li>
-          <li><a href="#" id="logoutBtn">Log Out</a></li>
-        </ul>
-        <a href="user-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
-      </nav>
-    </div>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
+    <h1>Campus Resource Booking – Admin</h1>
+    <nav>
+      <ul>
+        <li><a href="admin-home.html" class="active">Home</a></li>
+        <li><a href="admin-resources.html">Resources</a></li>
+        <li><a href="statistics.html">Statistics</a></li>
+        <li><a href="admin-bookings.html">Bookings</a></li>
+        <li><a href="#" id="logoutBtn">Log Out</a></li>
+      </ul>
+    </nav>
   </header>
 
 
@@ -49,47 +47,47 @@
         <tr>
           <td>LB 251 – Linda Kay</td>
           <td class="available" data-room="LB 251" data-time="12">Available</td>
-          <td class="unavailable">X</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 251" data-time="12">Booked</td>
+          <td class="booked" data-room="LB 251" data-time="13">Booked</td>
           <td class="available" data-room="LB 251" data-time="15">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 251" data-time="16">Booked</td>
           <td class="available" data-room="LB 251" data-time="17">Available</td>
         </tr>
         <tr>
           <td>LB 259 – Croatia</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 259" data-time="12">Booked</td>
           <td class="available" data-room="LB 259" data-time="13">Available</td>
           <td class="available" data-room="LB 259" data-time="14">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 259" data-time="15">Booked</td>
           <td class="available" data-room="LB 259" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 259" data-time="17">Booked</td>
         </tr>
         <tr>
           <td>LB 311 – Haiti</td>
           <td class="available" data-room="LB 311" data-time="12">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 311" data-time="13">Booked</td>
           <td class="available" data-room="LB 311" data-time="14">Available</td>
-          <td class="unavailable">X</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 311" data-time="15">Booked</td>
+          <td class="booked" data-room="LB 311" data-time="16">Booked</td>
           <td class="available" data-room="LB 311" data-time="17">Available</td>
         </tr>
         <tr>
           <td>LB 315 – Australia</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 315" data-time="12">Booked</td>
           <td class="available" data-room="LB 315" data-time="13">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 315" data-time="14">Booked</td>
           <td class="available" data-room="LB 315" data-time="15">Available</td>
           <td class="available" data-room="LB 315" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 315" data-time="17">Booked</td>
         </tr>
         <tr>
           <td>LB 328 – Zimbabwe</td>
           <td class="available" data-room="LB 328" data-time="12">Available</td>
-          <td class="unavailable">X</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 328" data-time="13">Booked</td>
+          <td class="booked" data-room="LB 328" data-time="14">Booked</td>
           <td class="available" data-room="LB 328" data-time="15">Available</td>
           <td class="available" data-room="LB 328" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="LB 328" data-time="17">Booked</td>
         </tr>
       </tbody>
     </table>
@@ -100,7 +98,7 @@
   <footer>
     <p>© 2025 Campus Booking System</p>
   </footer>
-  <script src="admit-edit.js"></script>
+  <script src="admin-edit.js"></script>
   <script src="logout.js"></script>
 </body>
 </html>
