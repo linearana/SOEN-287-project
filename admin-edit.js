@@ -43,11 +43,13 @@
   });
 });
 
-let updates = [];
 // to modify
 function confirmChanges() {
+  if (messageBox.innerHTML === "") {
+    alert("No changes to confirm.");
+    return;
+  }
   if (confirm("Apply all changes?")) {
-    updates = [];
     messageBox.innerHTML = "";
   }
 }

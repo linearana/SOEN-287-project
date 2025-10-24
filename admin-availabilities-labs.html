@@ -8,21 +8,21 @@
 </head>
 <body>
   <header>
-    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
-    <h1>Campus Resource Booking!</h1>
-    
-    <!-- Main navigation -->
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
+    <h1>Campus Resource Booking – Admin</h1>
     <nav>
       <ul>
-        <li><a href="home.html" class="active">Home</a></li>
-        <li><a href="resources.html">Resources</a></li>
-        <li><a href="login.html" style="float:right;">Sign in</a></li>
+        <li><a href="admin-home.html" class="active">Home</a></li>
+        <li><a href="admin-resources.html">Resources</a></li>
+        <li><a href="statistics.html">Statistics</a></li>
+        <li><a href="admin-bookings.html">Bookings</a></li>
+        <li><a href="#" id="logoutBtn">Log Out</a></li>
       </ul>
     </nav>
   </header>
 
-  <main>
-    <h2 id="resourceTitle">Film Equipment</h2>
+    <main>
+    <h2 id="resourceTitle">Study Rooms</h2>
 
     <!-- Date picker -->
     <div class="date-picker">
@@ -46,57 +46,59 @@
         <tr>
           <td>NI 160</td>
           <td class="available" data-room="NI 160" data-time="12">Available</td>
-          <td class="unavailable">X</td>
-          <td class="pending">Pending</td>
+          <td class="booked" data-room="NI 160" data-time="13">Booked</td>
+          <td class="pending" data-room="NI 160" data-time="14">Pending</td>
           <td class="available" data-room="NI 160" data-time="15">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 160" data-time="16">Booked</td>
           <td class="available" data-room="NI 160" data-time="17">Available</td>
         </tr>
         <tr>
           <td>NI 368</td>
-          <td class="pending">Pending</td>
+          <td class="pending" data-room="NI 368" data-time="12">Pending</td>
           <td class="available" data-room="NI 368" data-time="13">Available</td>
           <td class="available" data-room="NI 368" data-time="14">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 368" data-time="15">Booked</td>
           <td class="available" data-room="NI 368" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 368" data-time="17">Booked</td>
         </tr>
         <tr>
           <td>NI 436</td>
           <td class="available" data-room="NI 436" data-time="12">Available</td>
-          <td class="unavailable">X</td>
-          <td class="pending">Pending</td>
-          <td class="unavailable">X</td>
-          <td class="pending">pending</td>
+          <td class="booked" data-room="NI 436" data-time="13">Booked</td>
+          <td class="pending" data-room="NI 436" data-time="14">Pending</td>
+          <td class="booked" data-room="NI 436" data-time="15">Booked</td>
+          <td class="pending" data-room="NI 436" data-time="16">Pending</td>
           <td class="available" data-room="NI 436" data-time="17">Available</td>
         </tr>
         <tr>
           <td>NI 555</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 555" data-time="12">Booked</td>
           <td class="available" data-room="NI 555" data-time="13">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 555" data-time="14">Booked</td>
           <td class="available" data-room="NI 555" data-time="15">Available</td>
           <td class="available" data-room="NI 555" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 555" data-time="17">Booked</td>
         </tr>
         <tr>
           <td>NI 1553</td>
-          <td class="available" data-room="NI 1552" data-time="12">Available</td>
-          <td class="pending">Pending</td>
-          <td class="pending">Pending</td>
+          <td class="available" data-room="NI 1553" data-time="12">Available</td>
+          <td class="pending" data-room="NI 1553" data-time="13">Pending</td>
+          <td class="pending" data-room="NI 1553" data-time="14">Pending</td>
           <td class="available" data-room="NI 1553" data-time="15">Available</td>
           <td class="available" data-room="NI 1553" data-time="16">Available</td>
-          <td class="unavailable">X</td>
+          <td class="booked" data-room="NI 1553" data-time="17">Booked</td>
         </tr>
       </tbody>
     </table>
 
     <div id="message"></div>
+    <button type ="button" onclick="confirmChanges()">Confirm Changes</button>
   </main>
 
   <footer>
     <p>© 2025 Campus Booking System</p>
   </footer>
-<script src="availability.js"></script>
+  <script src="admin-edit.js"></script>
+  <script src="logout.js"></script>
 </body>
 </html>
