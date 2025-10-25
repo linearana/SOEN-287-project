@@ -96,21 +96,6 @@ nav li {
     border-radius: 4px;
 }
 
-/* Availability colours */
-.free {
-  background-color: var(--free, #d4edda); 
-  cursor:pointer;
-}
-
-.busy {
-  background-color: var(--busy, #f8d7da); 
-  cursor: not-allowed;
-}
-
-.pending {
-    background-color: var(--pending,#fff3cd);
-    cursor: not-allowed;
-}
 body {
   min-height: 100vh;
   margin: 0;
@@ -195,9 +180,9 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
     th, td { border: 1px solid #ccc; padding: 8px; }
     th { background: #eee; }
     .available { background: #c8f7c5; cursor: pointer; }
-    .unavailable { background: #999; color: #fff; }
-    .pending { background: #f7f1c5; color: #2c2c2c; }
-    .booked { background: #f7c5c5; color: #555; }
+    .unavailable { background: #999; color: #fff; cursor: not-allowed; }
+    .pending { background: #f7f1c5; color: #2c2c2c; cursor: not-allowed; }
+    .booked { background: #f7c5c5; color: #555;}
     #message { margin-top: 20px; font-weight: bold; }
     .date-picker { margin: 15px 0; }
 
@@ -262,3 +247,27 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
   filter: grayscale(40%);
   transition: opacity 0.3s;
 }
+
+.booked {
+  background: #f7c5c5 !important;
+  color: black;
+  cursor: not-allowed;
+}
+
+.pending {
+  background-color: #f7f1c5 !important; 
+  color: #000;
+  cursor: not-allowed;
+}
+
+.piechart {
+  display: block;
+  width: 800px;   /* or 100% if responsive */
+  height: auto;   /* <— THIS is the important part */
+  margin: 30px auto;
+}
+
+.rules{
+  text-align: left;
+}
+

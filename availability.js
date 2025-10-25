@@ -2,11 +2,41 @@
   const messageBox = document.getElementById("message");
   let hasBooked = false; // track if user already booked
 
+
+  function updateBookedSlots() {
+  const selectedDate = new Date(document.getElementById("date").value).toLocaleDateString();
+  const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+  document.querySelectorAll("td").forEach(cell => {
+    const room = cell.dataset.room;
+    const time = cell.dataset.time;
+
+    const match = allBookings.find(b =>
+      b.resource === room &&
+      b.hour === time &&
+      b.date === selectedDate
+    );
+
+    if (match) {
+      cell.classList.remove("available");
+      cell.classList.add("booked");
+      cell.textContent = "X";
+      cell.style.cursor = "not-allowed";
+    }
+  });
+}
+
+window.onload = updateBookedSlots;
+
   // Booking type: "instant" or "request"
   const resourceType = "instant"; 
 
   document.querySelectorAll(".available").forEach(cell => {
     cell.addEventListener("click", () => {
+
+      if (cell.classList.contains("booked") || cell.textContent === "X") {
+      return;
+      }
       // Always check login at the moment of click
       const currentUser = JSON.parse(localStorage.getItem("currentUser"));
       if (!currentUser) {

@@ -25,7 +25,16 @@
 
   <main>
     <h2 id="resourceTitle">Film Equipment</h2>
-
+    <div class = "rules">
+      <p>
+        Equipment: You must present your student ID card to pick up equipment. <br>
+        All equipment must be returned at most one week after it was borrowed. <br>
+        Repeated no-shows or late returns may result in suspension of booking privileges. <br>
+        Inspect all equipment at pickup. Report any damage or missing parts immediately. <br>
+        The student who books the gear is fully responsible for its care, use, and return. <br>
+        The school reserves the right to charge the borrower's student account for the value of any damaged equipment. <br>
+      </p>
+    </div>
     <!-- Date picker -->
     <div class="date-picker">
       <label for="date">Choose a date: </label>
@@ -46,7 +55,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>NI 160</td>
+          <td>CO 678</td>
           <td class="available" data-room="NI 160" data-time="12">Available</td>
           <td class="unavailable">X</td>
           <td class="pending">Pending</td>
@@ -55,7 +64,7 @@
           <td class="available" data-room="NI 160" data-time="17">Available</td>
         </tr>
         <tr>
-          <td>NI 368</td>
+          <td>CO 900</td>
           <td class="pending">Pending</td>
           <td class="available" data-room="NI 368" data-time="13">Available</td>
           <td class="available" data-room="NI 368" data-time="14">Available</td>
@@ -64,7 +73,7 @@
           <td class="unavailable">X</td>
         </tr>
         <tr>
-          <td>NI 436</td>
+          <td>CO 432</td>
           <td class="available" data-room="NI 436" data-time="12">Available</td>
           <td class="unavailable">X</td>
           <td class="pending">Pending</td>
@@ -73,7 +82,7 @@
           <td class="available" data-room="NI 436" data-time="17">Available</td>
         </tr>
         <tr>
-          <td>NI 555</td>
+          <td>CO 123</td>
           <td class="unavailable">X</td>
           <td class="available" data-room="NI 555" data-time="13">Available</td>
           <td class="unavailable">X</td>
@@ -82,7 +91,7 @@
           <td class="unavailable">X</td>
         </tr>
         <tr>
-          <td>NI 1553</td>
+          <td>CO 777</td>
           <td class="available" data-room="NI 1553" data-time="12">Available</td>
           <td class="pending">Pending</td>
           <td class="pending">Pending</td>
@@ -91,6 +100,11 @@
           <td class="unavailable">X</td>
         </tr>
       </tbody>
+      <tfoot>
+    <tr>
+      <td colspan="7">Please click on an available time slot to book it</td>
+    </tr>
+  </tfoot>
     </table>
 
     <div id="message"></div>

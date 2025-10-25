@@ -23,11 +23,18 @@
 
   <main>
   <h2 id="resourceTitle">Study Rooms</h2>
-
+      <div class = "rules">
+      <p>
+        Study rooms are available by reservation only through the online booking system. <br>
+        Rooms are intended for academic use only such as studying, group projects, tutoring, or meetings related to coursework. <br>
+        Rooms must be occupied by a minimum of 2 students at all times. <br> 
+        If a group is more than 15 minutes late, the room may be released to other students waiting. <br>
+      </p>
+    </div>
   <!-- Date picker -->
   <div class="date-picker">
     <label for="date">Choose a date: </label>
-    <input type="date" id="date" name="date">
+    <input type="date" id="date" name="date" onchange="updateBookedSlots()">
   </div>
 
   <table>
