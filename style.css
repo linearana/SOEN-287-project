@@ -269,5 +269,9 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
 
 .rules{
   text-align: left;
+  margin-left: 15px;
+}
+.date-picker, #resourceTitle {
+  margin-left: 15px;
 }
 
