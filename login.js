@@ -9,10 +9,10 @@ loginForm.addEventListener("submit", (e) => {
   // Hard-coded credentials
   if (username === "admin" && password === "admin123") {
     // Save session info
-    localStorage.setItem("currentUser", JSON.stringify({ role: "admin", username }));
+    sessionStorage.setItem("currentUser", JSON.stringify({ role: "admin", username }));
     window.location.href = "admin-home.html";
   } else if (username === "student" && password === "student123") {
-    localStorage.setItem("currentUser", JSON.stringify({ role: "user", username }));
+    sessionStorage.setItem("currentUser", JSON.stringify({ role: "user", username }));
     window.location.href = "user-home.html";
   } else {
     alert("❌ Invalid username or password. Try 'admin/admin123' or 'student/student123'.");

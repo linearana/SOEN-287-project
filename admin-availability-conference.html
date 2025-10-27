@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home | Campus Booking</title>
+  <title>Admin Conference Rooms | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,14 +11,15 @@
     <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
     <h1>Campus Resource Booking – Admin</h1>
     <nav>
-      <ul>
+        <ul>
         <li><a href="admin-home.html" class="active">Home</a></li>
         <li><a href="admin-resources.html">Resources</a></li>
         <li><a href="statistics.html">Statistics</a></li>
         <li><a href="admin-bookings.html">Bookings</a></li>
         <li><a href="#" id="logoutBtn">Log Out</a></li>
       </ul>
-    </nav>
+        <a href="admin-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+      </nav>
   </header>
 
   <main>
@@ -43,50 +44,56 @@
       </tr>
     </thead>
     <tr>
-      <td>LB 251 – Linda Kay</td>
-      <td class="available" data-room="LB 251" data-time="12">Available</td>
-      <td class="booked" data-room="LB 251" data-time="13">Booked</td>
-      <td class="booked" data-room="LB 251" data-time="14">Booked</td>
-      <td class="available" data-room="LB 251" data-time="15">Available</td>
-      <td class="booked" data-room="LB 251" data-time="16">Booked</td>
-      <td class="available" data-room="LB 251" data-time="17">Available</td>
+      <td>YUL 102 – Curie</td>
+      <td class="available" data-room="YUL 102" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 102" data-time="15">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 102" data-time="17">Available</td>
     </tr>
     <tr>
-      <td>LB 259 – Croatia</td>
-      <td class="booked" data-room="LB 259" data-time="12">Booked</td>
-      <td class="available" data-room="LB 259" data-time="13">Available</td>
-      <td class="available" data-room="LB 259" data-time="14">Available</td>
-      <td class="booked" data-room="LB 259" data-time="15">Booked</td>
-      <td class="available" data-room="LB 259" data-time="16">Available</td>
-      <td class="booked" data-room="LB 259" data-time="17">Booked</td>
+      <td>YUL 259 – Aristotle</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 259" data-time="13">Available</td>
+      <td class="available" data-room="YUL 259" data-time="14">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 259" data-time="16">Available</td>
+      <td class="unavailable">X</td>
     </tr>
     <tr>
-      <td>LB 311 – Haiti</td>
-      <td class="available" data-room="LB 311" data-time="12">Available</td>
-      <td class="booked" data-room="LB 311" data-time="13">Booked</td>
-      <td class="available" data-room="LB 311" data-time="14">Available</td>
-      <td class="booked" data-room="LB 311" data-time="15">Booked</td>
-      <td class="booked" data-room="LB 311" data-time="16">Booked</td>
-      <td class="available" data-room="LB 311" data-time="17">Available</td>
+      <td>YUL 467 – Newton</td>
+      <td class="available" data-room="YUL 467" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 467" data-time="14">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 467" data-time="17">Available</td>
     </tr>
     <tr>
-      <td>LB 315 – Australia</td>
-      <td class="booked" data-room="LB 315" data-time="12">Booked</td>
-      <td class="available" data-room="LB 315" data-time="13">Available</td>
-      <td class="booked" data-room="LB 315" data-time="14">Booked</td>
-      <td class="available" data-room="LB 315" data-time="15">Available</td>
-      <td class="available" data-room="LB 315" data-time="16">Available</td>
-      <td class="booked" data-room="LB 315" data-time="17">Booked</td>
+      <td>YUL 965 – Einstein</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 965" data-time="13">Available</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 965" data-time="15">Available</td>
+      <td class="available" data-room="YUL 965" data-time="16">Available</td>
+      <td class="unavailable">X</td>
     </tr>
     <tr>
-      <td>LB 328 – Zimbabwe</td>
-      <td class="available" data-room="LB 328" data-time="12">Available</td>
-      <td class="booked" data-room="LB 328" data-time="13">Booked</td>
-      <td class="booked" data-room="LB 328" data-time="14">Booked</td>
-      <td class="available" data-room="LB 328" data-time="15">Available</td>
-      <td class="available" data-room="LB 328" data-time="16">Available</td>
-      <td class="booked" data-room="LB 328" data-time="17">Booked</td>
+      <td>YUL 111 – Galileo </td>
+      <td class="available" data-room="YUL 111" data-time="12">Available</td>
+      <td class="unavailable">X</td>
+      <td class="unavailable">X</td>
+      <td class="available" data-room="YUL 111" data-time="15">Available</td>
+      <td class="available" data-room="YUL 111" data-time="16">Available</td>
+      <td class="unavailable">X</td>
     </tr>
+
+    <tfoot>
+    <tr>
+      <td colspan="7">Please click on an available time slot to book it</td>
+    </tr>
+  </tfoot>
   </table>
 
   <div id="message"></div>
