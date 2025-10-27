@@ -1,8 +1,33 @@
-.hero {
-    background-color: #fff;
-    padding: 16px;
-    position: relative;
+body {
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
+
+header {
+  min-height: 50px;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
+}
+
+footer {
+  background-color: #f4f4f4;
+  color: #444;                 
+  text-align: center;
+  padding: 6px 0;
+  width: 100%;
+  font-size: 14px;
+  border-top: 1px solid #ddd;
+  margin-top: 30px;
+}
+
+main {
+  flex: 1;
+}
+
 nav {
     background-color: #6a121b;
     color: #fff;
@@ -29,11 +54,13 @@ nav ul {
     margin: 0;
     padding: 0;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
 }
 
 nav li {
     margin-left: 16px;
+    white-space: nowrap;
 }
 .user-pic {
     width: 40px;
@@ -96,29 +123,6 @@ nav li {
     border-radius: 4px;
 }
 
-body {
-  min-height: 100vh;
-  margin: 0;
-}
-
-header {
-  min-height: 50px;
-}
-
-footer {
-  min-height: 50px;
-  background: PapayaWhip;
-}
-
-
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-}
 
 .legend {
   display: flex;
@@ -186,7 +190,7 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
     #message { margin-top: 20px; font-weight: bold; }
     .date-picker { margin: 15px 0; }
 
-
+/* Resources */
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -271,7 +275,8 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
   text-align: left;
   margin-left: 15px;
 }
-.date-picker, #resourceTitle {
+
+.date-picker, #resourceTitle, .news, .quick-links {
   margin-left: 15px;
 }
 
