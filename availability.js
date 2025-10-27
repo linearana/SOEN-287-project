@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cells.forEach(cell => {
     cell.addEventListener("click", () => {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
       
       if (!currentUser) {
         alert("⚠️ You must be logged in to book a resource.");

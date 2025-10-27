@@ -1,5 +1,5 @@
 // Check login state
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (!currentUser) {
