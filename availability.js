@@ -1,4 +1,4 @@
-
+// verify user is logged in, if not, redirect to login page
 document.addEventListener("DOMContentLoaded", () => {
   const cells = document.querySelectorAll("td.available");
 
@@ -13,3 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+//automatically choose date
+let ele = document.getElementById("date");
+var today = new Date();
+var d = String(today.getDate()).padStart(2, '0');
+var m = String(today.getMonth() + 1).padStart(2, '0');
+var y = today.getFullYear();
+ele.value = y + "-" + m + "-" + d;

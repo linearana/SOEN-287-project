@@ -54,11 +54,19 @@ function confirmChanges() {
   }
 }
 
-  // Disable resource function
-  function disableResource(button) {
-    if (confirm("Are you sure you want to disable this resource?")) {
-      const card = button.closest(".card");
-      card.classList.add("disabled");
-      alert("⚠️ This resource has been disabled and is no longer available for booking.");
-    }
+// Disable resource function
+function disableResource(button) {
+  if (confirm("Are you sure you want to disable this resource?")) {
+    const card = button.closest(".card");
+    card.classList.add("disabled");
+    alert("⚠️ This resource has been disabled and is no longer available for booking.");
   }
+}
+
+//automatically choose date
+let ele = document.getElementById("date");
+var today = new Date();
+var d = String(today.getDate()).padStart(2, '0');
+var m = String(today.getMonth() + 1).padStart(2, '0');
+var y = today.getFullYear();
+ele.value = y + "-" + m + "-" + d;
