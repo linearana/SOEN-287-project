@@ -247,9 +247,15 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
 /* Update admin resources */
 .card.disabled {
   opacity: 0.4; 
-  pointer-events: none;
   filter: grayscale(40%);
   transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.card.disabled button{
+  opacity: 1;
+  filter: none;
+  pointer-events: auto;
 }
 
 .booked {

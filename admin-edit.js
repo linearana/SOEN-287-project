@@ -56,10 +56,21 @@ function confirmChanges() {
 
 // Disable resource function
 function disableResource(button) {
-  if (confirm("Are you sure you want to disable this resource?")) {
-    const card = button.closest(".card");
-    card.classList.add("disabled");
-    alert("⚠️ This resource has been disabled and is no longer available for booking.");
+  if (button.textContent === "Disable") {
+    if (confirm("Are you sure you want to disable this resource?")) {
+      const card = button.closest(".card");
+      card.classList.add("disabled");
+      button.textContent = "Enable"
+      alert("⚠️ This resource has been disabled and is no longer available for booking.");
+    }
+  }
+  else {
+    if (confirm("Are you sure you want to enable this resource?")) {
+      const card = button.closest(".card");
+      card.classList.remove("disabled");
+      button.textContent = "Disable"
+      alert("⚠️ This resource has been enabled and is now available for booking.");
+    }
   }
 }
 
