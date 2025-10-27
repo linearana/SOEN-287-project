@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head class="head">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Bookings | Campus Booking</title>
+  <title>Profile | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="hero">
   <header>
-    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
-    <h1>Campus Resource Booking – Admin</h1>
-    <nav>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    <div>
+      <nav>
         <ul>
         <li><a href="admin-home.html" class="active">Home</a></li>
         <li><a href="admin-resources.html">Resources</a></li>
@@ -19,29 +20,14 @@
         <li><a href="#" id="logoutBtn">Log Out</a></li>
       </ul>
         <a href="admin-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
-    </nav>
+      </nav>
+    </div>
   </header>
-
-  <main>
-    <h2>All Bookings</h2>
-    <table id="adminBookingsTable" border="1" cellpadding="10" style="width:100%; text-align:center;">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Resource</th>
-          <th>Item</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="adminBookingsBody">
-        <!-- Filled dynamically with JS -->
-      </tbody>
-    </table>
-  </main>
-
+  <body>
+    <h2>Your Profile</h2>
+   <p> John Doe <br> ID number: 00000000 <br> Email: johndoe@concordia.ca</p>
+   <p> View or edit current bookings </p>
+  </body>
   <footer>
     <p>© 2025 Campus Booking System</p>
   </footer>
