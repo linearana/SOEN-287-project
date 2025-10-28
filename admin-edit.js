@@ -20,18 +20,25 @@
 
     if (cell.classList.contains("available")) {
       cell.classList.remove("available");
-      cell.classList.add("unavailable");
+      cell.classList.add("ad-unavailable");
       cell.textContent = "Unavailable";
       action = "made unavailable";
       messageBox.innerHTML += `✅ Availability removed for ${room} at ${time}:00 on ${date} <br>`;
     } 
     else if (cell.classList.contains("booked")) {
       cell.classList.remove("booked");
-      cell.classList.add("unavailable");
+      cell.classList.add("ad-unavailable");
       cell.textContent = "Unavailable";
       action = "booking cancelled";
       messageBox.innerHTML += `✅ Availability removed for ${room} at ${time}:00 on ${date}, user will be notified of cancellation. <br>`;
     } 
+    else if ( cell.classList.contains("ad-unavailable") ) {
+      cell.classList.remove("ad-unavailable");
+      cell.classList.add("available");
+      cell.textContent = "Available";
+      action = "restored availability";
+      messageBox.innerHTML += `🔁 Availability restored for ${room} at ${time}:00 on ${date} <br>`;
+    }
     else {
       cell.classList.remove("unavailable");
       cell.classList.add("available");
