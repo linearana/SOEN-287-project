@@ -44,10 +44,16 @@ document.querySelectorAll(".available").forEach(cell => {
     cell.textContent = resourceType === "instant" ? "Booked" : "Pending";
 
     if (resourceType === "instant") {
-      messageBox.textContent = `✅ Booking confirmed for ${room} at ${time}:00 on ${formattedDate}`;
-    } else {
-      messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${formattedDate} (awaiting admin approval)`;
-    }
+          cell.classList.remove("available");
+          cell.classList.add("booked");
+          cell.textContent = "Booked";
+          messageBox.textContent = `✅ Booking confirmed for ${room} at ${time}:00 on ${date}`;
+        } else {
+          cell.classList.remove("available");
+          cell.classList.add("booked");
+          cell.textContent = "Pending";
+          messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${date} (awaiting admin approval)`;
+        }
 
     
     let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
@@ -94,7 +100,7 @@ function updateBookedSlots() {
         cell.textContent = "Pending";
       } else {
         cell.classList.add("booked");
-        cell.textContent = "Booked"; // or "X" for privacy
+        cell.textContent = "Booked"; 
       }
 
       cell.style.cursor = "not-allowed";

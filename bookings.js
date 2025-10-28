@@ -39,10 +39,3 @@ function renderBookings() {
 }
 
 renderBookings();
-
-// Logout
-logoutBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  localStorage.removeItem("currentUser");
-  window.location.href = "home.html";
-});
