@@ -27,7 +27,7 @@ main {
   display: flex;
   flex: 1;
   flex-direction: column;
-  align-items: center;  
+  align-items: left;  
   justify-content: flex-start;
   padding: 40px 0;
 }
@@ -126,6 +126,7 @@ nav li {
 
 }
 
+
 .book-room {
     background-color: #6a121b;
     color: white;
@@ -161,7 +162,7 @@ nav li {
   width: 16px;       
   height: 16px;
   border: 1px solid #555; /* subtle border so color squares are visible */
-  border-radius: 3px;      /* small rounding (optional) */
+  border-radius: 3px;      
 }
 
 .swatch.free {
@@ -294,7 +295,7 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; te
 }
 
 .rules{
-  text-align: center;
+  text-align: left;
   margin-left: 15px;
   font-family: 'Lucida Sans', sans-serif;
 }
