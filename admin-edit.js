@@ -32,13 +32,6 @@
       action = "booking cancelled";
       messageBox.innerHTML += `✅ Availability removed for ${room} at ${time}:00 on ${date}, user will be notified of cancellation. <br>`;
     } 
-    else if ( cell.classList.contains("ad-unavailable") ) {
-      cell.classList.remove("ad-unavailable");
-      cell.classList.add("available");
-      cell.textContent = "Available";
-      action = "restored availability";
-      messageBox.innerHTML += `🔁 Availability restored for ${room} at ${time}:00 on ${date} <br>`;
-    }
     else {
       cell.classList.remove("unavailable");
       cell.classList.add("available");
