@@ -5,8 +5,8 @@
       window.location.href = "login.html";
     }
 
-    // 🔹 Booking type (instant or request)
-    const resourceType = "instant"; // change to "request" for equipment
+    // Booking type (instant or request)
+    const resourceType = "instant";
 
     // type of room or service booked
     const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
@@ -14,7 +14,8 @@
 
     const messageBox = document.getElementById("message");
     let hasBooked = false; // track if user already booked
-    function updateBookedSlots() {
+    
+  function updateBookedSlots() {
   const selectedDate = new Date(document.getElementById("date").value).toLocaleDateString();
   const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
 
