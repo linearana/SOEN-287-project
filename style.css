@@ -264,10 +264,14 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; te
   pointer-events: none;
 }
 
-.card.disabled button{
+/* does not work as intended */
+.card.disabled #buttonDisable {
   opacity: 1;
   filter: none;
-  pointer-events: auto;
+  transition: none 0s;
+  pointer-events: auto; /* now clickable again */
+  cursor: pointer;
+  z-index: 1;
 }
 
 .booked {
