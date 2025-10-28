@@ -27,7 +27,7 @@ main {
   display: flex;
   flex: 1;
   flex-direction: column;
-  align-items: center;  
+  align-items: left;  
   justify-content: flex-start;
   padding: 40px 0;
 }
@@ -126,6 +126,7 @@ nav li {
 
 }
 
+
 .book-room {
     background-color: #6a121b;
     color: white;
@@ -199,6 +200,7 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; te
     .unavailable { background: #999; color: #fff; cursor: not-allowed; }
     .pending { background: #f7f1c5; color: #2c2c2c; cursor: not-allowed; }
     .booked { background: #f7c5c5; color: #555;}
+    .ad-unavailable { background: #e95b5b; color: #888; cursor: not-allowed; }
     #message { margin-top: 20px; font-weight: bold; }
     .date-picker { margin: 15px 0; }
 
