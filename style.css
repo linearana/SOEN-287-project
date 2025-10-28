@@ -25,7 +25,19 @@ footer {
 }
 
 main {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  justify-content: center;
+  padding: 40px 0;
+}
+
+main h2{
+  margin-bottom: 8px;
+}
+
+h1{
+  font-family: "Lucida Bold", sans-serif;
 }
 
 nav {
@@ -180,7 +192,7 @@ h1{
     padding: 10px;
     
 }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; text-align: center;}
     th, td { border: 1px solid #ccc; padding: 8px; }
     th { background: #eee; }
     .available { background: #c8f7c5; cursor: pointer; }
@@ -272,17 +284,46 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: ce
 
 .piechart {
   display: block;
-  width: 800px;   /* or 100% if responsive */
-  height: auto;   /* <— THIS is the important part */
+  width: 800px;  
+  height: auto;   
   margin: 30px auto;
 }
 
 .rules{
-  text-align: left;
+  text-align: center;
   margin-left: 15px;
+  font-family: 'Lucida Sans', sans-serif;
 }
 
 .date-picker, #resourceTitle, .news, .quick-links {
   margin-left: 15px;
 }
 
+/* edit bookings button */
+.edit-button {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 10px 20px;
+  background-color: #fff;
+  border: 1px solid #555;
+  color: #555;
+  font-family: 'Lucida Sans',sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  text-decoration: none;
+  letter-spacing: 0.4px;
+  text-transform: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease-in-out;
+}
+
+.edit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.profile{
+  text-align: center;
+  font-family: 'Lucida Sans', sans-serif;
+}

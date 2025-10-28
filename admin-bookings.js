@@ -60,4 +60,4 @@ logoutBtn.addEventListener("click", (e) => {
   e.preventDefault();
   alert("Logged out (demo only)");
   window.location.href = "home.html";
-});
+}); 
