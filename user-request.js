@@ -33,7 +33,8 @@ document.querySelectorAll(".available").forEach(cell => {
       return;
     }
 
-    const formattedDate = new Date(rawDate).toLocaleDateString();
+    const [y, m, d] = rawDate.split("-");
+    const date = new Date(y, m - 1, d).toLocaleDateString();
     const room = cell.dataset.room;
     const time = cell.dataset.time;
 

@@ -37,8 +37,8 @@
       cell.addEventListener("click", () => {
 
         if (cell.classList.contains("booked") || cell.textContent === "X") {
-      return;
-      }
+        return;
+        }
         if (hasBooked) {
           alert("⚠️ You can only book one slot at a time.");
           return;
@@ -50,12 +50,13 @@
           alert("⚠️ Please select a date before booking.");
           document.getElementById("date").focus(); // highlight the date box
           return;
-    }
+        }
 
         const room = cell.dataset.room;
         const time = cell.dataset.time;
         const rawDate = document.getElementById("date").value.trim();
-        const date = new Date(rawDate).toLocaleDateString();
+        const [y, m, d] = rawDate.split("-");
+        const date = new Date(y, m - 1, d).toLocaleDateString();
 
 
 
@@ -80,16 +81,17 @@
         date: date,
         hour: time,
         status: (resourceType === "instant") ? "Booked" : "Pending"
-});
+        });
 
         localStorage.setItem("bookings", JSON.stringify(allBookings));
 
         hasBooked = true; // prevent further bookings
-      })
+      });
 
-      window.onload = updateBookedSlots;
     });
 
+window.onload = updateBookedSlots;
+    
 //automatically choose date
 let ele = document.getElementById("date");
 var today = new Date();
