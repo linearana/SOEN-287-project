@@ -14,6 +14,9 @@ let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
 // Filter only this user's bookings
 let userBookings = allBookings.filter(b => b.username === currentUser.username);
 
+userBookings.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+userBookings = userBookings.reverse();
+
 // Render bookings
 function renderBookings() {
   bookingsBody.innerHTML = "";

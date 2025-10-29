@@ -1,49 +1,67 @@
-// 🔹 Login check
-const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-if (!currentUser) {
-  alert("⚠️ You must be logged in to book a resource.");
-  window.location.href = "login.html";
-}
-
-// 🔹 Booking type (instant or request)
-const resourceType = "request";
-
- // type of room or service booked
-  const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
-
-const messageBox = document.getElementById("message");
-let hasBooked = false; // track if user already booked
-
-document.querySelectorAll(".available").forEach(cell => {
-  cell.addEventListener("click", () => {
-
-    if (hasBooked) {
-      alert("⚠️ You can only book one slot at a time.");
-      return;
+  // Login check
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("⚠️ You must be logged in to book a resource.");
+      window.location.href = "login.html";
     }
 
-    // prevent clicking booked / pending slots
-     if (cell.classList.contains("booked") || cell.classList.contains("pending")) {
-      return;
-    }
-    const rawDate = document.getElementById("date").value.trim();
-    if (!rawDate) {
-      alert("⚠️ Please select a date before booking.");
-      document.getElementById("date").focus();
-      return;
-    }
+    // Booking type (instant or request)
+    const resourceType = "request";
 
-    const [y, m, d] = rawDate.split("-");
-    const date = new Date(y, m - 1, d).toLocaleDateString();
+    // type of room or service booked
+    const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
+
+
+    const messageBox = document.getElementById("message");
+    let hasBooked = false; // track if user already booked
+    
+  function updateBookedSlots() {
+  const selectedDate = new Date(document.getElementById("date").value).toLocaleDateString();
+  const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+  document.querySelectorAll(".available, .booked").forEach(cell => {
     const room = cell.dataset.room;
     const time = cell.dataset.time;
 
-   
-    cell.classList.remove("available");
-    cell.classList.add("booked");
-    cell.textContent = resourceType === "instant" ? "Booked" : "Pending";
+    const match = allBookings.find(
+      b => b.resource === room && b.hour === time && b.date === selectedDate
+    );
 
-    if (resourceType === "instant") {
+    if (match) {
+      cell.classList.remove("available");
+      cell.classList.add("booked");
+      cell.textContent = "Booked";
+    }
+  });
+}
+    document.querySelectorAll(".available").forEach(cell => {
+      cell.addEventListener("click", () => {
+
+        if (cell.classList.contains("booked") || cell.textContent === "X") {
+        return;
+        }
+        if (hasBooked) {
+          alert("⚠️ You can only book one slot at a time.");
+          return;
+        }
+
+         const dateInput = document.getElementById("date").value.trim();
+        // prompt user to choose a date
+         if (!dateInput) {
+          alert("⚠️ Please select a date before booking.");
+          document.getElementById("date").focus(); // highlight the date box
+          return;
+        }
+
+        const room = cell.dataset.room;
+        const time = cell.dataset.time;
+        const rawDate = document.getElementById("date").value.trim();
+        const [y, m, d] = rawDate.split("-");
+        const date = new Date(y, m - 1, d).toLocaleDateString();
+
+
+
+        if (resourceType === "instant") {
           cell.classList.remove("available");
           cell.classList.add("booked");
           cell.textContent = "Booked";
@@ -54,59 +72,24 @@ document.querySelectorAll(".available").forEach(cell => {
           cell.textContent = "Pending";
           messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${date} (awaiting admin approval)`;
         }
+        
+        let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
 
-    
-    let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+        allBookings.push({
+        username: currentUser.username,
+        resource: room,   
+        item: resourceTypeName,   
+        date: date,
+        hour: time,
+        status: (resourceType === "instant") ? "Booked" : "Pending"
+        });
 
-    allBookings.push({
-      username: currentUser.username,
-      resource: room,
-      hour: time,
-      item: resourceTypeName,
-      date: formattedDate,
-      status: resourceType === "instant" ? "Booked" : "Pending"
+        localStorage.setItem("bookings", JSON.stringify(allBookings));
+
+        hasBooked = true; // prevent further bookings
+      });
+
     });
-
-    localStorage.setItem("bookings", JSON.stringify(allBookings));
-
-    hasBooked = true;
-  });
-});
-
-
-// Runs on page load + date change
-function updateBookedSlots() {
-  const dateValue = document.getElementById("date").value;
-  if (!dateValue) return;
-
-  const selectedDate = new Date(dateValue).toLocaleDateString();
-  const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-
-  document.querySelectorAll("td").forEach(cell => {
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
-
-    const match = allBookings.find(b =>
-      b.resource === room &&
-      b.hour === time &&
-      b.date === selectedDate
-    );
-
-    if (match) {
-      cell.classList.remove("available", "booked", "pending");
-
-      if (match.status === "Pending") {
-        cell.classList.add("pending");
-        cell.textContent = "Pending";
-      } else {
-        cell.classList.add("booked");
-        cell.textContent = "Booked"; 
-      }
-
-      cell.style.cursor = "not-allowed";
-    }
-  });
-}
 
 window.onload = updateBookedSlots;
 
