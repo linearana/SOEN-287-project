@@ -210,6 +210,12 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; te
   
 }
 
+.confirm-button {
+  width: 150px; 
+  display: block; 
+  margin: 20px auto;
+}
+
 /* Resources */
 .cards {
   display: flex;
