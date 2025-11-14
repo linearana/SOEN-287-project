@@ -23,7 +23,6 @@
 
   <main>
     <h2 style = "text-align: center" >My Bookings</h2>
-    <a class = edit-button href="# no where yet " style = "text-align: center;"> Edit Bookings</a>
     <table id="bookingsTable" border="1" cellpadding="10" style="width:100%; text-align:center;">
       <thead>
         <tr>
@@ -32,12 +31,14 @@
           <th>Date</th>
           <th>Time</th>
           <th>Status</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="bookingsBody">
         <!-- Filled dynamically with JS -->
       </tbody>
     </table>
+    <p id="cancelBookingMessage"></p>
   </main>
 
   <footer>

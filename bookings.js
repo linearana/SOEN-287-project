@@ -35,10 +35,34 @@ function renderBookings() {
       <td>${b.date || "-"}</td>
       <td>${b.hour ? b.hour + ":00" : "-"}</td>
       <td class="${b.status}">${b.status}</td>
+      <td><input type="button" value="Cancel" onclick="cancelBooking(this)"></td>
     `;
 
     bookingsBody.appendChild(row);
   });
+}
+
+let deletedBookings = [];
+function cancelBooking(button) {
+  if(confirm("Are you sure you want to cancel this booking ?")) {
+    const row = button.parentElement.parentElement; // td -> tr
+    const index = Array.from(bookingsBody.children).indexOf(row);
+    
+    // Remove from userBookings array and localStorage
+    if (index > -1) {
+      const bookingToCancel = userBookings[index];
+      deletedBookings.push(bookingToCancel);
+      localStorage.setItem("deletedBookings", JSON.stringify(deletedBookings));
+      userBookings.splice(index, 1);
+      
+      // Update localStorage
+      let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+      allBookings = allBookings.filter(b => b.username !== currentUser.username || userBookings.includes(b));
+      localStorage.setItem("bookings", JSON.stringify(allBookings));
+      row.remove();
+      document.getElementById("cancelBookingMessage").innerHTML = `✅ Booking for ${bookingToCancel.resource} on ${bookingToCancel.date} at ${bookingToCancel.hour}:00 has been cancelled.`;
+    }
+  }
 }
 
 renderBookings();
