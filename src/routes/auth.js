@@ -45,4 +45,29 @@ router.get('/me/:id', (req, res) => {
   res.json(user);
 });
 
+router.post('/signup', (req, res) => {
+  const { firstName, lastName, studentId, email, password } = req.body;
+
+  if (!firstName || !lastName || !studentId || !email || !password) {
+    return res.status(400).json({ error: "All fields required" });
+  }
+
+  if (users.find(u => u.email === email)) {
+    return res.status(400).json({ error: "Email already registered" });
+  }
+
+  const newUser = {
+    id: users.length + 1,
+    firstName,
+    lastName,
+    studentId,
+    email,
+    password,
+    role: "student"
+  };
+  users.push(newUser);
+
+  res.status(201).json({ message: "Signup successful", user: { id: newUser.id, email: newUser.email, role: newUser.role } });
+});
+
 module.exports = router;
