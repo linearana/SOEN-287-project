@@ -4,6 +4,7 @@
   "description": "This project was created By  \r Maha Rehman 40249390 \r Liliana José Ferreira 40325772 \r Narmin Ibrahimli 40126227 \r Alexa Rokakis 40234010",
   "main": "admin-bookings.js",
   "scripts": {
+    "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,8 +27,4 @@
   "devDependencies": {
     "nodemon": "^3.1.11"
   }
-  "scripts": {
-  "dev": "nodemon src/server.js"
-}
-
 }
