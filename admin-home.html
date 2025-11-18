@@ -3,16 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Campus Booking</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Admin Dashboard | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Campus Resource Booking!</h1>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
+    <h1>Campus Resource Booking – Admin</h1>
     <nav>
-      <a href="home.html">Home</a>
-      <a href="resources.html" class="active">Resources</a>
-      <a href="Statistics.html">Statistics</a>
-      <a href="requests.html">Requests</a> 
-    </nav>
+        <ul>
+        <li><a href="admin-home.html" class="active">Home</a></li>
+        <li><a href="admin-resources.html">Resources</a></li>
+        <li><a href="statistics.html">Statistics</a></li>
+        <li><a href="admin-bookings.html">Bookings</a></li>
+        <li><a href="#" id="logoutBtn">Log Out</a></li>
+      </ul>
+        <a href="admin-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+      </nav>
   </header>
+
+  <main>
+    <h2 class="news">Welcome, Admin!</h2>
+    <p class = "news">Here’s what’s happening today:</p>
+
+    <section class="news">
+      <h3>System Updates</h3>
+      <ul>
+        <li>⚡ New booking requests pending approval.</li>
+        <li>📊 Statistics updated for October 2025.</li>
+        <li>🔧 Art Studio 301 marked out of order for maintenance.</li>
+      </ul>
+    </section>
+
+    <section class="quick-links">
+      <h3>Quick Actions</h3>
+      <button onclick="window.location.href='admin-bookings.html'">Review Bookings</button>
+      <button onclick="window.location.href='admin-resources.html'">Manage Resources</button>
+      <button onclick="window.location.href='statistics.html'">View Statistics</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
+  <script src="logout.js"></script>
+</body>
+</html>

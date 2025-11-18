@@ -4,34 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log In | Campus Booking</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Campus Resource Booking</h1> 
-    <hr>
-    <nav>
-      <a href="home.html">Home</a>
-      <a href="resources.html" class="active">Resources</a>
-     <!-- <a href="login.html">Login</a>
-      <a href="register.html">Register</a> -->
-      <a href ="login.html" style="text-align:right;">Sign in</a> 
-    </nav>
-    <hr>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking</h1>
   </header>
-  <div border="2" style="width: 300px; margin: auto; padding: 20px; text-align: center;">
-    <a href="user.html"><strong>Student</strong></a>
-    <a href="admin.html"> /  Admin</a>
-  </div>
-  <div border="2" style="width: 300px; margin: auto; padding: 20px; text-align: center;">
-    <label for="username" style="text-align: center;">Username</label>
-    <input type="text" id="email" name="userename" required><br>
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required><br>
-   <!-- <label for="id">ID</label>
-    <input type="text" id="id" name="id" required><br>  -->
-    <button type="submit">Log In</button>
-  </div>
-  <div border="2" style="width: 300px; margin: auto; padding: 20px; text-align: center;">
-  <a href="register.html" style ="text-align: center;">Don't have an account? Sign up</a>
-  </div>
+
+  <main style="width: 300px; margin: auto; padding: 20px; text-align: center;">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="username">Username</label><br>
+      <input type="text" id="username" name="username" required><br><br>
+
+      <label for="password">Password</label><br>
+      <input type="password" id="password" name="password" required><br><br>
+
+      <button type="submit">Log In</button>
+    </form>
+
+    <p><a href="register.html">Don't have an account? Sign up</a></p>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
+  <script src="login.js"></script>
+</body>
+</html>
