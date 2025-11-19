@@ -345,3 +345,9 @@ table { width: 100%; border-collapse: collapse; margin-top: 20px; width: 90%; te
   text-align: center;
   font-family: 'Lucida Sans', sans-serif;
 }
+
+#container {
+  width: 300px;
+  height: 300px;
+  margin: auto;
+}
