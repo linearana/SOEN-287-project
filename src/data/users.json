@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1763613849704,
+    "firstName": "a",
+    "lastName": "a",
+    "studentId": "1111111",
+    "email": "hi@hi.com",
+    "password": "2558a34d4d20964ca1d272ab26ccce9511d880579593cd4c9e01ab91ed00f325",
+    "role": "student"
+  }
+]

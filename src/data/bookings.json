@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": 1763613413599,
+    "username": "hi@hi.com",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-20",
+    "hour": "12",
+    "status": "Booked"
+  },
+  {
+    "id": 1763613857229,
+    "username": "hi@hi.com",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-20",
+    "hour": "13",
+    "status": "Booked"
+  },
+  {
+    "id": 1763613890941,
+    "username": "hi@hi.com",
+    "resource": "LB 311",
+    "item": "Study Rooms",
+    "date": "2025-11-20",
+    "hour": "12",
+    "status": "Booked"
+  }
+]

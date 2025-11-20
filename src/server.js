@@ -16,7 +16,7 @@ const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
 
-// Auto-create empty files if missing
+// Auto-create empty DB files
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]");
 if (!fs.existsSync(BOOKINGS_FILE)) fs.writeFileSync(BOOKINGS_FILE, "[]");
 
@@ -27,13 +27,15 @@ const writeJSON = (file, data) =>
 
 const hash = pw => crypto.createHash("sha256").update(pw).digest("hex");
 
-/* -------- REGISTER USER -------- */
+/* ---------- REGISTER ---------- */
 app.post("/api/auth/signup", (req, res) => {
   const { firstName, lastName, studentId, email, password } = req.body;
+
   const users = readJSON(USERS_FILE);
 
-  if (users.some(u => u.email === email))
-    return res.status(409).json({ error: "Email already registered" });
+  if (users.some(u => u.email === email)) {
+    return res.status(409).json({ error: "Email already exists" });
+  }
 
   const newUser = {
     id: Date.now(),
@@ -51,15 +53,16 @@ app.post("/api/auth/signup", (req, res) => {
   res.json({ message: "User registered", user: newUser });
 });
 
-/* -------- LOGIN -------- */
+/* ---------- LOGIN ---------- */
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
 
   const users = readJSON(USERS_FILE);
   const user = users.find(u => u.email === email);
 
-  if (!user || user.password !== hash(password))
+  if (!user || user.password !== hash(password)) {
     return res.status(401).json({ error: "Invalid email or password" });
+  }
 
   res.json({
     user: {
@@ -73,23 +76,24 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-/* -------- BOOKINGS -------- */
+/* ---------- GET BOOKINGS ---------- */
 app.get("/api/bookings", (req, res) => {
   res.json(readJSON(BOOKINGS_FILE));
 });
 
+/* ---------- CREATE BOOKING ---------- */
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
-  // avoid double booking
-  if (
-    bookings.some(
-      b =>
-        b.resource === req.body.resource &&
-        b.hour === req.body.hour &&
-        b.date === req.body.date
-    )
-  ) {
+  // prevent double booking
+  const conflict = bookings.some(
+    b =>
+      b.resource === req.body.resource &&
+      b.hour === req.body.hour &&
+      b.date === req.body.date
+  );
+
+  if (conflict) {
     return res.status(409).json({ error: "Slot already booked" });
   }
 
@@ -99,31 +103,34 @@ app.post("/api/bookings", (req, res) => {
   res.json({ message: "Booking saved" });
 });
 
-/* -------- DELETE BOOKING -------- */
+/* ---------- DELETE BOOKING ---------- */
 app.delete("/api/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
   let bookings = readJSON(BOOKINGS_FILE);
 
-  const next = bookings.filter(b => b.id !== id);
-  if (next.length === bookings.length)
-    return res.status(404).json({ error: "Booking not found" });
+  const filtered = bookings.filter(b => b.id !== id);
 
-  writeJSON(BOOKINGS_FILE, next);
-  res.json({ message: "Deleted" });
+  if (filtered.length === bookings.length) {
+    return res.status(404).json({ error: "Booking not found" });
+  }
+
+  writeJSON(BOOKINGS_FILE, filtered);
+  res.json({ message: "Booking deleted" });
 });
 
-/* -------- ADMIN UPDATE BOOKING -------- */
+/* ---------- ADMIN APPROVE / DECLINE ---------- */
 app.put("/api/bookings/update", (req, res) => {
   let bookings = readJSON(BOOKINGS_FILE);
 
   const index = bookings.findIndex(b => b.id === req.body.id);
-  if (index === -1)
+  if (index === -1) {
     return res.status(404).json({ error: "Booking not found" });
+  }
 
   bookings[index].status = req.body.status;
   writeJSON(BOOKINGS_FILE, bookings);
 
-  res.json({ message: "Updated" });
+  res.json({ message: "Booking updated" });
 });
 
 app.listen(4000, () =>
