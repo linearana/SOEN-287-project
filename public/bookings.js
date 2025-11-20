@@ -1,139 +1,90 @@
-console.log("bookings.js loaded");
+console.log("Bookings JS loaded.");
 
-// login check
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
-  alert("⚠️ You must be logged in to book.");
+  alert("You must be logged in.");
   window.location.href = "login.html";
 }
 
+const tableBody = document.getElementById("bookingsBody");
+const cancelMessage = document.getElementById("cancelBookingMessage");
 
-const resourceTypeName = "";
+// load user bookings
+async function loadBookings() {
+  tableBody.innerHTML = ""; // reset table
 
-const messageBox = document.getElementById("message");
-
-// ---------------------- LOAD BOOKED SLOTS ----------------------
-async function updateBookedSlots() {
-  console.log("Updating booked slots…");
-
-  const dateInput = document.getElementById("date");
-  if (!dateInput) return; // page has no date selector (like My Bookings page)
-
-  const selectedDate = dateInput.value;
-
-  let bookings = [];
+  let allBookings = [];
 
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
-    bookings = await res.json();
+    allBookings = await res.json();
   } catch (err) {
-    console.warn("⚠️ Server offline, cannot load bookings.");
+    console.error("Server unreachable → cannot load bookings.");
     return;
   }
 
-  const cells = document.querySelectorAll("td[data-room]");
-  console.log("Cells found:", cells.length);
+  // Filter user bookings and sort newest → oldest
+  const userBookings = allBookings
+  .filter(b => b.username === currentUser.email)
+  .sort((a, b) => b.id - a.id);  // newest first
 
-  cells.forEach(cell => {
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
 
-    const match = bookings.find(
-      b =>
-        b.resource === room &&
-        b.hour === time &&
-        b.date === selectedDate
-    );
+  if (userBookings.length === 0) {
+    tableBody.innerHTML = `
+      <tr><td colspan="6">No bookings found.</td></tr>`;
+    return;
+  }
 
-    if (match) {
-      cell.classList.add("booked");
-      cell.classList.remove("available");
-      cell.style.backgroundColor = "red";
-      cell.style.color = "white";
-      cell.textContent = "Booked";
-    } else {
-      if (cell.textContent !== "X") {
-        cell.classList.remove("booked");
-        cell.classList.add("available");
-        cell.style.backgroundColor = "";
-        cell.style.color = "black";
-        cell.textContent = "Available";
-      }
-    }
+  userBookings.forEach(booking => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${booking.resource}</td>
+      <td>${booking.item}</td>
+      <td>${booking.date}</td>
+      <td>${booking.hour}:00</td>
+      <td>${booking.status}</td>
+      <td><button data-id="${booking.id}" class="cancelBtn">Cancel</button></td>
+    `;
+
+    tableBody.appendChild(row);
   });
+
+  attachCancelHandlers();
 }
 
-// ---------------------- BOOK SLOT ----------------------
-function attachBookingHandlers() {
-  console.log("Attaching click handlers…");
+// cancel booking
+function attachCancelHandlers() {
+  const cancelButtons = document.querySelectorAll(".cancelBtn");
 
-  const cells = document.querySelectorAll("td[data-room]");
-  console.log("Clickable cells:", cells.length);
+  cancelButtons.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const bookingId = btn.dataset.id;
 
-  cells.forEach(cell => {
-    cell.addEventListener("click", async () => {
-      console.log("Clicked:", cell.dataset.room, cell.dataset.time);
-
-      if (cell.classList.contains("booked") || cell.textContent === "X") return;
-
-      const dateInput = document.getElementById("date");
-      if (!dateInput || !dateInput.value) {
-        alert("⚠️ Select a date first.");
-        return;
-      }
-
-      const booking = {
-        id: Date.now(),
-        username: currentUser.email,
-        resource: cell.dataset.room,
-        item: resourceTypeName,
-        date: dateInput.value,   // exact YYYY-MM-DD
-        hour: cell.dataset.time,
-        status: "Booked"
-      };
+      // 🔥 Confirmation popup
+      const confirmed = confirm("Are you sure you want to cancel this booking?");
+      if (!confirmed) return;
 
       try {
-  const res = await fetch("http://localhost:4000/api/bookings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(booking)
-  });
+        const res = await fetch(`http://localhost:4000/api/bookings/${bookingId}`, {
+          method: "DELETE"
+        });
 
-  if (!res.ok) {
-    const data = await res.json();
-    alert("❌ " + data.error);
-    return;
-  }
-} catch (err) {
-  alert("⚠️ Cannot contact server.");
-  return;
-}
+        if (!res.ok) {
+          const data = await res.json();
+          alert("Error: " + data.error);
+          return;
+        }
 
-      // Update UI
-      cell.classList.add("booked");
-      cell.classList.remove("available");
-      cell.style.backgroundColor = "red";
-      cell.style.color = "white";
-      cell.textContent = "Booked";
-
-      if (messageBox) {
-        messageBox.textContent =
-          `✔ Booking confirmed: ${booking.resource} at ${booking.hour}:00 on ${booking.date}`;
+        alert("✔ Booking cancelled.");
+        loadBookings(); // reload table
+      } catch (err) {
+        console.error(err);
+        alert("Server unreachable.");
       }
     });
   });
 }
 
-window.onload = () => {
-  const dateInput = document.getElementById("date");
-
-  if (dateInput) {
-    // auto-fill today's date
-    dateInput.value = new Date().toISOString().split("T")[0];
-
-    updateBookedSlots();
-    attachBookingHandlers();
-
-    dateInput.addEventListener("change", updateBookedSlots);
-  }
-};
+// initialize
+loadBookings();
