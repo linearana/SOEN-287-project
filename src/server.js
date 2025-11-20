@@ -11,15 +11,14 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// Serve frontend files from /public
-app.use(express.static(path.join(__dirname, "..", "public")));
-
-// ========================
-//  FILE PATHS
-// ========================
-const DATA_DIR = path.join(__dirname, "data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
+const readUsers = () => {
+  try {
+    return JSON.parse(fs.readFileSync("users.json"));
+  } catch (err) {
+    console.error("Error reading users.json:", err);
+    return [];
+  }
+};
 
 // Ensure files exist
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
@@ -78,7 +77,16 @@ app.post("/api/login", (req, res) => {
   if (!user)
     return res.status(401).json({ error: "Invalid email or password" });
 
-  return res.json({ user });
+  res.json({
+    user: {
+      id: user.id,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      studentId: user.studentId || "",
+      email: user.email,
+      role: user.role || "student" // Default to student
+    }
+  });
 });
 
 // ========================

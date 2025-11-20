@@ -3,11 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      // Clear current user
+      e.preventDefault(); 
+
       sessionStorage.removeItem("currentUser");
-      // Redirect to home
+      
       window.location.href = "home.html";
     });
   }
 });
+

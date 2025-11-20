@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head class="head">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile | Campus Booking</title>
+  <title>User Profile | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,19 +22,37 @@
       </nav>
     </div>
   </header>
+  
   <main>
-    <section class="profile">
-      <!-- User details hard coded, will use ids later -->
+    <div class="profile-container">
       <h2>Your Profile</h2>
-      <p><strong id = fname id = lname> John Doe </strong></p>
-      <p id = id> ID number: 00000000</p>
-      <p id = email>Email: johndoe@concordia.ca</p>
-      <a class = edit-button href="edit-profile.html">Edit Profile</a>
-    </section>
+      
+      <div class="field">
+        <label>Name:</label>
+        <span id="fullName"></span>
+      </div>
+      
+      <div class="field">
+        <label>Student ID:</label>
+        <span id="studentId"></span>
+      </div>
+      
+      <div class="field">
+        <label>Email:</label>
+        <span id="email"></span>
+      </div>
+      
+      <div class="field">
+        <label>Role:</label>
+        <span id="role"></span>
+      </div>
+    </div>
   </main>
+
   <footer>
     <p>© 2025 Campus Booking System</p>
   </footer>
-  <script src="logout.js"></script>
+
+  <script src="profile.js"></script>
 </body>
 </html>

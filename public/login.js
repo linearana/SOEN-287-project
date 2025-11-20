@@ -1,10 +1,8 @@
-const loginForm = document.getElementById("loginForm");
-
-loginForm.addEventListener("submit", async (e) => {
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   try {
     const response = await fetch("http://localhost:4000/api/login", {
@@ -13,10 +11,13 @@ loginForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({ email, password })
     });
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {
+      throw new Error("Login failed");
+    }
 
-    // save session
+    const data = await response.json();
+    
+    // Save user to sessionStorage
     sessionStorage.setItem("currentUser", JSON.stringify(data.user));
 
     // redirect
