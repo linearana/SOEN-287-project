@@ -27,7 +27,7 @@ const writeJSON = (file, data) =>
 
 const hash = pw => crypto.createHash("sha256").update(pw).digest("hex");
 
-/* ---------- REGISTER ---------- */
+// register
 app.post("/api/auth/signup", (req, res) => {
   const { firstName, lastName, studentId, email, password } = req.body;
 
@@ -53,35 +53,46 @@ app.post("/api/auth/signup", (req, res) => {
   res.json({ message: "User registered", user: newUser });
 });
 
-/* ---------- LOGIN ---------- */
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
+// BOOKINGS 
+app.post("/api/bookings", (req, res) => {
+  const bookings = readJSON(BOOKINGS_FILE);
 
-  const users = readJSON(USERS_FILE);
-  const user = users.find(u => u.email === email);
+  // Prevent user from having more than 1 active booking
+  const alreadyHasBooking = bookings.some(
+    b => b.username === req.body.username && b.status === "Booked"
+  );
 
-  if (!user || user.password !== hash(password)) {
-    return res.status(401).json({ error: "Invalid email or password" });
+  if (alreadyHasBooking) {
+    return res.status(403).json({
+      error: "You already have a booking. Cancel it before making another."
+    });
   }
 
-  res.json({
-    user: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      studentId: user.studentId,
-      email: user.email,
-      role: user.role
-    }
-  });
+  // Prevent double-booking same room/time
+  const collision = bookings.some(
+    b =>
+      b.resource === req.body.resource &&
+      b.hour === req.body.hour &&
+      b.date === req.body.date
+  );
+
+  if (collision) {
+    return res.status(409).json({ error: "This slot is already booked." });
+  }
+
+  bookings.push(req.body);
+  writeJSON(BOOKINGS_FILE, bookings);
+
+  res.json({ message: "Booking saved" });
 });
 
-/* ---------- GET BOOKINGS ---------- */
+
+// get bookings
 app.get("/api/bookings", (req, res) => {
   res.json(readJSON(BOOKINGS_FILE));
 });
 
-/* ---------- CREATE BOOKING ---------- */
+
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
@@ -103,7 +114,7 @@ app.post("/api/bookings", (req, res) => {
   res.json({ message: "Booking saved" });
 });
 
-/* ---------- DELETE BOOKING ---------- */
+// delete booking
 app.delete("/api/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
   let bookings = readJSON(BOOKINGS_FILE);
@@ -118,7 +129,7 @@ app.delete("/api/bookings/:id", (req, res) => {
   res.json({ message: "Booking deleted" });
 });
 
-/* ---------- ADMIN APPROVE / DECLINE ---------- */
+// admin controls
 app.put("/api/bookings/update", (req, res) => {
   let bookings = readJSON(BOOKINGS_FILE);
 

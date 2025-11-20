@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault(); 
 
       sessionStorage.removeItem("currentUser");
-      
+      sessionStorage.removeItem("hasBooked");
+
       window.location.href = "home.html";
     });
   }
