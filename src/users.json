@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": 1763603918270,
+    "firstName": "HI",
+    "lastName": "HI",
+    "studentId": "1111111",
+    "email": "hi@hi.com",
+    "password": "1111111"
+  }
+]

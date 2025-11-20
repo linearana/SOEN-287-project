@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1763601345436,
+    "firstName": "narmin",
+    "lastName": "ibr",
+    "studentId": "123456",
+    "email": "ni@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 1763601867208,
+    "firstName": "hi",
+    "lastName": "hi",
+    "studentId": "1111111",
+    "email": "hi@hi.com",
+    "password": "1111111"
+  }
+]
