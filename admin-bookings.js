@@ -1,17 +1,34 @@
-const logoutBtn = document.getElementById("logoutBtn");
-const adminBookingsBody = document.getElementById("adminBookingsBody");
+// Load bookings (backend → fallback to localStorage)
+async function loadBookings() {
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings");
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch {
+    console.warn("Backend offline → using localStorage");
+    return JSON.parse(localStorage.getItem("bookings")) || [];
+  }
+}
 
-// Hard-coded sample bookings (instead of backend)
-let bookings = [
-  { username: "student1", resource: "Study Rooms", item: "LB 251 – Canada", date: "2025-10-26", hour: "10", status: "confirmed" },
-  { username: "student2", resource: "Engineering Labs", item: "EV 101 – Circuits Lab", date: "2025-10-27", hour: "14", status: "pending" },
-  { username: "student3", resource: "Art Studio", item: "FA 301 – Painting Studio", date: "2025-10-28", hour: "12", status: "pending" },
-  { username: "student4", resource: "Film Equipment", item: "Camera Kit A", date: "2025-10-29", hour: "09", status: "rejected" }
-];
+// Save after admin performs actions
+async function saveBookings(bookings) {
+  try {
+    await fetch("http://localhost:4000/api/bookings/overwrite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookings)
+    });
+  } catch {
+    console.warn("Backend offline → saving locally");
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+  }
+}
 
-// Render bookings
-function renderBookings() {
-  adminBookingsBody.innerHTML = "";
+async function renderAdminBookings() {
+  const body = document.getElementById("adminBookingsBody");
+  let bookings = await loadBookings();
+
+  body.innerHTML = "";
 
   bookings.forEach((b, index) => {
     const row = document.createElement("tr");
@@ -23,41 +40,40 @@ function renderBookings() {
       <td>${b.date}</td>
       <td>${b.hour}:00</td>
       <td class="${b.status}">${b.status}</td>
-      <td></td>
+      <td>
+        ${
+          b.status === "Pending"
+            ? `
+              <button class="approveBtn" data-index="${index}">Approve</button>
+              <button class="declineBtn" data-index="${index}">Decline</button>
+            `
+            : "-"
+        }
+      </td>
     `;
 
-    const actionsCell = row.querySelector("td:last-child");
+    body.appendChild(row);
+  });
 
-    if (b.status === "pending") {
-      const approveBtn = document.createElement("button");
-      approveBtn.textContent = "Approve";
-      approveBtn.onclick = () => {
-        bookings[index].status = "confirmed";
-        renderBookings();
-      };
+  // Bind all approve buttons
+  document.querySelectorAll(".approveBtn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      let i = btn.dataset.index;
+      bookings[i].status = "Booked";
+      await saveBookings(bookings);
+      renderAdminBookings();
+    });
+  });
 
-      const rejectBtn = document.createElement("button");
-      rejectBtn.textContent = "Reject";
-      rejectBtn.onclick = () => {
-        bookings[index].status = "rejected";
-        renderBookings();
-      };
-
-      actionsCell.appendChild(approveBtn);
-      actionsCell.appendChild(rejectBtn);
-    } else {
-      actionsCell.textContent = "-";
-    }
-
-    adminBookingsBody.appendChild(row);
+  // Bind all decline buttons
+  document.querySelectorAll(".declineBtn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      let i = btn.dataset.index;
+      bookings.splice(i, 1); // remove booking
+      await saveBookings(bookings);
+      renderAdminBookings();
+    });
   });
 }
 
-renderBookings();
-
-// Logout
-logoutBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  alert("Logged out (demo only)");
-  window.location.href = "home.html";
-}); 
+renderAdminBookings();

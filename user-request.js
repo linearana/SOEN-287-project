@@ -1,102 +1,153 @@
-  // Login check
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    if (!currentUser) {
-      alert("⚠️ You must be logged in to book a resource.");
-      window.location.href = "login.html";
+async function saveBookingToServer(booking) {
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking)
+    });
+
+    if (!res.ok) throw new Error();
+    return true;
+
+  } catch (err) {
+    // fallback to localStorage
+    let all = JSON.parse(localStorage.getItem("bookings")) || [];
+    all.push(booking);
+    localStorage.setItem("bookings", JSON.stringify(all));
+    return true;
+  }
+}
+
+
+// login check
+const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+if (!currentUser) {
+  alert("⚠️ You must be logged in to book a resource.");
+  window.location.href = "login.html";
+}
+
+
+const resourceType = "request";
+const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
+const messageBox = document.getElementById("message");
+let hasBooked = false;
+
+
+async function updateBookedSlots() {
+  const selectedDate = document.getElementById("date").value; // YYYY-MM-DD
+
+  //  RESET ALL SLOTS
+  document.querySelectorAll("td[data-room]").forEach(cell => {
+    if (cell.textContent !== "X") {
+      cell.classList.remove("booked", "pending");
+      cell.classList.add("available");
+      cell.style.backgroundColor = "";
+      cell.style.color = "";
+      cell.textContent = "Available";
     }
+  });
 
-    // Booking type (instant or request)
-    const resourceType = "request";
+  //  LOAD BOOKINGS (backend → fallback)
+  let allBookings;
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings");
+    if (!res.ok) throw new Error();
+    allBookings = await res.json();
+  } catch (err) {
+    allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+  }
 
-    // type of room or service booked
-    const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
-
-
-    const messageBox = document.getElementById("message");
-    let hasBooked = false; // track if user already booked
-    
-  function updateBookedSlots() {
-  const selectedDate = new Date(document.getElementById("date").value).toLocaleDateString();
-  const allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-
-  document.querySelectorAll(".available, .booked").forEach(cell => {
+  // APPLY BOOKINGS FOR SELECTED DATE
+  document.querySelectorAll("td[data-room]").forEach(cell => {
     const room = cell.dataset.room;
     const time = cell.dataset.time;
 
     const match = allBookings.find(
-      b => b.resource === room && b.hour === time && b.date === selectedDate
+      b =>
+        b.resource === room &&
+        b.hour === time &&
+        b.date === selectedDate
     );
 
     if (match) {
       cell.classList.remove("available");
-      cell.classList.add("booked");
-      cell.textContent = "Booked";
+      cell.classList.add(match.status.toLowerCase());
+
+      if (match.status === "Pending") {
+        cell.textContent = "Pending";
+        cell.style.backgroundColor = "gold";
+        cell.style.color = "black";
+      }
+
+      if (match.status === "Booked") {
+        cell.textContent = "Booked";
+        cell.style.backgroundColor = "red";
+        cell.style.color = "black";
+      }
     }
   });
 }
-    document.querySelectorAll(".available").forEach(cell => {
-      cell.addEventListener("click", () => {
-
-        if (cell.classList.contains("booked") || cell.textContent === "X") {
-        return;
-        }
-        if (hasBooked) {
-          alert("⚠️ You can only book one slot at a time.");
-          return;
-        }
-
-         const dateInput = document.getElementById("date").value.trim();
-        // prompt user to choose a date
-         if (!dateInput) {
-          alert("⚠️ Please select a date before booking.");
-          document.getElementById("date").focus(); // highlight the date box
-          return;
-        }
-
-        const room = cell.dataset.room;
-        const time = cell.dataset.time;
-        const rawDate = document.getElementById("date").value.trim();
-        const [y, m, d] = rawDate.split("-");
-        const date = new Date(y, m - 1, d).toLocaleDateString();
 
 
 
-        if (resourceType === "instant") {
-          cell.classList.remove("available");
-          cell.classList.add("booked");
-          cell.textContent = "Booked";
-          messageBox.textContent = `✅ Booking confirmed for ${room} at ${time}:00 on ${date}`;
-        } else {
-          cell.classList.remove("available");
-          cell.classList.add("booked");
-          cell.textContent = "Pending";
-          messageBox.textContent = `📩 Request submitted for ${room} at ${time}:00 on ${date} (awaiting admin approval)`;
-        }
-        
-        let allBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+document.querySelectorAll("td[data-room]").forEach(cell => {
+  cell.addEventListener("click", async () => {
 
-        allBookings.push({
-        username: currentUser.username,
-        resource: room,   
-        item: resourceTypeName,   
-        date: date,
-        hour: time,
-        status: (resourceType === "instant") ? "Booked" : "Pending"
-        });
+    // prevent clicking unavailable or already booked/pending slots
+    if (
+      cell.classList.contains("booked") ||
+      cell.classList.contains("pending") ||
+      cell.textContent === "X"
+    ) return;
 
-        localStorage.setItem("bookings", JSON.stringify(allBookings));
+    const dateInput = document.getElementById("date").value.trim();
+    if (!dateInput) {
+      alert("⚠️ Please select a date before booking.");
+      document.getElementById("date").focus();
+      return;
+    }
 
-        hasBooked = true; // prevent further bookings
-      });
+    const room = cell.dataset.room;
+    const time = cell.dataset.time;
 
-    });
+    // keep date in YYYY-MM-DD format
+    const date = dateInput;
 
-window.onload = updateBookedSlots;
+    const booking = {
+      username: currentUser.username,
+      resource: room,
+      item: resourceTypeName,
+      date: date,
+      hour: time,
+      status: "Pending"
+    };
 
-//automatically choose date
-let ele = document.getElementById("date");
-var today = new Date();
-var d = String(today.getDate()).padStart(2, '0');
-var m = String(today.getMonth() + 1).padStart(2, '0');
-var y = today.getFullYear();
-ele.value = y + "-" + m + "-" + d;
+    await saveBookingToServer(booking);
+
+    // Instant UI update
+    cell.classList.remove("available");
+    cell.classList.add("pending");
+    cell.style.backgroundColor = "gold";
+    cell.style.color = "black";
+    cell.textContent = "Pending";
+
+    messageBox.textContent =
+      `📩 Request submitted for ${room} at ${time}:00 on ${date}`;
+
+    updateBookedSlots();
+  });
+});
+
+
+window.onload = () => {
+  const ele = document.getElementById("date");
+
+  const today = new Date();
+  const d = String(today.getDate()).padStart(2, '0');
+  const m = String(today.getMonth() + 1).padStart(2, '0');
+  const y = today.getFullYear();
+
+  ele.value = `${y}-${m}-${d}`; // YYYY-MM-DD
+
+  updateBookedSlots();
+};
