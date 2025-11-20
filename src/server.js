@@ -6,7 +6,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 const readUsers = () => {
   try {
     return JSON.parse(fs.readFileSync("users.json"));
@@ -88,10 +87,11 @@ app.post("/api/login", (req, res) => {
   res.json({
     user: {
       id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      studentId: user.studentId,
-      email: user.email
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      studentId: user.studentId || "",
+      email: user.email,
+      role: user.role || "student" // Default to student
     }
   });
 });
