@@ -1,5 +1,6 @@
 [
   {
+<<<<<<< HEAD
     "id": 1763613413599,
     "username": "hi@hi.com",
     "resource": "LB 251",
@@ -25,5 +26,14 @@
     "date": "2025-11-20",
     "hour": "12",
     "status": "Booked"
+=======
+    "id": 1763611324711,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "NI 160",
+    "item": "Engineering Labs",
+    "date": "11/20/2025",
+    "hour": "12",
+    "status": "Pending"
+>>>>>>> 78b6095a957c2e3710f20f31de31e150d66bb143
   }
 ]
