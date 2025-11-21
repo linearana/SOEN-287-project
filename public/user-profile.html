@@ -24,29 +24,46 @@
   </header>
   
   <main>
-    <div class="profile-container">
-      <h2>Your Profile</h2>
-      
-      <div class="field">
-        <label>Name:</label>
-        <span id="fullName"></span>
-      </div>
-      
-      <div class="field">
-        <label>Student ID:</label>
-        <span id="studentId"></span>
-      </div>
-      
-      <div class="field">
-        <label>Email:</label>
-        <span id="email"></span>
-      </div>
-      
-      <div class="field">
-        <label>Role:</label>
-        <span id="role"></span>
-      </div>
-    </div>
+    <div class="field">
+  <label>First Name:</label>
+  <input type="text" id="editFirstName" required>
+</div>
+
+<div class="field">
+  <label>Last Name:</label>
+  <input type="text" id="editLastName" required>
+</div>
+
+<div class="field">
+  <label>Student ID:</label>
+  <span id="studentId"></span> <!-- This stays read-only -->
+</div>
+
+<div class="field">
+  <label>Email:</label>
+  <input type="email" id="editEmail" required>
+</div>
+
+<div class="field">
+  <label>New Password:</label>
+  <input type="password" id="editPassword">
+</div>
+
+<div class="field">
+  <label>Confirm Password:</label>
+  <input type="password" id="confirmPassword">
+</div>
+
+<div class="field">
+  <label>Profile Picture:</label>
+  <input type="file" id="editPicture" accept="image/*">
+  <img id="preview" src="images/user.png" alt="Preview" style="max-width: 100px; margin-top: 5px;">
+</div>
+
+<button id="saveBtn">Save Changes</button>
+<div id="message" style="margin-top: 10px;"></div>
+
+
   </main>
 
   <footer>
