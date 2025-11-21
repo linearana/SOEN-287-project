@@ -1,4 +1,4 @@
-const bookingsBody = document.getElementById("bookingsBody");
+const bookingsBody = document.getElementById("adminBookingsBody");
 
 async function loadBookings() {
   let bookings = [];
@@ -12,11 +12,12 @@ async function loadBookings() {
   }
 
   bookingsBody.innerHTML = "";
-
+  console.log(bookings);
   bookings.forEach(b => {
     const row = document.createElement("tr");
 
     row.innerHTML = `
+      <td>${b.username}</td>
       <td>${b.resource}</td>
       <td>${b.item}</td>
       <td>${b.date}</td>
