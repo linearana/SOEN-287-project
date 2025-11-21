@@ -79,5 +79,14 @@
     "date": "2025-11-20",
     "hour": "12",
     "status": "Pending"
+  },
+  {
+    "id": 1763685804820,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-21",
+    "hour": "13",
+    "status": "Booked"
   }
 ]

@@ -53,6 +53,31 @@ app.post("/api/auth/signup", (req, res) => {
   res.json({ message: "User registered", user: newUser });
 });
 
+// login
+app.post("/api/auth/login", (req, res) => {
+  const {email, password} = req.body;
+
+  const users = readJSON(USERS_FILE);
+
+  const user = users.find(
+    u => u.email === email && u.password === hash(password)
+  );
+
+  if(!user){
+    return res.status(401).json({error: "Invalid email or password"});
+  }
+  res.json({
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      studentId: user.studentId,
+      email: user.email,
+      role: user.role
+    }
+  });
+});
+
 // BOOKINGS 
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
