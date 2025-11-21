@@ -55,18 +55,32 @@ function confirmChanges() {
 }
 
 // Disable resource function
-function disableResource(button) {
+async function disableResource(button) {
+  const card = button.closest(".card");
+  const resourceId = card.dataset.id;
   if (button.textContent === "Disable") {
     if (confirm("Are you sure you want to disable this resource?")) {
-      const card = button.closest(".card");
+      await fetch(`http://localhost:4000/api/resources/${resourceId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "disabled" })
+      });
+
       card.classList.add("disabled");
       button.textContent = "Enable"
+
       alert("⚠️ This resource has been disabled and is no longer available for booking.");
     }
   }
   else {
     if (confirm("Are you sure you want to enable this resource?")) {
-      const card = button.closest(".card");
+      
+      await fetch(`/api/resources/${resourceId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "enabled" })
+      });
+
       card.classList.remove("disabled");
       button.textContent = "Disable"
       alert("⚠️ This resource has been enabled and is now available for booking.");

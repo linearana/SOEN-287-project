@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
+const RESOURCES_FILE = path.join(DATA_DIR, "resources.json");
 
 // Auto-create empty DB files
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]");
@@ -167,6 +168,29 @@ app.put("/api/bookings/update", (req, res) => {
   writeJSON(BOOKINGS_FILE, bookings);
 
   res.json({ message: "Booking updated" });
+});
+
+//resources
+app.patch("/api/resources/:id", (req, res) => {
+  const resources = readJSON(RESOURCES_FILE);
+  const id = Number(req.params.id);
+  const resource = resources.find(r => r.id === id);
+
+  if (!resource) {
+    return res.status(404).json({ error: "Resource not found" });
+  }
+
+  if (req.body.status) {
+    resource.status = req.body.status;
+  }
+
+  writeJSON(RESOURCES_FILE, resources);
+  res.json({ message: "Resource updated", resource });
+});
+
+//get resources
+app.get("/api/resources", (req, res) => {
+  res.json(readJSON(RESOURCES_FILE));
 });
 
 app.listen(4000, () =>
