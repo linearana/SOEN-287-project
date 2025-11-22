@@ -75,6 +75,27 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       return;
     }
 
+    let bookings = [];
+    try {
+      const res = await fetch("http://localhost:4000/api/bookings");
+      bookings = await res.json();
+    } catch (err) {
+      console.warn("SERVER OFFLINE → cannot validate existing bookings.");
+    }
+
+    const existingBooking = bookings.find(
+      b =>
+        b.username === currentUser.email &&
+        b.item === resourceTypeName &&
+        b.date === dateInput &&
+        (b.status === "Booked" || b.status === "Pending")
+    );
+
+    if (existingBooking) {
+      alert("⚠️ You already booked this resource type for that day.");
+      return;
+    }
+
     const booking = {
       id: Date.now(),
       username: currentUser.email,

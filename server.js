@@ -8,8 +8,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend
+// Serve frontend (public folder)
 app.use(express.static(path.join(__dirname, "..", "public")));
+
+// Serve uploaded files (uploads folder)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Paths
 const DATA_DIR = path.join(__dirname, "src", "data");
@@ -112,41 +115,70 @@ app.put("/api/users/:id", upload.single("picture"), (req, res) => {
     console.error("Update error:", err);
     res.status(500).json({ error: "Internal server error", details: err.message });
   }
+  
 });
 
-
 // BOOKINGS 
+app.post("/api/bookings/check", (req, res) => {
+  const { username, item, date } = req.body;
+  const bookings = readJSON(BOOKINGS_FILE);
+  
+  const conflict = bookings.some(b =>
+    b.username === username && 
+    b.item === item &&
+    b.date === date
+  );
+  
+  res.json({ conflict });
+});
+
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
-  // Prevent user from having more than 1 active booking
+  // Prevent user from booking the same resource more than once per day
   const alreadyHasBooking = bookings.some(
-    b => b.username === req.body.username && b.status === "Booked"
+    b =>
+      b.username === req.body.username &&
+      b.resource === req.body.resource &&
+      b.date === req.body.date &&
+      (b.status === "Booked" || b.status === "Pending")
   );
 
   if (alreadyHasBooking) {
     return res.status(403).json({
-      error: "You already have a booking. Cancel it before making another."
+      error: "You already booked this resource for that day."
     });
   }
 
-  // Prevent double-booking same room/time
+  // Prevent double-booking same room/time by different users
   const collision = bookings.some(
     b =>
       b.resource === req.body.resource &&
       b.hour === req.body.hour &&
-      b.date === req.body.date
+      b.date === req.body.date &&
+      (b.status === "Booked" || b.status === "Pending")
   );
 
   if (collision) {
     return res.status(409).json({ error: "This slot is already booked." });
   }
 
-  bookings.push(req.body);
+  // Handle instant vs approval resources
+  const resources = readJSON(RESOURCES_FILE);
+  const resource = resources.find(r => r.name === req.body.resource);
+
+  const newBooking = {
+    id: Date.now(),
+    ...req.body,
+    status: resource?.requiresApproval ? "Pending" : "Booked"
+  };
+
+  bookings.push(newBooking);
   writeJSON(BOOKINGS_FILE, bookings);
 
-  res.json({ message: "Booking saved" });
+  res.json({ message: "Booking saved", booking: newBooking });
 });
+
 
 
 // get bookings
@@ -154,27 +186,6 @@ app.get("/api/bookings", (req, res) => {
   res.json(readJSON(BOOKINGS_FILE));
 });
 
-
-app.post("/api/bookings", (req, res) => {
-  const bookings = readJSON(BOOKINGS_FILE);
-
-  // prevent double booking
-  const conflict = bookings.some(
-    b =>
-      b.resource === req.body.resource &&
-      b.hour === req.body.hour &&
-      b.date === req.body.date
-  );
-
-  if (conflict) {
-    return res.status(409).json({ error: "Slot already booked" });
-  }
-
-  bookings.push(req.body);
-  writeJSON(BOOKINGS_FILE, bookings);
-
-  res.json({ message: "Booking saved" });
-});
 
 // delete booking
 app.delete("/api/bookings/:id", (req, res) => {

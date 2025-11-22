@@ -37,12 +37,12 @@
   },
   {
     "id": 1763747895504,
-    "firstName": "Narmina",
+    "firstName": "Narmin",
     "lastName": "Ibrahimli",
     "studentId": "123456",
     "email": "ni@gmail.com",
     "password": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
     "role": "student",
-    "picture": "/uploads/eabc36b63801d088cde074a83e970ff2"
+    "picture": "/images/user.png"
   }
 ]
