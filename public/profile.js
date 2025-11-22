@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-
   if (!currentUser) {
     window.location.href = "login.html";
     return;
   }
 
-  // DOM elements
   const editFirstName = document.getElementById("editFirstName");
   const editLastName = document.getElementById("editLastName");
   const studentId = document.getElementById("studentId");
@@ -23,66 +21,49 @@ document.addEventListener("DOMContentLoaded", () => {
   editLastName.value = currentUser.lastName;
   studentId.textContent = currentUser.studentId;
   editEmail.value = currentUser.email;
+  if (currentUser.picture) {
+  preview.src = currentUser.picture;
+} else {
+  preview.src = "/images/user.png";
+}
 
-  // Preview image on selection
-  editPicture.addEventListener("change", () => {
-    const file = editPicture.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => preview.src = e.target.result;
-      reader.readAsDataURL(file);
-    }
-  });
+  if (currentUser.picture) {
+    preview.src = currentUser.picture;
+  }
 
-  // Save button click handler
   saveBtn.addEventListener("click", async () => {
-    message.textContent = ""; // Clear previous messages
+    message.textContent = "";
 
-    // Validate password match
     if (editPassword.value && editPassword.value !== confirmPassword.value) {
       message.textContent = "❌ Passwords do not match.";
       return;
     }
 
-    // Prepare updated user data
-    const updatedUser = {
-      ...currentUser,
-      firstName: editFirstName.value.trim(),
-      lastName: editLastName.value.trim(),
-      email: editEmail.value.trim(),
-      password: editPassword.value
-        ? CryptoJS.SHA256(editPassword.value).toString()
-        : currentUser.password,
-      // For production: handle picture upload separately
-      // picture: preview.src (Base64 — not recommended for storage)
-    };
+    const formData = new FormData();
+    formData.append("firstName", editFirstName.value.trim());
+    formData.append("lastName", editLastName.value.trim());
+    formData.append("email", editEmail.value.trim());
+    if (editPassword.value) formData.append("password", editPassword.value);
+    if (editPicture.files[0]) formData.append("picture", editPicture.files[0]);
 
     try {
       const res = await fetch(`http://localhost:4000/api/users/${currentUser.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedUser)
+        body: formData
       });
+      const data = await res.json();
 
       if (!res.ok) {
-        const error = await res.json();
-        message.textContent = `❌ ${error.error}`;
+        message.textContent = `❌ ${data.error || "Update failed"}`;
         return;
       }
 
-      // Update sessionStorage with new data
-      sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
-      // Refresh displayed full name
-      document.getElementById("fullName").textContent = 
-        `${updatedUser.firstName} ${updatedUser.lastName}`.trim();
-
-
+      sessionStorage.setItem("currentUser", JSON.stringify(data.user));
+      preview.src = data.user.picture; // show uploaded image
       message.textContent = "✅ Profile updated successfully!";
-
     } catch (err) {
       console.error("Save error:", err);
-      message.textContent = "⚠️ Cannot reach server. Check your connection.";
+      message.textContent = `⚠️ Error: ${err.message}`;
     }
   });
 });
