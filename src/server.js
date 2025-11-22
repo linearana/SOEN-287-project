@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
+const multer =  require("multer");
 
 const app = express();
 app.use(cors());
@@ -238,6 +239,62 @@ app.patch("/api/resources/:id", (req, res) => {
 app.get("/api/resources", (req, res) => {
   res.json(readJSON(RESOURCES_FILE));
 });
+
+//create resource
+//images
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public", "images"));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+
+    const resourceName = req.body.title
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9\-]/g, ""); // remove weird chars
+
+    const filename = `${resourceName}${ext}`;
+    cb(null, filename);
+  }
+});
+
+const upload = multer({ storage });
+
+app.post("/api/resources", upload.single("image"), (req, res) => {
+  console.log("req.file:", req.file);
+  const resources = readJSON(RESOURCES_FILE);
+
+  const { title, description, rulesResource, rooms, bookingType } = req.body;
+  
+  const resourceNameSafe = title
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9\-]/g, "");
+    
+  const roomsArray = rooms.split(",");
+  const timeSlotsPerRoom = 6;
+  
+  const newResource = {
+    id: Date.now(),
+    title,
+    description,
+    rulesResource,
+    bookingType,
+    rooms,
+    roomsStatus: roomsArray.map(() => Array(timeSlotsPerRoom).fill("available")),
+    status: "enabled",
+    image: req.file
+        ? `/images/${resourceNameSafe}${path.extname(req.file.originalname)}`
+        : null  
+  };
+
+  resources.push(newResource);
+  writeJSON(RESOURCES_FILE, resources);
+
+  res.json({ message: "Resource created", resource: newResource });
+});
+
 
 app.listen(4000, () =>
   console.log("Backend running at http://localhost:4000")

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Resource | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking</h1>
+  </header>
+
+  <main class="newResource">
+    <h2>Create a new resource</h2>
+    <form id="newResourceForm" enctype="multipart/form-data">
+      <label for="title">Resource Title :</label>
+      <input type="text" id="title" name="title" required><br><br>
+
+      <label for="image">Resource Image:</label>
+      <input type="file" id="image" name="image" accept="image/*" required> <br><br>
+
+      <label for="description">Description :</label>
+      <textarea id="description" name="description" required></textarea><br><br>
+
+      <label for="rulesResource">Rules :</label>
+      <textarea id="rulesResource" name="rulesResource" required></textarea><br><br>
+
+      <label for="roomName1">Enter number of room names necessary:</label><br>
+      <label for="roomName1">Room 1 : </label>
+      <input type="text" id="roomName1" name="roomName1"> <br>
+      <label for="roomName2">Room 2 : </label>
+      <input type="text" id="roomName2" name="roomName2"> <br>
+      <label for="roomName3">Room 3 : </label>
+      <input type="text" id="roomName3" name="roomName3"> <br>
+      <label for="roomName4">Room 4 : </label>
+      <input type="text" id="roomName4" name="roomName4"> <br>
+      <label for="roomName5">Room 5 : </label>
+      <input type="text" id="roomName5" name="roomName5"> <br>
+
+      <select id="bookingType">
+        <option selected="true">Instant</option>
+        <option>Request</option>
+    </select> <br>
+
+      <button type="submit">Create</button>
+    </form>
+
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
+  <script src="logout.js"></script>
+  <script src="newResource.js"></script>
+</body>
+</html>

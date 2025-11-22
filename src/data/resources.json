@@ -1,22 +1,99 @@
 [
   {
     "id": 1,
-    "status": "enabled"
+    "title": "Study Rooms",
+    "description": "Quiet rooms with Wi-Fi and whiteboards for group or solo study.",
+    "rulesResource": "Study rooms are available by reservation only through the online booking system.\nRooms are intended for academic use only such as studying, group projects, tutoring, or meetings related to coursework.\nRooms must be occupied by a minimum of 2 students at all times.\nIf a group is more than 15 minutes late, the room may be released to other students waiting.",
+    "bookingType": "Instant",
+    "rooms": "LB 251,LB 259,LB 311,LB 315,LB 328",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/study-room.jpg"
   },
   {
     "id": 2,
-    "status": "enabled"
+    "title": "Engineering Labs",
+    "description": "Equipped for mechanical, electrical, and computer experiments.",
+    "rules": "Food and drinks are strictly prohibited inside labs.\nTechnical issues or damaged equipment must be reported immediately to the lab technician or supervisor.\nEligibility: Only registered engineering students, teaching assistants, and faculty are permitted to book lab spaces\nYour request will remain pending until an administrator confirms it.\nExternal users must obtain written authorization from the department.",
+    "bookingType": "Request",
+    "rooms": "NI 160,NI 368,NI 436,NI 555,NI 1553",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/lab.jpg"
   },
   {
     "id": 3,
-    "status": "enabled"
+    "title": "Art Studios",
+    "description": "Spaces for painting, sculpting, and creative projects.",
+    "rules": "Eligibility: Rooms are available to all Fine Arts students, faculty, and staff.\nDuration: Bookings are for a maximum of 1 hour per session.\nAdvance Booking: Rooms can be reserved up to 7 days in advance. Walk-ins not available.\nYour request will remain pending until an administrator confirms it.\nStorage: Projects left behind will be removed after 24 hours unless labeled with your name and date.",
+    "bookingType": "Instant",
+    "rooms": "FA 3-546, FA 3-547, FA 5-101, VA M2-797, VA M2-798",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/art-studio.jpg"
   },
   {
     "id": 4,
-    "status": "enabled"
+    "title": "Film Equipment",
+    "description": "Cameras, lighting, and sound kits for film and media projects.",
+    "rules": "Equipment: You must present your student ID card to pick up equipment.\nAll equipment must be returned at most one week after it was borrowed.\nRepeated no-shows or late returns may result in suspension of booking privileges.\nInspect all equipment at pickup. Report any damage or missing parts immediately.\nThe student who books the gear is fully responsible for its care, use, and return.\nThe school reserves the right to charge the borrower's student account for the value of any damaged equipment.",
+    "bookingType": "Request",
+    "rooms": "CO 678, CO 900, CO 432, CO 123, CO 777",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/film-equipment.jpg"
   },
   {
     "id": 5,
-    "status": "enabled"
+    "title": "Conference Rooms",
+    "description": "Professional spaces for meetings, presentations, and workshops.",
+    "rules": "Conference rooms: Rooms are for meetings, group discussions, and presentations. Not for personal or unrelated activities.\nLeave the room clean and tidy after use. Erase whiteboards, remove trash, and reset chairs and tables.\nPersonal devices may be connected to displays only through approved ports or adapter.\nIf you no longer need the room, cancel your booking promptly so others can use it.\nArrive on time and do not exceed your reserved time slot.\n",
+    "bookingType": "Instant",
+    "rooms": "JH 765, JH 120, JH 987",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/conference-room.jpg"
+  },
+  {
+    "id": 1763833004390,
+    "title": "test",
+    "description": "test",
+    "rulesResource": "test\r\ntest",
+    "bookingType": "Instant",
+    "rooms": "UI-345,UI-234",
+    "roomsStatus": [
+      ["available","available","available","available","available","available"],
+      ["available","available","available","available","available","available"]
+    ],
+    "status": "enabled",
+    "image": "/images/test.jpg"
   }
 ]
