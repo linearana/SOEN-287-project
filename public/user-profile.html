@@ -24,47 +24,48 @@
   </header>
   
   <main>
+  <div class="profile-card">
+    <img id="preview" src="" alt="Preview">
+
     <div class="field">
-  <label>First Name:</label>
-  <input type="text" id="editFirstName" required>
-</div>
+      <label>First Name:</label>
+      <input type="text" id="editFirstName" required>
+    </div>
 
-<div class="field">
-  <label>Last Name:</label>
-  <input type="text" id="editLastName" required>
-</div>
+    <div class="field">
+      <label>Last Name:</label>
+      <input type="text" id="editLastName" required>
+    </div>
 
-<div class="field">
-  <label>Student ID:</label>
-  <span id="studentId"></span> <!-- This stays read-only -->
-</div>
+    <div class="field">
+      <label>Student ID:</label>
+      <span id="studentId"></span>
+    </div>
 
-<div class="field">
-  <label>Email:</label>
-  <input type="email" id="editEmail" required>
-</div>
+    <div class="field">
+      <label>Email:</label>
+      <input type="email" id="editEmail" required>
+    </div>
 
-<div class="field">
-  <label>New Password:</label>
-  <input type="password" id="editPassword">
-</div>
+    <div class="field">
+      <label>New Password:</label>
+      <input type="password" id="editPassword">
+    </div>
 
-<div class="field">
-  <label>Confirm Password:</label>
-  <input type="password" id="confirmPassword">
-</div>
+    <div class="field">
+      <label>Confirm Password:</label>
+      <input type="password" id="confirmPassword">
+    </div>
 
-<div class="field">
-  <label>Profile Picture:</label>
-  <input type="file" id="editPicture" accept="image/*">
-  <img id="preview" src="images/user.png" alt="Preview" style="max-width: 100px; margin-top: 5px;">
-</div>
+    <div class="field">
+      <label>Profile Picture:</label>
+      <input type="file" id="editPicture" accept="image/*">
+    </div>
 
-<button id="saveBtn">Save Changes</button>
-<div id="message" style="margin-top: 10px;"></div>
-
-
-  </main>
+    <button id="saveBtn">Save Changes</button>
+    <div id="message"></div>
+  </div>
+</main>
 
   <footer>
     <p>© 2025 Campus Booking System</p>
