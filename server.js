@@ -3,14 +3,14 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
-const multer =  require("multer");
+const multer = require("multer");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Serve frontend (public folder)
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Serve uploaded files (uploads folder)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -84,7 +84,6 @@ app.post("/api/auth/login", (req, res) => {
   });
 });
 
-const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
 // profile update
@@ -245,7 +244,7 @@ app.get("/api/resources", (req, res) => {
 //images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public", "images"));
+    cb(null, path.join(__dirname, "public", "images"));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -260,9 +259,9 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+const uploadImageResource = multer({ storage });
 
-app.post("/api/resources", upload.single("image"), (req, res) => {
+app.post("/api/resources", uploadImageResource.single("image"), (req, res) => {
   console.log("req.file:", req.file);
   const resources = readJSON(RESOURCES_FILE);
 
