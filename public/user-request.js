@@ -1,9 +1,3 @@
-const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-if (!currentUser) {
-  alert("⚠️ You must be logged in.");
-  window.location.href = "login.html";
-}
-
 //get resource ID
 urlParams = new URLSearchParams(window.location.search);
 resourceID = urlParams.get("id");
@@ -53,6 +47,14 @@ async function updateBookedSlots() {
 // ---------------------- SEND REQUEST ----------------------
 document.querySelectorAll("td[data-room]").forEach(cell => {
   cell.addEventListener("click", async () => {
+
+    //login check
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("⚠️ You must be logged in to make a booking.");
+      window.location.href = "login.html";
+    }
+    
     if (cell.textContent === "booked" || cell.textContent === "unavailable" || cell.textContent === "pending") return;
 
     const dateInput = document.getElementById("date").value.trim();

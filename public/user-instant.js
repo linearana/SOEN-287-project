@@ -1,10 +1,3 @@
-// login check
-const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-if (!currentUser) {
-  alert("You must be logged in.");
-  window.location.href = "login.html";
-}
-
 //get resource ID
 urlParams = new URLSearchParams(window.location.search);
 resourceID = urlParams.get("id");
@@ -52,6 +45,13 @@ let bookingInProgress = false;
 // BOOK SLOT
 document.querySelectorAll("td[data-room]").forEach(cell => {
   cell.addEventListener("click", async () => {
+
+    // login check
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("⚠️ You must be logged in to make a booking.");
+      window.location.href = "login.html";
+    }
 
     const room = cell.dataset.room;
     const time = cell.dataset.time;
