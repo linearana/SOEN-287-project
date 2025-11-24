@@ -7,13 +7,12 @@ async function loadAvailabilities(resourceID){
 
     const resource = resources.find((element) => element.id == resourceID);
 
-    document.getElementsByTagName("title")[0].textContent = resource.title + " - Admin";
-    document.getElementsByTagName("h1")[0].textContent = "Admin " + resource.title + " | Campus Booking";
+    document.getElementsByTagName("title")[0].textContent = resource.title;
     document.getElementById("resourceTitle").textContent = resource.title;
+    document.getElementById("rulesUser").textContent = resource.rules;
 
     const rooms = resource.rooms;
     const roomsArray = rooms.split(",");
-
 
     tableBody = document.getElementById("tableBody");
 
@@ -33,6 +32,27 @@ async function loadAvailabilities(resourceID){
 
         tableBody.appendChild(row);
     });
+
+    const bookingType = resource.bookingType;
+
+    if (bookingType === "Instant") {
+        const script = document.createElement("script");
+        script.src = "user-instant.js";
+        document.body.appendChild(script);
+    } 
+    else if (bookingType === "Request") {
+        const script = document.createElement("script");
+        script.src = "user-request.js";
+        document.body.appendChild(script);
+    }
 }
+
+//automatically choose date
+let ele = document.getElementById("date");
+var today = new Date();
+var d = String(today.getDate()).padStart(2, '0');
+var m = String(today.getMonth() + 1).padStart(2, '0');
+var y = today.getFullYear();
+ele.value = y + "-" + m + "-" + d;
 
 loadAvailabilities(resourceID);

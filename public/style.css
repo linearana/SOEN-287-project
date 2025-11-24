@@ -87,11 +87,12 @@ nav a:hover {
     object-fit: cover;
 }
 
-/* ----------------- FOOTER ----------------- */
-
-footer {
-  background-color: #f4f4f4;
-  color: #444;
+.login{
+  width: 350px; 
+  height: auto;
+  margin: auto auto; 
+  margin-bottom: 60px;
+  padding: auto; 
   text-align: center;
   padding: 6px 0;
   width: 100%;

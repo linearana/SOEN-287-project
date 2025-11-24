@@ -237,9 +237,17 @@ app.patch("/api/resources/:id", (req, res) => {
   if (!resource) {
     return res.status(404).json({ error: "Resource not found" });
   }
-
+  
+  // update status
   if (req.body.status) {
     resource.status = req.body.status;
+  }
+  // update room status
+  else if(req.body.newRoomStatus) {
+    const index1 = req.body.timeIndex - 12;
+    roomsArray = resource.rooms.split(",").map(r => r.trim());
+    const index2 = roomsArray.indexOf(req.body.roomIndex);
+    resource.roomsStatus[index1][index2] = req.body.newRoomStatus;
   }
 
   writeJSON(RESOURCES_FILE, resources);
