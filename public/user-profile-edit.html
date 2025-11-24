@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | Campus Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    <div>
+      <nav>
+        <ul>
+          <li><a href="user-home.html" class="active">Home</a></li>
+          <li><a href="user-resources.html">Resources</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+          <li><a href="#" id="logoutBtn">Log Out</a></li>
+        </ul>
+        <a href="user-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="centered-main">
+  <div class="profile-card profile-edit">
+    <img id="preview" class="profile-pic" src="" alt="Profile Picture">
+
+    <div class="field">
+      <label>First Name:</label>
+      <input type="text" id="editFirstName" required>
+    </div>
+
+    <div class="field">
+      <label>Last Name:</label>
+      <input type="text" id="editLastName" required>
+    </div>
+
+    <div class="field">
+      <label>Student ID:</label>
+      <span id="studentId"></span>
+    </div>
+
+    <div class="field">
+      <label>Email:</label>
+      <input type="email" id="editEmail" required>
+    </div>
+
+    <div class="field">
+      <label>New Password:</label>
+      <input type="password" id="editPassword">
+    </div>
+
+    <div class="field">
+      <label>Confirm Password:</label>
+      <input type="password" id="confirmPassword">
+    </div>
+
+    <div class="field">
+      <label>Profile Picture:</label>
+      <input type="file" id="editPicture" accept="image/*">
+    </div>
+
+    <button id="saveBtn">Save Changes</button>
+    <div id="message"></div>
+  </div>
+</main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+
+  <script src="profile.js"></script>
+  <script src="logout.js"></script>
+  <script src="header-userpic.js" ></script>
+</body>
+</html>
