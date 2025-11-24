@@ -9,80 +9,15 @@ urlParams = new URLSearchParams(window.location.search);
 resourceID = urlParams.get("id");
 
 const messageBox = document.getElementById("message");
-const resourceTypeName = document
-  .getElementById("resourceTitle")
-  .textContent
-  .trim();
-
-const dateInput = document.getElementById("date");
-
-// time columns used in the table
-const TIMES = [12, 13, 14, 15, 16, 17];
-
-// ---------------------- BUILD BASE TABLE FROM RESOURCES ----------------------
-async function buildTableFromResource() {
-  let resources = [];
-  try {
-    const res = await fetch("http://localhost:4000/api/resources");
-    resources = await res.json();
-  } catch {
-    console.error("Cannot load resources from server.");
-    return;
-  }
-
-  const resource = resources.find(r => r.title === resourceTypeName);
-  if (!resource) {
-    console.error("Resource not found for page:", resourceTypeName);
-    return;
-  }
-
-  const tbody = document.querySelector("table.atable tbody");
-  tbody.innerHTML = ""; // clear existing rows
-
-  const roomsArray = resource.rooms.split(",").map(r => r.trim());
-
-  roomsArray.forEach((roomName, roomIndex) => {
-    const tr = document.createElement("tr");
-
-    // First cell: room name (with label like "FA 3-546 - Ceramics" if you want)
-    const tdRoom = document.createElement("td");
-    tdRoom.textContent = roomName;
-    tr.appendChild(tdRoom);
-
-    TIMES.forEach((hour, colIndex) => {
-      const td = document.createElement("td");
-      td.dataset.room = roomName;
-      td.dataset.time = String(hour);
-
-      // read base status from resources.json (if present)
-      const baseStatus = resource.roomsStatus?.[roomIndex]?.[colIndex] || "available";
-
-      if (baseStatus === "unavailable") {
-        td.textContent = "X";
-        td.classList.add("unavailable");
-      } else {
-        td.textContent = "Available";
-        td.classList.add("available");
-      }
-
-      tr.appendChild(td);
-    });
-
-    tbody.appendChild(tr);
-  });
-
-  // After building the table, attach click handlers to the new cells
-  attachCellClickHandlers();
-}
+const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
 // ---------------------- LOAD BOOKED / PENDING SLOTS ----------------------
 async function updateBookedSlots() {
-  const rawDate = dateInput.value;
-  if (!rawDate) return;
-
+  const rawDate = document.getElementById("date").value;
   const selectedDate = new Date(rawDate).toLocaleDateString();
 
   let bookings = [];
+
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     bookings = await res.json();
@@ -96,10 +31,9 @@ async function updateBookedSlots() {
     const time = cell.dataset.time;
 
     const match = bookings.find(
-      b =>
-        b.resource === room &&
-        b.hour === time &&
-        b.date === selectedDate
+      b => b.resource === room &&
+           b.hour === time &&
+           b.date === selectedDate
     );
 
     if (match) {
@@ -107,7 +41,6 @@ async function updateBookedSlots() {
       cell.classList.add("booked");
       cell.textContent = match.status === "pending" ? "pending" : "booked";
     } else {
-      // only reset cells that aren't permanently X
       if (cell.textContent !== "X") {
         cell.classList.remove("booked");
         cell.classList.add("available");
@@ -122,13 +55,43 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
   cell.addEventListener("click", async () => {
     if (cell.textContent === "booked" || cell.textContent === "unavailable" || cell.textContent === "pending") return;
 
-      if (cell.classList.contains("booked") || cell.textContent === "X") return;
+    const dateInput = document.getElementById("date").value.trim();
+    if (!dateInput) {
+      alert("⚠️ Select a date first.");
+      return;
+    }
 
-      const rawDate = dateInput.value.trim();
-      if (!rawDate) {
-        alert("⚠️ Select a date first.");
+    const [y, m, d] = dateInput.split("-");
+    const date = new Date(y, m - 1, d).toLocaleDateString();
+    const room = cell.dataset.room;
+    const time = cell.dataset.time;
+
+    const booking = {
+      id: Date.now(),
+      username: currentUser.email,
+      resource: room,
+      item: resourceTypeName,
+      date,
+      hour: time,
+      status: "Pending"
+    };
+
+    try {
+      const res = await fetch("http://localhost:4000/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(booking)
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert("❌ " + data.error);
         return;
       }
+    } catch {
+      alert("⚠️ Cannot contact server.");
+      return;
+    }
 
     cell.classList.remove("available");
     cell.classList.add("pending");
@@ -145,95 +108,14 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
        })
       });
 
-      const selectedDate = new Date(rawDate).toLocaleDateString();
-      const room = cell.dataset.room;
-      const time = cell.dataset.time;
-
-      // check if this user already has a booking for THIS resource type on this date
-      let bookings = [];
-      try {
-        const res = await fetch("http://localhost:4000/api/bookings");
-        bookings = await res.json();
-      } catch {
-        alert("⚠️ Cannot contact server to verify existing bookings.");
-        return;
-      }
-
-      const alreadyHasBookingToday = bookings.some(b =>
-        b.username === currentUser.email &&
-        b.date === selectedDate &&
-        b.item === resourceTypeName &&
-        b.status !== "Cancelled" &&
-        b.status !== "Rejected"
-      );
-
-      if (alreadyHasBookingToday) {
-        alert("❌ You already have a booking for this resource on this date.");
-        return;
-      }
-
-      const booking = {
-        id: Date.now(),
-        username: currentUser.email,
-        resource: room,
-        item: resourceTypeName,
-        date: selectedDate,
-        hour: time
-      };
-
-      try {
-        const res = await fetch("http://localhost:4000/api/bookings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(booking)
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          alert("❌ " + data.error);
-          return;
-        }
-      } catch {
-        alert("⚠️ Cannot contact server.");
-        return;
-      }
-
-      cell.classList.remove("available");
-      cell.classList.add("booked");
-      cell.style.backgroundColor = "orange";
-      cell.style.color = "black";
-      cell.textContent = "Pending";
-
-      messageBox.textContent =
-        `📩 Request sent for ${room} at ${time}:00 on ${selectedDate}`;
-      sessionStorage.setItem("lastBookingMessage", messageBox.textContent);
-      sessionStorage.setItem("lastBookingMessageTime", Date.now().toString());
-    });
+    messageBox.textContent = `📩 Request sent for ${room} at ${time}:00 on ${date}`;
   });
-}
+});
 
-// ---------------------- DATE HANDLING + INITIAL LOAD ----------------------
-dateInput.addEventListener("change", () => {
-  sessionStorage.setItem("selectedDate", dateInput.value);
+// Auto-load slots
+window.onload = () => {
+  let ele = document.getElementById("date");
+  ele.value = new Date().toISOString().split("T")[0];
   updateBookedSlots();
-});
-
-window.addEventListener("load", async () => {
-  const savedDate = sessionStorage.getItem("selectedDate");
-  if (savedDate) {
-    dateInput.value = savedDate;
-  } else {
-    dateInput.value = new Date().toISOString().split("T")[0];
-  }
-
-  await buildTableFromResource();
-  await updateBookedSlots();
-
-  // restore last booking message if recent
-  const savedMsg = sessionStorage.getItem("lastBookingMessage");
-  const savedMsgTime = Number(sessionStorage.getItem("lastBookingMessageTime") || 0);
-  const now = Date.now();
-  if (savedMsg && now - savedMsgTime < 30000) {
-    messageBox.textContent = savedMsg;
-  }
-});
+};
+document.getElementById("date").addEventListener("change", updateBookedSlots);
