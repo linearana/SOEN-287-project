@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": 1764017396016,
+    "username": "ni@gmail.com",
+    "resource": "FA 3-546",
+    "item": "Art Studios",
+    "date": "2025-11-24",
+    "hour": "12",
+    "status": "Pending"
+  },
+  {
+    "id": 1764017405480,
+    "username": "ni@gmail.com",
+    "resource": "FA 3-547",
+    "item": "Art Studios",
+    "date": "2025-11-28",
+    "hour": "14",
+    "status": "Pending"
+  },
+  {
+    "id": 1764017566111,
+    "username": "ni@gmail.com",
+    "resource": "NI 555",
+    "item": "Engineering Labs",
+    "date": "2025-11-24",
+    "hour": "15",
+    "status": "Pending"
+  }
+]

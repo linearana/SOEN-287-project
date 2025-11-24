@@ -27,25 +27,23 @@
 
   <main>
     <!-- This title must match the resource "title" in resources.json -->
-    <h2 id="resourceTitle">Art Studios</h2>
-
-    <div class="rules">
-      <p>
-        <strong>Eligibility</strong>: Rooms are available to all Fine Arts students, faculty, and staff. <br>
-        <strong>Duration</strong>: Bookings are for a maximum of 1 hour per session. <br>
-        <strong>Advance Booking</strong>: Rooms can be reserved up to 7 days in advance. Walk-ins not available. <br>
-        Your request will remain pending until an administrator confirms it. <br>
-        <strong>Storage</strong>: Projects left behind will be removed after 24 hours unless labeled with your name and date. <br>
-      </p>
-    </div>
+    <main>
+    <h2 id="resourceTitle">Engineering Labs</h2>
 
     <!-- Date picker -->
+    <div class = "rules">
+      <p> Food and drinks are strictly prohibited inside labs. <br>
+        Technical issues or damaged equipment must be reported immediately to the lab technician or supervisor. <br>
+        Eligibility: Only registered engineering students, teaching assistants, and faculty are permitted to book lab spaces. <br>
+        Your request will remain pending until an administrator confirms it. <br>
+        External users must obtain written authorization from the department. <br>
+      </p>
+    </div>
     <div class="date-picker">
       <label for="date">Choose a date: </label>
       <input type="date" id="date" name="date">
     </div>
 
-    <!-- Availability table (body filled dynamically by user-request.js) -->
     <table class="atable">
       <thead>
         <tr>
