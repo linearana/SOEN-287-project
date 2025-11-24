@@ -44,7 +44,7 @@ async function loadBookings() {
       <td>${booking.date}</td>
       <td>${booking.hour}:00</td>
       <td>${booking.status}</td>
-      <td><button data-id="${booking.id}" class="cancelBtn">Cancel</button></td>
+      <td><button data-id="${booking.id}" data-title="${booking.item}" data-room="${booking.resource}" data-time="${booking.hour}" class="cancelBtn">Cancel</button></td>
     `;
 
     tableBody.appendChild(row);
@@ -61,7 +61,7 @@ function attachCancelHandlers() {
     btn.addEventListener("click", async () => {
       const bookingId = btn.dataset.id;
 
-      // 🔥 Confirmation popup
+      // confirmation popup
       const confirmed = confirm("Are you sure you want to cancel this booking?");
       if (!confirmed) return;
 
@@ -82,6 +82,24 @@ function attachCancelHandlers() {
         console.error(err);
         alert("Server unreachable.");
       }
+
+      const response = await fetch("/api/resources");
+      const resources = await response.json();
+
+      const resourceToCancel = resources.find(resource => resource.title === btn.dataset.title)
+      let resourceID = resourceToCancel.id;
+
+      await fetch(`http://localhost:4000/api/resources/${resourceID}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          newRoomStatus: "available",
+          roomIndex: btn.dataset.room,
+          timeIndex: btn.dataset.time
+        })
+      });
+
+      
     });
   });
 }

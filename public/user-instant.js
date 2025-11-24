@@ -1,5 +1,3 @@
-console.log("JS loaded, attaching handlers…");
-
 // login check
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
@@ -7,9 +5,12 @@ if (!currentUser) {
   window.location.href = "login.html";
 }
 
+//get resource ID
+urlParams = new URLSearchParams(window.location.search);
+resourceID = urlParams.get("id");
+
 const messageBox = document.getElementById("message");
-const resourceTypeName =
-  document.getElementById("resourceTitle").textContent.trim();
+const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
 //load booked slots
 async function updateBookedSlots() {
@@ -35,15 +36,11 @@ async function updateBookedSlots() {
     if (match) {
       cell.classList.add("booked");
       cell.classList.remove("available");
-      cell.style.background = "red";
-      cell.style.color = "black";
-      cell.textContent = "Booked";
-    } else if (cell.textContent !== "X") {
+      cell.textContent = "booked";
+    } else if (cell.textContent !== "unavailable") {
       cell.classList.remove("booked");
       cell.classList.add("available");
-      cell.style.background = "";
-      cell.style.color = "black";
-      cell.textContent = "Available";
+      cell.textContent = "available";
     }
   });
 }
@@ -67,8 +64,8 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       return;
     }
 
-    // cannot book X cells or booked ones
-    if (cell.textContent === "X" || cell.classList.contains("booked")) return;
+    // cannot book unavailable cells or booked ones
+    if (cell.textContent === "unavailable" || cell.textContent === "booked") return;
 
     if (!dateInput) {
       alert("Select a date first.");
@@ -88,7 +85,7 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
         b.username === currentUser.email &&
         b.item === resourceTypeName &&
         b.date === dateInput &&
-        (b.status === "Booked" || b.status === "Pending")
+        (b.status === "Booked" || b.status === "pending")
     );
 
     if (existingBooking) {
@@ -103,7 +100,7 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       item: resourceTypeName,
       date: dateInput,
       hour: time,
-      status: "Booked"
+      status: "booked"
     };
 
     //  lock booking so user can't book twice
@@ -131,9 +128,18 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
     // UI update
     cell.classList.add("booked");
     cell.classList.remove("available");
-    cell.style.backgroundColor = "red";
-    cell.style.color = "black";
-    cell.textContent = "Booked";
+    cell.textContent = "booked";
+
+    // update resource availability
+    await fetch(`http://localhost:4000/api/resources/${resourceID}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        newRoomStatus: "booked",
+        roomIndex: room,
+        timeIndex: time
+       })
+      });
 
     messageBox.textContent =
       `✔ Booking confirmed: ${room} at ${time}:00 on ${dateInput}`;
@@ -143,8 +149,8 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
 });
 
 window.onload = () => {
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("date").value = today;
+  let ele = document.getElementById("date");
+  ele.value = new Date().toISOString().split("T")[0];
   updateBookedSlots();
 };
 

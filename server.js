@@ -135,22 +135,22 @@ app.post("/api/bookings/check", (req, res) => {
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
-  // Prevent user from booking the same resource more than once per day
+  // 🔹 1) Prevent user from booking the same resource type (item) more than once per day
   const alreadyHasBooking = bookings.some(
     b =>
       b.username === req.body.username &&
-      b.resource === req.body.resource &&
+      b.item === req.body.item &&         // same resource type (Study Rooms, Art Studios, etc.)
       b.date === req.body.date &&
       (b.status === "Booked" || b.status === "Pending")
   );
 
   if (alreadyHasBooking) {
     return res.status(403).json({
-      error: "You already booked this resource for that day."
+      error: "You already have a booking for this resource type on that day."
     });
   }
 
-  // Prevent double-booking same room/time by different users
+  // 🔹 2) Prevent double-booking same room/time (regardless of user)
   const collision = bookings.some(
     b =>
       b.resource === req.body.resource &&
@@ -163,14 +163,26 @@ app.post("/api/bookings", (req, res) => {
     return res.status(409).json({ error: "This slot is already booked." });
   }
 
-  // Handle instant vs approval resources
+  // 🔹 3) Decide status based on bookingType from RESOURCES_FILE
   const resources = readJSON(RESOURCES_FILE);
-  const resource = resources.find(r => r.name === req.body.resource);
+
+  // Match by resource type name: item (e.g. "Art Studios") ↔ title
+  const resource = resources.find(r => r.title === req.body.item);
+
+  let status = "Pending"; // default
+
+  if (resource) {
+    if (resource.bookingType === "Instant") {
+      status = "Booked";
+    } else if (resource.bookingType === "Request") {
+      status = "Pending";
+    }
+  }
 
   const newBooking = {
     id: Date.now(),
     ...req.body,
-    status: resource?.requiresApproval ? "Pending" : "Booked"
+    status  // override whatever frontend sent
   };
 
   bookings.push(newBooking);
@@ -178,7 +190,6 @@ app.post("/api/bookings", (req, res) => {
 
   res.json({ message: "Booking saved", booking: newBooking });
 });
-
 
 
 // get bookings
@@ -226,9 +237,17 @@ app.patch("/api/resources/:id", (req, res) => {
   if (!resource) {
     return res.status(404).json({ error: "Resource not found" });
   }
-
+  
+  // update status
   if (req.body.status) {
     resource.status = req.body.status;
+  }
+  // update room status
+  else if(req.body.newRoomStatus) {
+    const index1 = req.body.timeIndex - 12;
+    roomsArray = resource.rooms.split(",").map(r => r.trim());
+    const index2 = roomsArray.indexOf(req.body.roomIndex);
+    resource.roomsStatus[index1][index2] = req.body.newRoomStatus;
   }
 
   writeJSON(RESOURCES_FILE, resources);

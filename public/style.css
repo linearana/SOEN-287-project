@@ -84,6 +84,7 @@ nav li {
 
 .login{
   width: 350px; 
+  height: auto;
   margin: auto auto; 
   margin-bottom: 60px;
   padding: auto; 

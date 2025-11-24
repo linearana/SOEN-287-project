@@ -4,6 +4,10 @@ if (!currentUser) {
   window.location.href = "login.html";
 }
 
+//get resource ID
+urlParams = new URLSearchParams(window.location.search);
+resourceID = urlParams.get("id");
+
 const messageBox = document.getElementById("message");
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
@@ -35,15 +39,12 @@ async function updateBookedSlots() {
     if (match) {
       cell.classList.remove("available");
       cell.classList.add("booked");
-      cell.style.backgroundColor = "red";
-      cell.style.color = "white";
-      cell.textContent = match.status === "Pending" ? "Pending" : "Booked";
+      cell.textContent = match.status === "pending" ? "pending" : "booked";
     } else {
       if (cell.textContent !== "X") {
         cell.classList.remove("booked");
         cell.classList.add("available");
-        cell.style.backgroundColor = "";
-        cell.textContent = "Available";
+        cell.textContent = "available";
       }
     }
   });
@@ -52,7 +53,7 @@ async function updateBookedSlots() {
 // ---------------------- SEND REQUEST ----------------------
 document.querySelectorAll("td[data-room]").forEach(cell => {
   cell.addEventListener("click", async () => {
-    if (cell.classList.contains("booked") || cell.textContent === "X") return;
+    if (cell.textContent === "booked" || cell.textContent === "unavailable" || cell.textContent === "pending") return;
 
     const dateInput = document.getElementById("date").value.trim();
     if (!dateInput) {
@@ -93,10 +94,19 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
     }
 
     cell.classList.remove("available");
-    cell.classList.add("booked");
-    cell.style.backgroundColor = "orange";
-    cell.style.color = "black";
-    cell.textContent = "Pending";
+    cell.classList.add("pending");
+    cell.textContent = "pending";
+
+    // update resource availability
+    await fetch(`http://localhost:4000/api/resources/${resourceID}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        newRoomStatus: "pending",
+        roomIndex: room,
+        timeIndex: time
+       })
+      });
 
     messageBox.textContent = `📩 Request sent for ${room} at ${time}:00 on ${date}`;
   });

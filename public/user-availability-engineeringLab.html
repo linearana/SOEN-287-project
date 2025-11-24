@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Availability Engineering Labs | Campus Booking</title>
+  <title>Availability Art Studios | Campus Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <header>
+  <header>
     <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
     <h1>Campus Resource Booking!</h1>
     <div>
@@ -18,23 +18,26 @@
           <li><a href="bookings.html">Bookings</a></li>
           <li><a href="#" id="logoutBtn">Log Out</a></li>
         </ul>
-        <a href="user-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+        <a href="user-profile.html">
+          <img src="images/user.png" alt="User Icon" class="user-pic">
+        </a>
       </nav>
     </div>
   </header>
 
-
   <main>
-    <h2 id="resourceTitle">Engineering Labs</h2>
-    <div class = "rules">
-    <p> Food and drinks are strictly prohibited inside labs. <br>
-    Technical issues or damaged equipment must be reported immediately to the lab technician or supervisor. <br>
-    <strong>Eligibility</strong>: Only registered engineering students, teaching assistants, and faculty are permitted to book lab spaces. <br>
-    Your request will remain pending until an administrator confirms it. <br>
-    External users must obtain written authorization from the department. <br>
-  </p>
-</div>
+    <!-- This title must match the resource "title" in resources.json -->
+    <h2 id="resourceTitle">Art Studios</h2>
 
+    <div class="rules">
+      <p>
+        <strong>Eligibility</strong>: Rooms are available to all Fine Arts students, faculty, and staff. <br>
+        <strong>Duration</strong>: Bookings are for a maximum of 1 hour per session. <br>
+        <strong>Advance Booking</strong>: Rooms can be reserved up to 7 days in advance. Walk-ins not available. <br>
+        Your request will remain pending until an administrator confirms it. <br>
+        <strong>Storage</strong>: Projects left behind will be removed after 24 hours unless labeled with your name and date. <br>
+      </p>
+    </div>
 
     <!-- Date picker -->
     <div class="date-picker">
@@ -42,6 +45,7 @@
       <input type="date" id="date" name="date">
     </div>
 
+    <!-- Availability table (body filled dynamically by user-request.js) -->
     <table class="atable">
       <thead>
         <tr>
@@ -55,57 +59,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>NI 160</td>
-          <td class="available" data-room="NI 160" data-time="12">Available</td>
-          <td class="unavailable" data-room="NI 160" data-time="13">X</td>
-          <td class="available" data-room="NI 160" data-time="14">Available</td>
-          <td class="available" data-room="NI 160" data-time="15">Available</td>
-          <td class="unavailable" data-room="NI 160" data-time="16">X</td>
-          <td class="available" data-room="NI 160" data-time="17">Available</td>
-        </tr>
-        <tr>
-          <td>NI 368</td>
-          <td class="available" data-room="NI 368" data-time="12">Available</td>
-          <td class="available" data-room="NI 368" data-time="13">Available</td>
-          <td class="available" data-room="NI 368" data-time="14">Available</td>
-          <td class="unavailable" data-room="NI 368" data-time="15">X</td>
-          <td class="available" data-room="NI 368" data-time="16">Available</td>
-          <td class="unavailable" data-room="NI 368" data-time="17">X</td>
-        </tr>
-        <tr>
-          <td>NI 436</td>
-          <td class="available" data-room="NI 436" data-time="12">Available</td>
-          <td class="unavailable" data-room="NI 436" data-time="13">X</td>
-          <td class="available" data-room="NI 436" data-time="14">Available</td>
-          <td class="unavailable" data-room="NI 436" data-time="15">X</td>
-          <td class="available" data-room="NI 436" data-time="16">Available</td>
-          <td class="available" data-room="NI 436" data-time="17">Available</td>
-        </tr>
-        <tr>
-          <td>NI 555</td>
-          <td class="unavailable" data-room="NI 555" data-time="12">X</td>
-          <td class="available" data-room="NI 555" data-time="13">Available</td>
-          <td class="unavailable" data-room="NI 555" data-time="14">X</td>
-          <td class="available" data-room="NI 555" data-time="15">Available</td>
-          <td class="available" data-room="NI 555" data-time="16">Available</td>
-          <td class="unavailable" data-room="NI 555" data-time="17">X</td>
-        </tr>
-        <tr>
-          <td>NI 1553</td>
-          <td class="available" data-room="NI 1553" data-time="12">Available</td>
-          <td class="unavailable" data-room="NI 1553" data-time="13">X</td>
-          <td class="unavailable" data-room="NI 1553" data-time="14">X</td>
-          <td class="available" data-room="NI 1553" data-time="15">Available</td>
-          <td class="available" data-room="NI 1553" data-time="16">Available</td>
-          <td class="available" data-room="NI 1553" data-time="17">Available</td>
-        </tr>
+        <!-- Rows are generated dynamically from resources.json -->
       </tbody>
       <tfoot>
-      <tr>
-       <td colspan="7">Please click on an available time slot to book it</td>
-     </tr>
-    </tfoot>
+        <tr>
+          <td colspan="7">Please click on an available time slot to book it</td>
+        </tr>
+      </tfoot>
     </table>
 
     <div id="message"></div>
