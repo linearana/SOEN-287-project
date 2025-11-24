@@ -5,15 +5,80 @@ if (!currentUser) {
 }
 
 const messageBox = document.getElementById("message");
-const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
+const resourceTypeName = document
+  .getElementById("resourceTitle")
+  .textContent
+  .trim();
+
+const dateInput = document.getElementById("date");
+
+// time columns used in the table
+const TIMES = [12, 13, 14, 15, 16, 17];
+
+// ---------------------- BUILD BASE TABLE FROM RESOURCES ----------------------
+async function buildTableFromResource() {
+  let resources = [];
+  try {
+    const res = await fetch("http://localhost:4000/api/resources");
+    resources = await res.json();
+  } catch {
+    console.error("Cannot load resources from server.");
+    return;
+  }
+
+  const resource = resources.find(r => r.title === resourceTypeName);
+  if (!resource) {
+    console.error("Resource not found for page:", resourceTypeName);
+    return;
+  }
+
+  const tbody = document.querySelector("table.atable tbody");
+  tbody.innerHTML = ""; // clear existing rows
+
+  const roomsArray = resource.rooms.split(",").map(r => r.trim());
+
+  roomsArray.forEach((roomName, roomIndex) => {
+    const tr = document.createElement("tr");
+
+    // First cell: room name (with label like "FA 3-546 - Ceramics" if you want)
+    const tdRoom = document.createElement("td");
+    tdRoom.textContent = roomName;
+    tr.appendChild(tdRoom);
+
+    TIMES.forEach((hour, colIndex) => {
+      const td = document.createElement("td");
+      td.dataset.room = roomName;
+      td.dataset.time = String(hour);
+
+      // read base status from resources.json (if present)
+      const baseStatus = resource.roomsStatus?.[roomIndex]?.[colIndex] || "available";
+
+      if (baseStatus === "unavailable") {
+        td.textContent = "X";
+        td.classList.add("unavailable");
+      } else {
+        td.textContent = "Available";
+        td.classList.add("available");
+      }
+
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  // After building the table, attach click handlers to the new cells
+  attachCellClickHandlers();
+}
 
 // ---------------------- LOAD BOOKED / PENDING SLOTS ----------------------
 async function updateBookedSlots() {
-  const rawDate = document.getElementById("date").value;
+  const rawDate = dateInput.value;
+  if (!rawDate) return;
+
   const selectedDate = new Date(rawDate).toLocaleDateString();
 
   let bookings = [];
-
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     bookings = await res.json();
@@ -27,85 +92,145 @@ async function updateBookedSlots() {
     const time = cell.dataset.time;
 
     const match = bookings.find(
-      b => b.resource === room &&
-           b.hour === time &&
-           b.date === selectedDate
+      b =>
+        b.resource === room &&
+        b.hour === time &&
+        b.date === selectedDate
     );
 
     if (match) {
       cell.classList.remove("available");
       cell.classList.add("booked");
-      cell.style.backgroundColor = "red";
-      cell.style.color = "white";
-      cell.textContent = match.status === "Pending" ? "Pending" : "Booked";
+
+      if (match.status === "Pending") {
+        cell.style.backgroundColor = "orange";
+        cell.style.color = "black";
+        cell.textContent = "Pending";
+      } else {
+        cell.style.backgroundColor = "red";
+        cell.style.color = "white";
+        cell.textContent = "Booked";
+      }
     } else {
+      // only reset cells that aren't permanently X
       if (cell.textContent !== "X") {
         cell.classList.remove("booked");
         cell.classList.add("available");
         cell.style.backgroundColor = "";
+        cell.style.color = "";
         cell.textContent = "Available";
       }
     }
   });
 }
 
-// ---------------------- SEND REQUEST ----------------------
-document.querySelectorAll("td[data-room]").forEach(cell => {
-  cell.addEventListener("click", async () => {
-    if (cell.classList.contains("booked") || cell.textContent === "X") return;
+// ---------------------- SEND REQUEST (ATTACH AFTER TABLE BUILT) ----------------------
+function attachCellClickHandlers() {
+  document.querySelectorAll("td[data-room]").forEach(cell => {
+    cell.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    const dateInput = document.getElementById("date").value.trim();
-    if (!dateInput) {
-      alert("⚠️ Select a date first.");
-      return;
-    }
+      if (cell.classList.contains("booked") || cell.textContent === "X") return;
 
-    const [y, m, d] = dateInput.split("-");
-    const date = new Date(y, m - 1, d).toLocaleDateString();
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
-
-    const booking = {
-      id: Date.now(),
-      username: currentUser.email,
-      resource: room,
-      item: resourceTypeName,
-      date,
-      hour: time,
-      status: "Pending"
-    };
-
-    try {
-      const res = await fetch("http://localhost:4000/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(booking)
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        alert("❌ " + data.error);
+      const rawDate = dateInput.value.trim();
+      if (!rawDate) {
+        alert("⚠️ Select a date first.");
         return;
       }
-    } catch {
-      alert("⚠️ Cannot contact server.");
-      return;
-    }
 
-    cell.classList.remove("available");
-    cell.classList.add("booked");
-    cell.style.backgroundColor = "orange";
-    cell.style.color = "black";
-    cell.textContent = "Pending";
+      // remember chosen date for this tab
+      sessionStorage.setItem("selectedDate", rawDate);
 
-    messageBox.textContent = `📩 Request sent for ${room} at ${time}:00 on ${date}`;
+      const selectedDate = new Date(rawDate).toLocaleDateString();
+      const room = cell.dataset.room;
+      const time = cell.dataset.time;
+
+      // check if this user already has a booking for THIS resource type on this date
+      let bookings = [];
+      try {
+        const res = await fetch("http://localhost:4000/api/bookings");
+        bookings = await res.json();
+      } catch {
+        alert("⚠️ Cannot contact server to verify existing bookings.");
+        return;
+      }
+
+      const alreadyHasBookingToday = bookings.some(b =>
+        b.username === currentUser.email &&
+        b.date === selectedDate &&
+        b.item === resourceTypeName &&
+        b.status !== "Cancelled" &&
+        b.status !== "Rejected"
+      );
+
+      if (alreadyHasBookingToday) {
+        alert("❌ You already have a booking for this resource on this date.");
+        return;
+      }
+
+      const booking = {
+        id: Date.now(),
+        username: currentUser.email,
+        resource: room,
+        item: resourceTypeName,
+        date: selectedDate,
+        hour: time
+      };
+
+      try {
+        const res = await fetch("http://localhost:4000/api/bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(booking)
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          alert("❌ " + data.error);
+          return;
+        }
+      } catch {
+        alert("⚠️ Cannot contact server.");
+        return;
+      }
+
+      cell.classList.remove("available");
+      cell.classList.add("booked");
+      cell.style.backgroundColor = "orange";
+      cell.style.color = "black";
+      cell.textContent = "Pending";
+
+      messageBox.textContent =
+        `📩 Request sent for ${room} at ${time}:00 on ${selectedDate}`;
+      sessionStorage.setItem("lastBookingMessage", messageBox.textContent);
+      sessionStorage.setItem("lastBookingMessageTime", Date.now().toString());
+    });
   });
+}
+
+// ---------------------- DATE HANDLING + INITIAL LOAD ----------------------
+dateInput.addEventListener("change", () => {
+  sessionStorage.setItem("selectedDate", dateInput.value);
+  updateBookedSlots();
 });
 
-// Auto-load slots
-window.onload = () => {
-  let ele = document.getElementById("date");
-  ele.value = new Date().toISOString().split("T")[0];
-  updateBookedSlots();
-};
-document.getElementById("date").addEventListener("change", updateBookedSlots);
+window.addEventListener("load", async () => {
+  const savedDate = sessionStorage.getItem("selectedDate");
+  if (savedDate) {
+    dateInput.value = savedDate;
+  } else {
+    dateInput.value = new Date().toISOString().split("T")[0];
+  }
+
+  await buildTableFromResource();
+  await updateBookedSlots();
+
+  // restore last booking message if recent
+  const savedMsg = sessionStorage.getItem("lastBookingMessage");
+  const savedMsgTime = Number(sessionStorage.getItem("lastBookingMessageTime") || 0);
+  const now = Date.now();
+  if (savedMsg && now - savedMsgTime < 30000) {
+    messageBox.textContent = savedMsg;
+  }
+});
