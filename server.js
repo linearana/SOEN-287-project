@@ -159,15 +159,22 @@ app.post("/api/bookings", (req, res) => {
 
   const isAdminBlock = req.body.status === "Unavailable";
 
+  // statuses that count as a "real active booking" for the 1-per-day rule
+  const ACTIVE_BOOKING_STATUSES = ["Booked", "Pending"];
+
+  // statuses that make a time slot unavailable to users
+  const SLOT_BLOCKING_STATUSES = ["Booked", "Pending", "Unavailable"];
+
   // 1) Prevent user from booking the same resource type (item) more than once per day
-  //    (We only enforce this for normal user bookings, not admin blocks)
+  //    (only for normal user bookings, not admin Unavailable blocks)
   if (!isAdminBlock) {
     const alreadyHasBooking = bookings.some(
       b =>
         b.username === req.body.username &&
         b.item === req.body.item &&
         b.date === req.body.date &&
-        (b.status === "Booked" || b.status === "Pending")
+        ACTIVE_BOOKING_STATUSES.includes(b.status)
+        // ❌ Declined / Cancelled do NOT count here
     );
 
     if (alreadyHasBooking) {
@@ -181,32 +188,31 @@ app.post("/api/bookings", (req, res) => {
   const collision = bookings.some(
     b =>
       b.resource === req.body.resource &&
-      b.hour === req.body.hour &&
+      String(b.hour) === String(req.body.hour) &&  // avoid number/string mismatch
       b.date === req.body.date &&
-      (
-        b.status === "Booked" ||
-        b.status === "Pending" ||
-        b.status === "Unavailable"       // 🔹 admin block also blocks slot
-      )
+      SLOT_BLOCKING_STATUSES.includes(b.status)
+      // ❌ Declined / Cancelled do NOT block the slot
   );
 
   if (collision && !isAdminBlock) {
-    // For normal user bookings, block if something (booking or block) exists
-    return res.status(409).json({ error: "This slot is already booked." });
+    // For normal user bookings, block if something (booking or Unavailable) exists
+    return res
+      .status(409)
+      .json({ error: "This slot is already booked or unavailable." });
   }
 
-  // 3) Decide status
+  // 3) Decide status to save
   let status;
 
   if (isAdminBlock) {
-    // Admin block → keep as Unavailable
+    // Admin block → always Unavailable
     status = "Unavailable";
   } else {
-    // Normal booking → use bookingType logic
+    // Normal booking → use bookingType from resources.json
     const resources = readJSON(RESOURCES_FILE);
     const resource = resources.find(r => r.title === req.body.item);
 
-    status = "Pending"; // default for safety
+    status = "Pending"; // safe default
     if (resource) {
       if (resource.bookingType === "Instant") {
         status = "Booked";
@@ -219,7 +225,7 @@ app.post("/api/bookings", (req, res) => {
   const newBooking = {
     id: Date.now(),
     ...req.body,
-    status   // ensure we override anything the client sent
+    status   // override anything sent by client
   };
 
   bookings.push(newBooking);
@@ -227,6 +233,7 @@ app.post("/api/bookings", (req, res) => {
 
   res.json({ message: "Booking saved", booking: newBooking });
 });
+
 
 // get bookings
 app.get("/api/bookings", (req, res) => {
@@ -267,6 +274,8 @@ app.put("/api/bookings/update", (req, res) => {
 //resources
 app.patch("/api/resources/:id", (req, res) => {
   const resources = readJSON(RESOURCES_FILE);
+  const bookings = readJSON(BOOKINGS_FILE);
+
   const id = Number(req.params.id);
   const resource = resources.find(r => r.id === id);
 
@@ -277,6 +286,14 @@ app.patch("/api/resources/:id", (req, res) => {
   // Toggle whole resource enabled/disabled
   if (req.body.status) {
     resource.status = req.body.status;
+
+    // If disabling, cancel all bookings for this resource
+    if (req.body.status === "disabled") {
+      const remainingBookings = bookings.filter(
+        b => b.item !== resource.title && b.resource !== resource.title
+      );
+      writeJSON(BOOKINGS_FILE, remainingBookings);
+    }
   }
 
   // Replace entire roomsStatus matrix (for admin availability edits)
@@ -287,6 +304,7 @@ app.patch("/api/resources/:id", (req, res) => {
   writeJSON(RESOURCES_FILE, resources);
   res.json({ message: "Resource updated", resource });
 });
+
 
 
 //get resources

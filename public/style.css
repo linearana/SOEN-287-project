@@ -387,21 +387,20 @@ th {
   background: #a00000;
 }
 
-/* Disabled resource (for admin view) */
 .card.disabled {
   opacity: 0.4;
   filter: grayscale(40%);
   pointer-events: none;
 }
 
-/* Button inside disabled card that should still work */
-.card.disabled #buttonDisable {
+.card.disabled button {
   opacity: 1;
   filter: none;
-  pointer-events: auto;
+  pointer-events: auto; /* re-enable clicks */
   cursor: pointer;
   z-index: 1;
 }
+
 
 /* ----------------- PROFILE CARD ----------------- */
 /* Center profile card on screen (used on both pages) */
