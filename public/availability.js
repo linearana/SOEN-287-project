@@ -1,6 +1,5 @@
 console.log("availability.js loaded");
 
-// ---------------------- GET RESOURCE INFO ----------------------
 urlParams = new URLSearchParams(window.location.search);
 resourceIDParam = urlParams.get("id");
 resourceID = resourceIDParam ? Number(resourceIDParam) : null;
@@ -11,7 +10,6 @@ messageBox = document.getElementById("message") || { textContent: "" };
 
 const TIMES = [12, 13, 14, 15, 16, 17];
 
-// ---------------------- BUILD TABLE FROM resources.json ----------------------
 async function buildTableFromResourcePublic() {
   console.log("buildTableFromResourcePublic() called");
 
@@ -27,7 +25,6 @@ async function buildTableFromResourcePublic() {
 
   console.log("Loaded resources (public):", resources);
 
-  // Prefer ID from ?id=...; else match by title
   let resource = null;
   if (resourceID && !Number.isNaN(resourceID)) {
     resource = resources.find(r => r.id === resourceID);
@@ -99,7 +96,6 @@ async function buildTableFromResourcePublic() {
   await updateBookedSlotsPublic();
 }
 
-// ---------------------- OVERLAY BOOKINGS ON TABLE (PUBLIC VIEW) ----------------------
 async function updateBookedSlotsPublic() {
   const selectedDate = dateInput.value;
   if (!selectedDate) {
@@ -149,11 +145,11 @@ async function updateBookedSlotsPublic() {
 
   if (status === "unavailable") {
     cell.classList.add("unavailable");
-    cell.textContent = "X";            // visually blocked
+    cell.textContent = "X";           
   } else if (status === "pending") {
     cell.classList.add("pending");
     cell.textContent = "Pending";
-  } else { // booked or anything else
+  } else { 
     cell.classList.add("booked");
     cell.textContent = "Booked";
   }
@@ -164,7 +160,6 @@ async function updateBookedSlotsPublic() {
   });
 }
 
-// ---------------------- PUBLIC CLICK HANDLERS (LOGIN GATE) ----------------------
 function handlePublicCellClick() {
   const cell = this;
 
@@ -180,7 +175,6 @@ function handlePublicCellClick() {
 
   if (!currentUser) {
     alert("⚠️ You must be logged in to book a resource.");
-    // Optional: preserve where they came from
     const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
     window.location.href = `login.html?return=${returnUrl}`;
     return;
@@ -197,7 +191,6 @@ function attachPublicClickHandlers() {
   console.log("Public click handlers attached to cells:", cells.length);
 }
 
-// ---------------------- INITIAL LOAD ----------------------
 window.addEventListener("load", async () => {
   console.log("window.load fired on PUBLIC availability page");
 

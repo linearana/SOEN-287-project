@@ -1,4 +1,3 @@
-// Load all resources and render cards
 async function loadResources() {
   const res = await fetch("/api/resources");
   const resources = await res.json();
@@ -11,7 +10,6 @@ async function loadResources() {
     div.dataset.id = element.id;
     div.classList.add("card");
 
-    // Add disabled style if resource is disabled
     if (element.status === "disabled") {
       div.classList.add("disabled");
     }
@@ -55,7 +53,6 @@ async function disableResource(buttonEl) {
     const data = await res.json();
     alert(`✅ Resource "${data.resource.title}" disabled and all bookings cancelled.`);
 
-    // Reload resources so UI updates
     loadResources();
   } catch (err) {
     console.error("Error disabling resource:", err);
@@ -83,7 +80,6 @@ async function enableResource(buttonEl) {
     const data = await res.json();
     alert(`✅ Resource "${data.resource.title}" enabled.`);
 
-    // Reload resources so UI updates
     loadResources();
   } catch (err) {
     console.error("Error enabling resource:", err);

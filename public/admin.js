@@ -1,6 +1,6 @@
 console.log("admin.js loaded");
 
-// ---------------------- LOGIN CHECK ----------------------
+
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
   alert("⚠️ You must be logged in to access admin tools.");
@@ -17,7 +17,7 @@ const resourceID      = Number(urlParams.get("id"));
 const HOURS = [12, 13, 14, 15, 16, 17];
 let currentResource = null;
 
-// ---------------------- DATE HELPERS ----------------------
+
 function ensureDateDefault() {
   if (!dateInput) return;
   if (!dateInput.value) {
@@ -38,7 +38,7 @@ function getSelectedDate() {
   return val;
 }
 
-// ---------------------- BUILD TABLE ----------------------
+
 async function buildAdminTable() {
   if (!tableBody) return;
   if (!resourceID) {
@@ -121,7 +121,6 @@ async function buildAdminTable() {
   await updateAdminSlots();
 }
 
-// ---------------------- OVERLAY BOOKINGS ----------------------
 async function updateAdminSlots() {
   if (!tableBody) return;
 
@@ -188,7 +187,7 @@ async function updateAdminSlots() {
     }
   });
 }
-// ---------------------- SLOT FUNCTIONS ----------------------
+
 async function makeSlotUnavailable(room, time, date) {
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
@@ -265,7 +264,6 @@ async function makeSlotAvailable(room, time, date) {
   await updateAdminSlots();
 }
 
-// ---------------------- CLICK HANDLER ----------------------
 function attachClickHandler() {
   if (!tableBody) return;
   tableBody.addEventListener("click", async e => {
@@ -288,7 +286,6 @@ function attachClickHandler() {
   });
 }
 
-// ---------------------- CONFIRM CHANGES ----------------------
 function confirmChanges() {
   if (!messageBox) return;
   if (messageBox.innerHTML === "") {
@@ -300,7 +297,6 @@ function confirmChanges() {
   }
 }
 
-// ---------------------- INITIAL LOAD ----------------------
 document.addEventListener("DOMContentLoaded", () => {
   ensureDateDefault();
   buildAdminTable().then(() => attachClickHandler());

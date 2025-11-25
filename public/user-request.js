@@ -143,17 +143,4 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
   updateBookedSlots();
 });
 
-// ---------------------- AUTO-CHOOSE DATE ----------------------
-window.onload = () => {
-  const ele = document.getElementById("date");
-  const today = new Date();
-  today.setDate(today.getDate() + 7); // enforce 7 days ahead
-
-  const minDate = today.toISOString().split("T")[0];
-  ele.value = minDate;
-  ele.min = minDate; // prevent selecting earlier dates
-
-  updateBookedSlots();
-};
-
 document.getElementById("date").addEventListener("change", updateBookedSlots);

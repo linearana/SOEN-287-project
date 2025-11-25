@@ -115,5 +115,23 @@
     "date": "2025-11-25",
     "hour": "12",
     "status": "Unavailable"
+  },
+  {
+    "id": 1764103461011,
+    "username": "ni@gmail.com",
+    "resource": "FA 5-101",
+    "item": "Art Studios",
+    "date": "2025-12-03",
+    "hour": "12",
+    "status": "Pending"
+  },
+  {
+    "id": 1764103539325,
+    "username": "ni@gmail.com",
+    "resource": "CO 432",
+    "item": "Film Equipment",
+    "date": "2025-12-03",
+    "hour": "15",
+    "status": "Pending"
   }
 ]

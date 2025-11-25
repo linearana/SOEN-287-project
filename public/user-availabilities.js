@@ -11,7 +11,6 @@ async function loadAvailabilities(resourceID) {
     return;
   }
 
-  // 1. Get resource metadata
   let resources;
   try {
     const resResources = await fetch("http://localhost:4000/api/resources");
@@ -28,17 +27,40 @@ async function loadAvailabilities(resourceID) {
     return;
   }
 
-  // 2. Update page info
+  const ele = document.getElementById("date");
+  if (ele) {
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+
+    if (!ele.value) {
+      ele.value = todayStr;
+    }
+
+    if (resource.bookingType === "Instant") {
+      ele.setAttribute("min", todayStr);
+      if (ele.value < todayStr) {
+        ele.value = todayStr;
+      }
+    } else if (resource.bookingType === "Request") {
+      const minDate = new Date();
+      minDate.setDate(today.getDate() + 8);
+      const minStr = minDate.toISOString().split("T")[0];
+
+      ele.setAttribute("min", minStr);
+      if (ele.value < minStr) {
+        ele.value = minStr;
+      }
+    }
+  }
+  
   document.title = resource.title + " | Campus Booking";
   document.getElementById("resourceTitle").textContent = resource.title;
 
-  // Some entries use rulesResource, some use rules → fallback
   const rulesEl = document.getElementById("rulesUser");
   if (rulesEl) {
     rulesEl.textContent = resource.rulesResource || resource.rules || "";
   }
 
-  // 3. Build table skeleton based on rooms + roomsStatus
   const roomsArray = resource.rooms.split(",").map(r => r.trim());
   const tableBody = document.getElementById("tableBody");
   if (!tableBody) {
@@ -46,9 +68,8 @@ async function loadAvailabilities(resourceID) {
     return;
   }
 
-  tableBody.innerHTML = ""; // clear old rows
+  tableBody.innerHTML = ""; 
 
-  // We assume 6 time slots: 12–17
   const HOURS = [12, 13, 14, 15, 16, 17];
 
   roomsArray.forEach((room, roomIndex) => {
@@ -58,7 +79,6 @@ async function loadAvailabilities(resourceID) {
     row.innerHTML = `<td>${room}</td>`;
 
     HOURS.forEach((hour, timeIndex) => {
-      // base status from resource.roomsStatus, fallback to "available"
       const baseStatus =
         resource.roomsStatus?.[roomIndex]?.[timeIndex] || "available";
 
@@ -79,10 +99,8 @@ async function loadAvailabilities(resourceID) {
     tableBody.appendChild(row);
   });
 
-  // 4. Overlay bookings for the current date
   await updateBookedSlots();
 
-  // 5. Load behavior script based on bookingType
   if (resource.bookingType === "Instant") {
     const script = document.createElement("script");
     script.src = "user-instant.js";
@@ -96,7 +114,7 @@ async function loadAvailabilities(resourceID) {
   }
 }
 
-// ---------------------- UPDATE BOOKED/PENDING SLOTS ----------------------
+
 async function updateBookedSlots() {
   const dateInput = document.getElementById("date");
   if (!dateInput) {
@@ -104,7 +122,7 @@ async function updateBookedSlots() {
     return;
   }
 
-  const selectedDate = dateInput.value; // expecting yyyy-mm-dd
+  const selectedDate = dateInput.value; 
   if (!selectedDate) {
     console.log("No date selected yet → skip overlay");
     return;
@@ -141,7 +159,7 @@ async function updateBookedSlots() {
 
   if (status === "unavailable") {
     cell.classList.add("unavailable");
-    cell.textContent = "X";            // visually blocked
+    cell.textContent = "X";         
   } else if (status === "pending") {
     cell.classList.add("pending");
     cell.textContent = "Pending";
@@ -150,7 +168,7 @@ async function updateBookedSlots() {
     cell.textContent = "Booked";
   }
 } else {
-  if (cell.textContent !== "X") {      // keep hard-coded X cells
+  if (cell.textContent !== "X") {    
     cell.classList.remove("booked", "pending", "unavailable");
     cell.classList.add("available");
     cell.textContent = "available";
@@ -162,7 +180,7 @@ async function updateBookedSlots() {
     });
 }
 
-// ---------------------- AUTO-CHOOSE DATE & INITIAL LOAD ----------------------
+
 window.onload = () => {
   const ele = document.getElementById("date");
   if (ele && !ele.value) {
@@ -170,5 +188,3 @@ window.onload = () => {
   }
   loadAvailabilities(resourceID);
 };
-
-document.getElementById("date").addEventListener("change", updateBookedSlots);
