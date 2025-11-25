@@ -25,5 +25,23 @@
     "date": "2025-11-24",
     "hour": "15",
     "status": "Pending"
+  },
+  {
+    "id": 1764044048303,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-24",
+    "hour": "12",
+    "status": "booked"
+  },
+  {
+    "id": 1764045159758,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "NI 368",
+    "item": "Engineering Labs",
+    "date": "24/11/2025",
+    "hour": "13",
+    "status": "pending"
   }
 ]

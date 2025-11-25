@@ -8,7 +8,7 @@
     "rooms": "LB 251,LB 259,LB 311,LB 315,LB 328",
     "roomsStatus": [
       [
-        "available",
+        "booked",
         "available",
         "available",
         "available",
@@ -69,7 +69,7 @@
       ],
       [
         "available",
-        "available",
+        "pending",
         "available",
         "available",
         "available",
