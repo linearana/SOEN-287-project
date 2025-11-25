@@ -1,7 +1,7 @@
 urlParams = new URLSearchParams(window.location.search);
 resourceID = urlParams.get("id");
 
-async function loadAvailabilities(resourceID){
+async function loadAvailabilities(resourceID) {
     const res = await fetch("/api/resources");
     const resources = await res.json();
 

@@ -141,7 +141,7 @@ app.post("/api/bookings", (req, res) => {
       b.username === req.body.username &&
       b.item === req.body.item &&         // same resource type (Study Rooms, Art Studios, etc.)
       b.date === req.body.date &&
-      (b.status === "Booked" || b.status === "Pending")
+      (b.status === "booked" || b.status === "pending")
   );
 
   if (alreadyHasBooking) {
@@ -156,7 +156,7 @@ app.post("/api/bookings", (req, res) => {
       b.resource === req.body.resource &&
       b.hour === req.body.hour &&
       b.date === req.body.date &&
-      (b.status === "Booked" || b.status === "Pending")
+      (b.status === "booked" || b.status === "pending")
   );
 
   if (collision) {
@@ -169,13 +169,13 @@ app.post("/api/bookings", (req, res) => {
   // Match by resource type name: item (e.g. "Art Studios") ↔ title
   const resource = resources.find(r => r.title === req.body.item);
 
-  let status = "Pending"; // default
+  let status = "pending"; // default
 
   if (resource) {
     if (resource.bookingType === "Instant") {
-      status = "Booked";
+      status = "booked";
     } else if (resource.bookingType === "Request") {
-      status = "Pending";
+      status = "pending";
     }
   }
 
