@@ -1,8 +1,8 @@
 // ---------------------- GET RESOURCE ID ----------------------
-const urlParams = new URLSearchParams(window.location.search);
-const resourceID = urlParams.get("id");
+urlParams = new URLSearchParams(window.location.search);
+resourceID = urlParams.get("id");
 
-const messageBox = document.getElementById("message");
+messageBox = document.getElementById("message");
 
 // ---------------------- BUILD TABLE ----------------------
 async function loadAvailabilities(resourceID) {

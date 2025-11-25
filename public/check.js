@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const messageBox = document.getElementById("message");
+  messageBox = document.getElementById("message");
   let hasBooked = false; // prevent multiple bookings
 
   // Attach click handlers to all available slots
