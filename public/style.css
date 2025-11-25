@@ -560,3 +560,78 @@ th {
   height: auto;
   margin: 30px auto;
 }
+
+/* Creating new resource form */
+
+.newResource h2 {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+#newResourceForm {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  margin: auto auto;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+  border-radius: 10px;
+  background-color: #fff;
+  padding-top: 15px;
+}
+
+#newResourceForm label {
+  align-self: flex-start;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+#title,
+#description,
+#roomName1,
+#roomName2,
+#roomName3,
+#roomName4,
+#roomName5,
+#bookingType {
+  width: 560px;
+  height: 40px;
+  display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  margin-top: 15px;
+  padding-left: 15px;
+  border-radius: 10px;
+  border: 1px solid lightslategray;
+}
+
+#rulesResource{
+  width: 560px;
+  height: 60px;
+  display: block;
+  box-sizing: border-box;
+  margin: 0 auto;
+  margin-top: 15px;
+  border: 1px solid lightslategray;
+  border-radius: 10px;
+  padding-left: 15px;
+}
+
+#image {
+  margin-top: 15px;
+}
+
+.createResourceBtn,
+#newResourceForm button{
+  width: 150px;
+  display: block;
+  margin: 20px auto;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--primary);
+  color: #fff;
+  cursor: pointer;
+}
