@@ -99,23 +99,23 @@ app.put("/api/users/:id", upload.single("picture"), (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const existing = users[userIndex];
+
     users[userIndex] = {
-      ...users[userIndex],
-      firstName: req.body.firstName ?? users[userIndex].firstName,
-      lastName: req.body.lastName ?? users[userIndex].lastName,
-      email: req.body.email ?? users[userIndex].email,
-      password: req.body.password ? hash(req.body.password) : users[userIndex].password,
-      picture: req.file ? `/uploads/${req.file.filename}` : users[userIndex].picture
+      ...existing,
+      firstName: req.body.firstName ?? existing.firstName,
+      lastName: req.body.lastName ?? existing.lastName,
+      email: req.body.email ?? existing.email,
+      password: req.body.password ? hash(req.body.password) : existing.password,
+      picture: req.file ? `/uploads/${req.file.filename}` : existing.picture
     };
 
     writeJSON(USERS_FILE, users);
-
     res.json({ message: "Profile updated", user: users[userIndex] });
   } catch (err) {
     console.error("Update error:", err);
     res.status(500).json({ error: "Internal server error", details: err.message });
   }
-  
 });
 
 // BOOKINGS 
@@ -141,7 +141,7 @@ app.post("/api/bookings", (req, res) => {
       b.username === req.body.username &&
       b.item === req.body.item &&         // same resource type (Study Rooms, Art Studios, etc.)
       b.date === req.body.date &&
-      (b.status === "Booked" || b.status === "Pending")
+      (b.status === "booked" || b.status === "pending")
   );
 
   if (alreadyHasBooking) {
@@ -156,7 +156,7 @@ app.post("/api/bookings", (req, res) => {
       b.resource === req.body.resource &&
       b.hour === req.body.hour &&
       b.date === req.body.date &&
-      (b.status === "Booked" || b.status === "Pending")
+      (b.status === "booked" || b.status === "pending")
   );
 
   if (collision) {
@@ -169,13 +169,13 @@ app.post("/api/bookings", (req, res) => {
   // Match by resource type name: item (e.g. "Art Studios") ↔ title
   const resource = resources.find(r => r.title === req.body.item);
 
-  let status = "Pending"; // default
+  let status = "pending"; // default
 
   if (resource) {
     if (resource.bookingType === "Instant") {
-      status = "Booked";
+      status = "booked";
     } else if (resource.bookingType === "Request") {
-      status = "Pending";
+      status = "pending";
     }
   }
 
@@ -237,9 +237,17 @@ app.patch("/api/resources/:id", (req, res) => {
   if (!resource) {
     return res.status(404).json({ error: "Resource not found" });
   }
-
+  
+  // update status
   if (req.body.status) {
     resource.status = req.body.status;
+  }
+  // update room status
+  else if(req.body.newRoomStatus) {
+    const index1 = req.body.timeIndex - 12;
+    roomsArray = resource.rooms.split(",").map(r => r.trim());
+    const index2 = roomsArray.indexOf(req.body.roomIndex);
+    resource.roomsStatus[index1][index2] = req.body.newRoomStatus;
   }
 
   writeJSON(RESOURCES_FILE, resources);

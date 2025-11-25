@@ -1,70 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title> <!-- | Campus Booking at end -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
-    <h1> </h1>  <!-- - Admin at end -->
-    <nav>
-        <ul>
-        <li><a href="admin-home.html" class="active">Home</a></li>
-        <li><a href="admin-resources.html">Resources</a></li>
-        <li><a href="statistics.html">Statistics</a></li>
-        <li><a href="admin-bookings.html">Bookings</a></li>
-        <li><a href="#" id="logoutBtn">Log Out</a></li>
-      </ul>
-        <a href="admin-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
-      </nav>
-  </header>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> <!-- Filled dynamically --> </title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="200px">
+      <h1> <!-- Filled dynamically --> </h1>
+      <nav>
+          <ul>
+            <li><a href="admin-home.html" class="active">Home</a></li>
+            <li><a href="admin-resources.html">Resources</a></li>
+            <li><a href="statistics.html">Statistics</a></li>
+            <li><a href="admin-bookings.html">Bookings</a></li>
+            <li><a href="#" id="logoutBtn">Log Out</a></li>
+          </ul>
+          <a href="admin-profile.html"><img src="images/user.png" alt="User Icon" class="user-pic"></a>
+        </nav>
+    </header>
 
-  <main>
-  <h2 id="resourceTitle"></h2>
+    <main>
+      <h2 id="resourceTitle"><!-- Filled dynamically --></h2>
 
-  <!-- Date picker -->
-  <div class="date-picker">
-    <label for="date">Choose a date: </label>
-    <input type="date" id="date" name="date">
-  </div>
+      <!-- Date picker -->
+      <div class="date-picker">
+        <label for="date">Choose a date: </label>
+        <input type="date" id="date" name="date">
+      </div>
 
-  <table class="atable">
-    <thead>
-      <tr>
-        <th>Room</th>
-        <th>12:00</th>
-        <th>13:00</th>
-        <th>14:00</th>
-        <th>15:00</th>
-        <th>16:00</th>
-        <th>17:00</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-        <!--Filled dynamically-->
-    </tr>
-    </tbody>
+      <table class="atable">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>12:00</th>
+            <th>13:00</th>
+            <th>14:00</th>
+            <th>15:00</th>
+            <th>16:00</th>
+            <th>17:00</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!--Filled dynamically-->
+        </tbody>
 
-    <tfoot>
-    <tr>
-      <td colspan="7">Please click on time slot to change its status</td>
-    </tr>
-  </tfoot>
-  </table>
+        <tfoot>
+        <tr>
+          <td colspan="7">Please click on time slot to change its status</td>
+        </tr>
+      </tfoot>
+      </table>
 
-  <div id="message"></div>
+      <div id="message"> <!-- Filled dynamically --> </div>
       <button type ="button" class="confirm-button" onclick="confirmChanges()">Confirm Changes</button>
 
-</main>
+    </main>
 
-<footer>
-  <p>© 2025 Campus Booking System</p>
-</footer>
-<script src="logout.js"></script>
-<script src="admin-availabilities.js"></script>
-<script src="admin-edit.js"></script>
-</body>
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+  <script src="logout.js"></script>
+  <script src="admin-availabilities.js"></script>
+  <script src="admin-edit.js"></script>
+  </body>
 </html>

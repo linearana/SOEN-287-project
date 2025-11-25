@@ -1,64 +1,90 @@
-const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-if (!currentUser) {
-  alert("⚠️ You must be logged in.");
-  window.location.href = "login.html";
-}
+console.log("instant user-request.js loaded");
+
+// ---------------------- GET RESOURCE INFO ----------------------
+const urlParams = new URLSearchParams(window.location.search);
+const resourceIDParam = urlParams.get("id");
+const resourceID = resourceIDParam ? Number(resourceIDParam) : null;
 
 const messageBox = document.getElementById("message");
-const resourceTypeName = document
-  .getElementById("resourceTitle")
-  .textContent
-  .trim();
-
+const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 const dateInput = document.getElementById("date");
 
-// time slots used as table columns
+let bookingInProgress = false;
 const TIMES = [12, 13, 14, 15, 16, 17];
 
-// ---------------------- BUILD BASE TABLE FROM RESOURCES ----------------------
+// ---------------------- BUILD TABLE FROM resources.json ----------------------
 async function buildTableFromResource() {
+  console.log("buildTableFromResource() for INSTANT resource");
+
   let resources = [];
   try {
     const res = await fetch("http://localhost:4000/api/resources");
     resources = await res.json();
-  } catch {
-    console.error("Cannot load resources from server.");
+  } catch (err) {
+    console.error("SERVER OFFLINE → cannot load resources.", err);
+    alert("Cannot load resources from server.");
     return;
   }
 
-  const resource = resources.find(r => r.title === resourceTypeName);
+  console.log("Loaded resources:", resources);
+
+  // Prefer ID from ?id=...; else match by title (Study Rooms, Conference Rooms, etc.)
+  let resource = null;
+  if (resourceID && !Number.isNaN(resourceID)) {
+    resource = resources.find(r => r.id === resourceID);
+  }
   if (!resource) {
-    console.error("Resource not found for page:", resourceTypeName);
+    resource = resources.find(
+      r =>
+        r.title &&
+        r.title.trim().toLowerCase() === resourceTypeName.toLowerCase()
+    );
+  }
+
+  if (!resource) {
+    console.error("❌ Instant resource not found for page:", {
+      resourceID,
+      resourceTypeName,
+      available: resources.map(r => ({ id: r.id, title: r.title }))
+    });
+    alert("Could not find matching resource configuration for this page.");
     return;
   }
+
+  console.log("Matched instant resource:", resource);
 
   const tbody = document.querySelector("table.atable tbody");
-  tbody.innerHTML = ""; // clear whatever is there
+  if (!tbody) {
+    console.error("❌ tbody for .atable not found");
+    return;
+  }
+  tbody.innerHTML = "";
 
   const roomsArray = resource.rooms.split(",").map(r => r.trim());
+  console.log("Rooms for this instant resource:", roomsArray);
 
   roomsArray.forEach((roomName, roomIndex) => {
     const tr = document.createElement("tr");
 
-    // first column: room name
+    // Room name
     const tdRoom = document.createElement("td");
     tdRoom.textContent = roomName;
     tr.appendChild(tdRoom);
 
-    // time slot columns
+    // Time slots
     TIMES.forEach((hour, colIndex) => {
       const td = document.createElement("td");
       td.dataset.room = roomName;
       td.dataset.time = String(hour);
 
-      // use base availability from resources.json (if present)
-      const baseStatus = resource.roomsStatus?.[roomIndex]?.[colIndex] || "available";
+      const baseStatus =
+        resource.roomsStatus?.[roomIndex]?.[colIndex] || "available";
 
       if (baseStatus === "unavailable") {
-        td.textContent = "X";
+        td.textContent = "unavailable";
         td.classList.add("unavailable");
       } else {
-        td.textContent = "Available";
+        td.textContent = "available";
         td.classList.add("available");
       }
 
@@ -68,25 +94,30 @@ async function buildTableFromResource() {
     tbody.appendChild(tr);
   });
 
-  // after building rows, attach click handlers
+  console.log("Instant table rows built:", tbody.children.length);
+
   attachCellClickHandlers();
+  await updateBookedSlots();
 }
 
-// ---------------------- LOAD BOOKED / PENDING SLOTS ----------------------
+// ---------------------- OVERLAY BOOKINGS ON TABLE ----------------------
 async function updateBookedSlots() {
-  const rawDate = dateInput.value;
-  if (!rawDate) return;
-
-  const selectedDate = new Date(rawDate).toLocaleDateString();
+  const selectedDate = dateInput.value;
+  if (!selectedDate) {
+    console.log("No date selected yet, skipping updateBookedSlots (instant).");
+    return;
+  }
 
   let bookings = [];
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     bookings = await res.json();
-  } catch {
-    console.warn("Server offline, cannot load bookings.");
+  } catch (err) {
+    console.warn("SERVER OFFLINE → cannot load bookings.", err);
     return;
   }
+
+  console.log("Current bookings (instant):", bookings);
 
   document.querySelectorAll("td[data-room]").forEach(cell => {
     const room = cell.dataset.room;
@@ -96,143 +127,154 @@ async function updateBookedSlots() {
       b =>
         b.resource === room &&
         b.hour === time &&
-        b.date === selectedDate
+        b.date === selectedDate &&
+        (b.status === "Booked" || b.status === "booked")
     );
 
     if (match) {
-      cell.classList.remove("available");
       cell.classList.add("booked");
-
-      // Backend decides Pending vs Booked (Instant vs Request)
-      if (match.status === "Pending") {
-        cell.style.backgroundColor = "orange";
-        cell.style.color = "black";
-        cell.textContent = "Pending";
-      } else {
-        cell.style.backgroundColor = "red";
-        cell.style.color = "white";
-        cell.textContent = "Booked";
-      }
-    } else {
-      if (cell.textContent !== "X") {
-        cell.classList.remove("booked");
-        cell.classList.add("available");
-        cell.style.backgroundColor = "";
-        cell.style.color = "";
-        cell.textContent = "Available";
-      }
+      cell.classList.remove("available");
+      cell.textContent = "booked";
+    } else if (cell.textContent !== "unavailable") {
+      cell.classList.remove("booked");
+      cell.classList.add("available");
+      cell.textContent = "available";
     }
   });
 }
 
-// ---------------------- SEND REQUEST (ATTACH AFTER TABLE BUILT) ----------------------
-function attachCellClickHandlers() {
-  document.querySelectorAll("td[data-room]").forEach(cell => {
-    cell.addEventListener("click", async (event) => {
-      // stop any weird default behaviours
-      event.preventDefault();
-      event.stopPropagation();
+// ---------------------- HANDLE CELL CLICK → INSTANT BOOK ----------------------
+async function handleCellClick() {
+  const cell = this;
 
-      if (cell.classList.contains("booked") || cell.textContent === "X") return;
+  // login check
+  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  if (!currentUser) {
+    alert("⚠️ You must be logged in to make a booking.");
+    window.location.href = "login.html";
+    return;
+  }
 
-      const rawDate = dateInput.value.trim();
-      if (!rawDate) {
-        alert("⚠️ Select a date first.");
-        return;
-      }
+  const selectedDate = dateInput.value;
+  if (!selectedDate) {
+    alert("Select a date first.");
+    return;
+  }
 
-      // remember chosen date for this tab
-      sessionStorage.setItem("selectedDate", rawDate);
+  const room = cell.dataset.room;
+  const time = cell.dataset.time;
 
-      const selectedDate = new Date(rawDate).toLocaleDateString();
-      const room = cell.dataset.room;
-      const time = cell.dataset.time;
+  console.log("Instant cell clicked:", { room, time, selectedDate });
 
-      // check if this user already has booking for THIS resource type that day
-      let bookings = [];
-      try {
-        const res = await fetch("http://localhost:4000/api/bookings");
-        bookings = await res.json();
-      } catch {
-        alert("⚠️ Cannot contact server to verify existing bookings.");
-        return;
-      }
+  if (bookingInProgress) {
+    alert("⚠️ You already made a booking. Refresh the page to book again.");
+    return;
+  }
 
-      const alreadyHasBookingToday = bookings.some(b =>
-        b.username === currentUser.email &&
-        b.date === selectedDate &&
-        b.item === resourceTypeName &&
-        b.status !== "Cancelled" &&
-        b.status !== "Rejected"
-      );
+  // cannot book unavailable or already booked cells
+  if (cell.textContent === "unavailable" || cell.textContent === "booked") {
+    return;
+  }
 
-      if (alreadyHasBookingToday) {
-        alert("❌ You already have a booking for this resource on this date.");
-        return;
-      }
+  // Check if user already booked this resource type for that day
+  let bookings = [];
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings");
+    bookings = await res.json();
+  } catch (err) {
+    console.warn("SERVER OFFLINE → cannot validate existing bookings.", err);
+  }
 
-      const booking = {
-        id: Date.now(),
-        username: currentUser.email,
-        resource: room,
-        item: resourceTypeName,
-        date: selectedDate,
-        hour: time
-        // status determined by backend based on bookingType
-      };
+  const existingBooking = bookings.find(
+    b =>
+      b.username === currentUser.email &&
+      b.item === resourceTypeName &&
+      b.date === selectedDate &&
+      (b.status === "Booked" || b.status === "booked")
+  );
 
-      try {
-        const res = await fetch("http://localhost:4000/api/bookings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(booking)
-        });
+  if (existingBooking) {
+    alert("⚠️ You already have a booking for this resource type on that date.");
+    return;
+  }
 
-        if (!res.ok) {
-          const data = await res.json();
-          alert("❌ " + data.error);
-          return;
-        }
-      } catch {
-        alert("⚠️ Cannot contact server.");
-        return;
-      }
+  const booking = {
+    id: Date.now(),
+    username: currentUser.email,
+    resource: room,          // specific room (e.g., "LB 251")
+    item: resourceTypeName,  // resource type (e.g., "Study Rooms")
+    date: selectedDate,
+    hour: time
+    // status will be set to "Booked" by backend for Instant bookingType
+  };
 
-      // Just refresh slots to reflect backend's status (Booked or Pending)
-      await updateBookedSlots();
+  bookingInProgress = true;
 
-      const msg = `📩 Booking created for ${room} at ${time}:00 on ${selectedDate}`;
-      messageBox.textContent = msg;
-      sessionStorage.setItem("lastBookingMessage", msg);
-      sessionStorage.setItem("lastBookingMessageTime", Date.now().toString());
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking)
     });
-  });
+
+    if (!res.ok) {
+      const data = await res.json();
+      alert("Error: " + data.error);
+      bookingInProgress = false;
+      return;
+    }
+  } catch (err) {
+    alert("Server unreachable.");
+    bookingInProgress = false;
+    return;
+  }
+
+  // INSTANT: mark as booked immediately
+  cell.classList.add("booked");
+  cell.classList.remove("available");
+  cell.textContent = "booked";
+
+  // Optional: PATCH resource availability (same as your original)
+  if (resourceIDParam) {
+    try {
+      await fetch(`http://localhost:4000/api/resources/${resourceIDParam}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          newRoomStatus: "booked",
+          roomIndex: room,
+          timeIndex: time
+        })
+      });
+    } catch (err) {
+      console.warn("Failed to PATCH resource availability:", err);
+    }
+  }
+
+  messageBox.textContent =
+    `✔ Booking confirmed: ${room} at ${time}:00 on ${selectedDate}`;
+
+  await updateBookedSlots();
+  bookingInProgress = false;
 }
 
-// ---------------------- DATE HANDLING + INITIAL LOAD ----------------------
-dateInput.addEventListener("change", () => {
-  sessionStorage.setItem("selectedDate", dateInput.value);
-  updateBookedSlots();
-});
+// ---------------------- ATTACH CLICK HANDLERS ----------------------
+function attachCellClickHandlers() {
+  const cells = document.querySelectorAll("td[data-room]");
+  cells.forEach(cell => cell.addEventListener("click", handleCellClick));
+  console.log("Instant click handlers attached to cells:", cells.length);
+}
 
+// ---------------------- INITIAL LOAD ----------------------
 window.addEventListener("load", async () => {
-  const savedDate = sessionStorage.getItem("selectedDate");
+  console.log("window.load fired on INSTANT availability page");
 
-  if (savedDate) {
-    dateInput.value = savedDate;       // use last date from this tab
-  } else {
-    dateInput.value = new Date().toISOString().split("T")[0]; // default today
+  if (!dateInput.value) {
+    dateInput.value = new Date().toISOString().split("T")[0];
+    console.log("Default date set to:", dateInput.value);
   }
 
-  // build table from resources.json before loading bookings
   await buildTableFromResource();
-  await updateBookedSlots();
-
-  // restore message if still recent
-  const savedMsg = sessionStorage.getItem("lastBookingMessage");
-  const savedMsgTime = Number(sessionStorage.getItem("lastBookingMessageTime") || 0);
-  const now = Date.now();
-  if (savedMsg && now - savedMsgTime < 30000) {
-    messageBox.textContent = savedMsg;
-  }
 });
+
+dateInput.addEventListener("change", updateBookedSlots);
