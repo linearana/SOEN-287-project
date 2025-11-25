@@ -44,5 +44,23 @@
     "password": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
     "role": "student",
     "picture": "/images/user.png"
+  },
+  {
+    "id": 1763839891143,
+    "firstName": "lili",
+    "lastName": "charlotte",
+    "studentId": "2876880",
+    "email": "lilicharlotte@hotmail.com",
+    "password": "cb4fe173b75c635d3004596f70c3a6e4facd8f99aee286c256fea68ac56152eb",
+    "role": "student"
+  },
+  {
+    "id": 1764023665169,
+    "firstName": "sandra",
+    "lastName": "rob",
+    "studentId": "393722129",
+    "email": "sand@rob",
+    "password": "f79d7d24558304d8bce3b1a7622fd4084d9708daa9477124a70e89472b68a465",
+    "role": "student"
   }
 ]

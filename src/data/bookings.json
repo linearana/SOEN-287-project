@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "id": 1763957999113,
+    "username": "hi@hi.com",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-23",
+    "hour": "12",
+    "status": "Booked"
+  },
+  {
+    "id": 1763958398313,
+    "username": "hi@hi.com",
+    "resource": "CO 900",
+    "item": "Film Equipment",
+    "date": "2025-11-23",
+    "hour": "12",
+    "status": "Booked"
+  },
+  {
+    "id": 1764023554423,
+    "username": "hi@hi.com",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-18",
+    "hour": "13",
+    "status": "Booked"
+  },
+  {
+    "id": 1764023566491,
+    "username": "hi@hi.com",
+    "resource": "FA 3-547",
+    "item": "Art Studios",
+    "date": "2025-11-13",
+    "hour": "16",
+    "status": "Booked"
+  },
+  {
+    "id": 1764023842424,
+    "username": "hi@hi.com",
+    "resource": "FA 5-101",
+    "item": "Art Studios",
+    "date": "2025-11-20",
+    "hour": "15",
+    "status": "Booked"
+  },
+  {
+    "id": 1764023858474,
+    "username": "hi@hi.com",
+    "resource": "CO 900",
+    "item": "Film Equipment",
+    "date": "2025-11-25",
+    "hour": "15",
+    "status": "Declined"
+  }
+]
