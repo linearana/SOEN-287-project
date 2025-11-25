@@ -313,6 +313,9 @@ th {
 }
 
 /* ----------------- TEXTAREA ETC ----------------- */
+#rulesUser {
+  white-space: pre-line;
+}
 
 .textbox {
   width: 250px;
