@@ -4,7 +4,7 @@
     "username": "ni@gmail.com",
     "resource": "LB 311",
     "item": "Study Rooms",
-    "date": "2025-11-25",
+    "date": "2025-11-23",
     "hour": "14",
     "status": "booked"
   },
@@ -27,12 +27,6 @@
     "status": "booked"
   },
   {
-    "id": 1764050828249,
-    "username": "l_josefe@live.concordia.ca",
-    "resource": "JH 765",
-    "item": "Conference Rooms",
-    "date": "2025-11-25",
-    "hour": "15",
     "id": 1764049843799,
     "username": "ni@gmail.com",
     "resource": "NI 368",
@@ -56,6 +50,15 @@
     "resource": "LB 315",
     "item": "Study Rooms",
     "date": "2025-11-26",
+    "hour": "12",
+    "status": "booked"
+  },
+  {
+    "id": 1764052336824,
+    "username": "__ADMIN__",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
     "hour": "12",
     "status": "booked"
   }

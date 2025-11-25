@@ -131,24 +131,29 @@ async function updateBookedSlots() {
     );
 
     if (match) {
-      // Normalize status to lower-case for CSS classes
-      const normalizedStatus = String(match.status).toLowerCase(); // "booked", "pending"
+  const status = String(match.status).toLowerCase();
 
-      cell.classList.remove("available");
-      cell.classList.remove("booked", "pending");
-      cell.classList.add(normalizedStatus);
+  cell.classList.remove("available", "booked", "pending", "unavailable");
 
-      cell.textContent =
-        normalizedStatus === "pending" ? "Pending" : "Booked";
-    } else {
-      // Restore to base "available" only if not structurally unavailable (we treat 'X' as unavailable)
-      if (cell.textContent !== "X") {
-        cell.classList.remove("booked", "pending");
-        cell.classList.add("available");
-        cell.textContent = "available";
-      }
-    }
-  });
+  if (status === "unavailable") {
+    cell.classList.add("unavailable");
+    cell.textContent = "X"; // visually blocked
+  } else if (status === "pending") {
+    cell.classList.add("pending");
+    cell.textContent = "Pending";
+  } else { // booked or anything else treated as booked
+    cell.classList.add("booked");
+    cell.textContent = "Booked";
+  }
+} else {
+  if (cell.textContent !== "X") {  // keep hard "X" cells
+    cell.classList.remove("booked", "pending", "unavailable");
+    cell.classList.add("available");
+    cell.textContent = "available";
+  }
+}
+
+    });
 }
 
 // ---------------------- AUTO-CHOOSE DATE & INITIAL LOAD ----------------------

@@ -157,54 +157,69 @@ app.post("/api/bookings/check", (req, res) => {
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
-  // 🔹 1) Prevent user from booking the same resource type (item) more than once per day
-  const alreadyHasBooking = bookings.some(
-    b =>
-      b.username === req.body.username &&
-      b.item === req.body.item &&         // same resource type (Study Rooms, Art Studios, etc.)
-      b.date === req.body.date &&
-      (b.status === "booked" || b.status === "pending")
-  );
+  const isAdminBlock = req.body.status === "Unavailable";
 
-  if (alreadyHasBooking) {
-    return res.status(403).json({
-      error: "You already have a booking for this resource type on that day."
-    });
+  // 1) Prevent user from booking the same resource type (item) more than once per day
+  //    (We only enforce this for normal user bookings, not admin blocks)
+  if (!isAdminBlock) {
+    const alreadyHasBooking = bookings.some(
+      b =>
+        b.username === req.body.username &&
+        b.item === req.body.item &&
+        b.date === req.body.date &&
+        (b.status === "Booked" || b.status === "Pending")
+    );
+
+    if (alreadyHasBooking) {
+      return res.status(403).json({
+        error: "You already have a booking for this resource type on that day."
+      });
+    }
   }
 
-  // 🔹 2) Prevent double-booking same room/time (regardless of user)
+  // 2) Prevent double-booking same room/time (regardless of user)
   const collision = bookings.some(
     b =>
       b.resource === req.body.resource &&
       b.hour === req.body.hour &&
       b.date === req.body.date &&
-      (b.status === "booked" || b.status === "pending")
+      (
+        b.status === "Booked" ||
+        b.status === "Pending" ||
+        b.status === "Unavailable"       // 🔹 admin block also blocks slot
+      )
   );
 
-  if (collision) {
+  if (collision && !isAdminBlock) {
+    // For normal user bookings, block if something (booking or block) exists
     return res.status(409).json({ error: "This slot is already booked." });
   }
 
-  // 🔹 3) Decide status based on bookingType from RESOURCES_FILE
-  const resources = readJSON(RESOURCES_FILE);
+  // 3) Decide status
+  let status;
 
-  // Match by resource type name: item (e.g. "Art Studios") ↔ title
-  const resource = resources.find(r => r.title === req.body.item);
+  if (isAdminBlock) {
+    // Admin block → keep as Unavailable
+    status = "Unavailable";
+  } else {
+    // Normal booking → use bookingType logic
+    const resources = readJSON(RESOURCES_FILE);
+    const resource = resources.find(r => r.title === req.body.item);
 
-  let status = "pending"; // default
-
-  if (resource) {
-    if (resource.bookingType === "Instant") {
-      status = "booked";
-    } else if (resource.bookingType === "Request") {
-      status = "pending";
+    status = "Pending"; // default for safety
+    if (resource) {
+      if (resource.bookingType === "Instant") {
+        status = "Booked";
+      } else if (resource.bookingType === "Request") {
+        status = "Pending";
+      }
     }
   }
 
   const newBooking = {
     id: Date.now(),
     ...req.body,
-    status  // override whatever frontend sent
+    status   // ensure we override anything the client sent
   };
 
   bookings.push(newBooking);
@@ -212,7 +227,6 @@ app.post("/api/bookings", (req, res) => {
 
   res.json({ message: "Booking saved", booking: newBooking });
 });
-
 
 // get bookings
 app.get("/api/bookings", (req, res) => {
@@ -259,22 +273,21 @@ app.patch("/api/resources/:id", (req, res) => {
   if (!resource) {
     return res.status(404).json({ error: "Resource not found" });
   }
-  
-  // update status
+
+  // Toggle whole resource enabled/disabled
   if (req.body.status) {
     resource.status = req.body.status;
   }
-  // update room status
-  else if(req.body.newRoomStatus) {
-    const index1 = req.body.timeIndex - 12;
-    roomsArray = resource.rooms.split(",").map(r => r.trim());
-    const index2 = roomsArray.indexOf(req.body.roomIndex);
-    resource.roomsStatus[index1][index2] = req.body.newRoomStatus;
+
+  // Replace entire roomsStatus matrix (for admin availability edits)
+  if (Array.isArray(req.body.roomsStatus)) {
+    resource.roomsStatus = req.body.roomsStatus;
   }
 
   writeJSON(RESOURCES_FILE, resources);
   res.json({ message: "Resource updated", resource });
 });
+
 
 //get resources
 app.get("/api/resources", (req, res) => {
