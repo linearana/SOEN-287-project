@@ -7,5 +7,23 @@
     "date": "2025-11-25",
     "hour": "14",
     "status": "booked"
+  },
+  {
+    "id": 1764050816499,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "LB 328",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "12",
+    "status": "booked"
+  },
+  {
+    "id": 1764050828249,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "JH 765",
+    "item": "Conference Rooms",
+    "date": "2025-11-25",
+    "hour": "15",
+    "status": "booked"
   }
 ]
