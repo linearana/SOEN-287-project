@@ -134,15 +134,28 @@ async function updateBookedSlotsPublic() {
     );
 
     if (match) {
-      cell.classList.remove("available");
-      cell.classList.add("booked");
-      cell.textContent =
-        match.status.toLowerCase() === "pending" ? "pending" : "booked";
-    } else if (cell.textContent !== "unavailable") {
-      cell.classList.remove("booked");
-      cell.classList.add("available");
-      cell.textContent = "available";
-    }
+  const status = String(match.status).toLowerCase();
+
+  cell.classList.remove("available", "booked", "pending", "unavailable");
+
+  if (status === "unavailable") {
+    cell.classList.add("unavailable");
+    cell.textContent = "X"; // visually blocked
+  } else if (status === "pending") {
+    cell.classList.add("pending");
+    cell.textContent = "Pending";
+  } else { // booked or anything else treated as booked
+    cell.classList.add("booked");
+    cell.textContent = "Booked";
+  }
+} else {
+  if (cell.textContent !== "X") {  // keep hard "X" cells
+    cell.classList.remove("booked", "pending", "unavailable");
+    cell.classList.add("available");
+    cell.textContent = "available";
+  }
+}
+
   });
 }
 
