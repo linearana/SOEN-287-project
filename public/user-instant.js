@@ -2,7 +2,7 @@
 urlParams = new URLSearchParams(window.location.search);
 resourceID = urlParams.get("id");
 
-const messageBox = document.getElementById("message");
+messageBox = document.getElementById("message");
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
 //load booked slots

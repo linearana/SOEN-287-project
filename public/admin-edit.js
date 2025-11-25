@@ -5,7 +5,7 @@
     window.location.href = "login.html";
   }
 
-  const messageBox = document.getElementById("message");
+  messageBox = document.getElementById("message");
   
   document.getElementById("tableBody").addEventListener("click", (e) => {
     const cell = e.target;

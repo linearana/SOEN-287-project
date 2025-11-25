@@ -1,13 +1,13 @@
 console.log("availability.js loaded");
 
 // ---------------------- GET RESOURCE INFO ----------------------
-const urlParams = new URLSearchParams(window.location.search);
-const resourceIDParam = urlParams.get("id");
-const resourceID = resourceIDParam ? Number(resourceIDParam) : null;
+urlParams = new URLSearchParams(window.location.search);
+resourceIDParam = urlParams.get("id");
+resourceID = resourceIDParam ? Number(resourceIDParam) : null;
 
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 const dateInput = document.getElementById("date");
-const messageBox = document.getElementById("message") || { textContent: "" };
+messageBox = document.getElementById("message") || { textContent: "" };
 
 const TIMES = [12, 13, 14, 15, 16, 17];
 
