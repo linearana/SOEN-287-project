@@ -84,12 +84,21 @@ app.post("/api/auth/login", (req, res) => {
   });
 });
 
-const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueName = Date.now().toString() + ext;
+    cb(null, uniqueName);
+  }
+});
 
-// profile update
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 
-app.put("/api/users/:id", upload.single("picture"), (req, res) => {
+const upload = multer({ storage });
+
+app.patch("/api/users/:id", upload.single("picture"), (req, res) => {
   try {
     const id = Number(req.params.id);
     let users = readJSON(USERS_FILE);
@@ -117,6 +126,19 @@ app.put("/api/users/:id", upload.single("picture"), (req, res) => {
     res.status(500).json({ error: "Internal server error", details: err.message });
   }
 });
+
+app.get("/api/users/:id", (req, res) => {
+  const users = readJSON(USERS_FILE);
+  const id = Number(req.params.id);
+  const user = users.find(u => u.id === id);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user);
+});
+
 
 // BOOKINGS 
 app.post("/api/bookings/check", (req, res) => {
@@ -261,7 +283,7 @@ app.get("/api/resources", (req, res) => {
 
 //create resource
 //images
-const storage = multer.diskStorage({
+const storage2 = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "public", "images"));
   },
@@ -278,7 +300,7 @@ const storage = multer.diskStorage({
   }
 });
 
-const uploadImageResource = multer({ storage });
+const uploadImageResource = multer({ storage2 });
 
 app.post("/api/resources", uploadImageResource.single("image"), (req, res) => {
   console.log("req.file:", req.file);

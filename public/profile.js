@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch(`http://localhost:4000/api/users/${currentUser.id}`, {
-        method: "PUT",
+        method: "PATCH",
         body: formData
       });
       const data = await res.json();

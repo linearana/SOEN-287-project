@@ -34,7 +34,7 @@
     "email": "l_josefe@live.concordia.ca",
     "password": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
     "role": "student",
-    "picture": "/uploads/b20974e09351a1a39ce2565fd14e9be7"
+    "picture": "/uploads/1764054302127.jpg"
   },
   {
     "id": 1763747895504,
@@ -43,7 +43,6 @@
     "studentId": "123456",
     "email": "ni@gmail.com",
     "password": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
-    "role": "student",
-    "picture": "/uploads/0091942be56a6802954de24fbeeddf01"
+    "role": "student"
   }
 ]

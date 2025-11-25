@@ -1,9 +1,16 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(sessionStorage.getItem("currentUser"));
-  if (!user) return;
+document.addEventListener("DOMContentLoaded", async () => {
+  let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  if (!currentUser) return;
 
-  const headerPic = document.querySelector(".user-pic");
+  let headerPic = document.getElementsByClassName("user-pic")[0];
   if (!headerPic) return;
 
-  headerPic.src = user.picture || "images/user.png";
+  try {
+    const res = await fetch(`/api/users/${currentUser.id}`); // get latest user data
+    const userData = await res.json();
+    headerPic.src = userData.picture || "images/user.png";
+  } catch (err) {
+    console.error("Failed to load user picture:", err);
+    headerPic.src = currentUser.picture || "images/user.png"; // fallback
+  }
 });
