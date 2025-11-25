@@ -25,7 +25,7 @@ async function loadBookings() {
       <td>${b.status}</td>
       <td>
         ${
-          b.status === "Pending"
+          b.status === "pending"
             ? `
               <button onclick="updateBooking(${b.id}, 'Booked')">Approve</button>
               <button onclick="updateBooking(${b.id}, 'Declined')">Decline</button>
