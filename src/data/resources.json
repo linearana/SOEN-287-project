@@ -11,7 +11,7 @@
         "available",
         "available",
         "available",
-        "available",
+        "booked",
         "available",
         "available"
       ],
@@ -233,7 +233,7 @@
       ],
       [
         "available",
-        "available",
+        "booked",
         "available",
         "available",
         "available",
