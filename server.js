@@ -4,28 +4,6 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 const multer = require("multer");
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, 
-  auth: {
-    user: "noreply.campus.project@gmail.com",
-    pass: "yxlygfnxxfnpxdpg" 
-  }
-});
-
-
-// helper to send email
-function sendEmail(to, subject, text) {
-  return transporter.sendMail({
-    from: '"Campus Booking" <your-email@example.com>',
-    to,
-    subject,
-    text
-  });
-}
 
 const app = express();
 app.use(cors());
@@ -241,21 +219,6 @@ app.post("/api/bookings", (req, res) => {
   bookings.push(newBooking);
   writeJSON(BOOKINGS_FILE, bookings);
 
-  // 🔔 send email notification
-const users = readJSON(USERS_FILE);
-const user = users.find(u => u.email === req.body.username); 
-if (user) {
-  let message;
-  if (status === "Booked") {
-    message = `Hey ${user.firstName}, you have booked ${req.body.item}.`;
-  } else if (status === "Pending") {
-    message = `Hey ${user.firstName}, your booking for ${req.body.item} was sent to admin for approval. You will get a decision within 3 business days.`;
-  }
-  sendEmail(user.email, "Booking Notification", message)
-  .then(() => console.log("Email sent to", user.email))
-  .catch(err => console.error("Email error:", err));
-}
-
   res.json({ message: "Booking saved", booking: newBooking });
 });
 
@@ -269,7 +232,6 @@ app.delete("/api/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
   let bookings = readJSON(BOOKINGS_FILE);
 
-  const booking = bookings.find(b => b.id === id); // capture deleted booking
   const filtered = bookings.filter(b => b.id !== id);
 
   if (filtered.length === bookings.length) {
@@ -277,23 +239,8 @@ app.delete("/api/bookings/:id", (req, res) => {
   }
 
   writeJSON(BOOKINGS_FILE, filtered);
-
-  // 🔔 send email notification
-  if (booking) {
-    const users = readJSON(USERS_FILE);
-    const user = users.find(u => u.email === booking.username);
-    if (user) {
-      const message = `Hey ${user.firstName}, your booking for ${booking.item} has been cancelled.`;
-      sendEmail(user.email, "Booking Notification", message)
-      .then(() => console.log("Email sent to", user.email))
-      .catch(err => console.error("Email error:", err));
-
-    }
-  }
-
   res.json({ message: "Booking deleted" });
 });
-
 
 // admin controls
 app.put("/api/bookings/update", (req, res) => {
@@ -306,23 +253,6 @@ app.put("/api/bookings/update", (req, res) => {
 
   bookings[index].status = req.body.status;
   writeJSON(BOOKINGS_FILE, bookings);
-
-  // 🔔 send email notification
-const users = readJSON(USERS_FILE);
-const user = users.find(u => u.email === bookings[index].username);
-if (user) {
-  let message;
-  if (req.body.status === "Booked") {
-    message = `Hey ${user.firstName}, your booking for ${bookings[index].item} has been approved.`;
-  } else if (req.body.status === "Declined") {
-    message = `Hey ${user.firstName}, your booking for ${bookings[index].item} has been denied.`;
-  }
-  sendEmail(user.email, "Booking Notification", message)
-  .then(() => console.log("Email sent to", user.email))
-  .catch(err => console.error("Email error:", err));
-
-}
-
 
   res.json({ message: "Booking updated" });
 });
