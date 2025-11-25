@@ -41,8 +41,9 @@
     "firstName": "Narmin",
     "lastName": "Ibrahimli",
     "studentId": "123456",
-    "email": "ni@gmail.com",
+    "email": "nermin.ibrahimli0105@gmail.com",
     "password": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
-    "role": "student"
+    "role": "student",
+    "picture": "/uploads/1764104531123.png"
   }
 ]
