@@ -107,7 +107,7 @@
     "id": 3,
     "title": "Art Studios",
     "description": "Spaces for painting, sculpting, and creative projects.",
-    "rules": "Eligibility: Rooms are available to all Fine Arts students, faculty, and staff.\nDuration: Bookings are for a maximum of 1 hour per session.\nAdvance Booking: Rooms can be reserved up to 7 days in advance. Walk-ins not available.\nYour request will remain pending until an administrator confirms it.\nStorage: Projects left behind will be removed after 24 hours unless labeled with your name and date.",
+    "rulesResource": "Eligibility: Rooms are available to all Fine Arts students, faculty, and staff.\nDuration: Bookings are for a maximum of 1 hour per session.\nAdvance Booking: Rooms can be reserved up to 7 days in advance. Walk-ins not available.\nYour request will remain pending until an administrator confirms it.\nStorage: Projects left behind will be removed after 24 hours unless labeled with your name and date.",
     "bookingType": "Request",
     "rooms": "FA 3-546, FA 3-547, FA 5-101, VA M2-797, VA M2-798",
     "roomsStatus": [
