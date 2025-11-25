@@ -1,58 +1,108 @@
-urlParams = new URLSearchParams(window.location.search);
-resourceID = urlParams.get("id");
+// ---------------------- GET RESOURCE ID ----------------------
+const urlParams = new URLSearchParams(window.location.search);
+const resourceID = urlParams.get("id");
 
+const messageBox = document.getElementById("message");
+
+// ---------------------- BUILD TABLE ----------------------
 async function loadAvailabilities(resourceID) {
-    const res = await fetch("/api/resources");
-    const resources = await res.json();
+  // 1. Get bookings
+  const resBookings = await fetch("http://localhost:4000/api/bookings");
+  const bookings = await resBookings.json();
 
-    const resource = resources.find((element) => element.id == resourceID);
+  // 2. Get resource metadata
+  const resResources = await fetch("http://localhost:4000/api/resources");
+  const resources = await resResources.json();
+  const resource = resources.find(r => r.id == resourceID);
 
-    document.getElementsByTagName("title")[0].textContent = resource.title;
-    document.getElementById("resourceTitle").textContent = resource.title;
-    document.getElementById("rulesUser").textContent = resource.rules;
+  if (!resource) {
+    console.error("Resource not found");
+    return;
+  }
 
-    const rooms = resource.rooms;
-    const roomsArray = rooms.split(",");
+  // 3. Update page info
+  document.title = resource.title;
+  document.getElementById("resourceTitle").textContent = resource.title;
+  document.getElementById("rulesUser").textContent = resource.rulesResource;
 
-    tableBody = document.getElementById("tableBody");
+  // 4. Build table skeleton
+  const roomsArray = resource.rooms.split(",").map(r => r.trim());
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = ""; // clear old rows
 
-    roomsArray.forEach((room, indexRoom) => {
-        const row = document.createElement("tr");
+  roomsArray.forEach(room => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${room}</td>`;
 
-        row.innerHTML = `
-            <td>${room}</td>
-            <td class="${resource.roomsStatus[indexRoom][0]}" data-room="${room}" data-time="12">${resource.roomsStatus[indexRoom][0]}</td>
-            <td class="${resource.roomsStatus[indexRoom][1]}" data-room="${room}" data-time="13">${resource.roomsStatus[indexRoom][1]}</td>
-            <td class="${resource.roomsStatus[indexRoom][2]}" data-room="${room}" data-time="14">${resource.roomsStatus[indexRoom][2]}</td>
-            <td class="${resource.roomsStatus[indexRoom][3]}" data-room="${room}" data-time="15">${resource.roomsStatus[indexRoom][3]}</td>
-            <td class="${resource.roomsStatus[indexRoom][4]}" data-room="${room}" data-time="16">${resource.roomsStatus[indexRoom][4]}</td>
-            <td class="${resource.roomsStatus[indexRoom][5]}" data-room="${room}" data-time="17">${resource.roomsStatus[indexRoom][5]}</td>
-        `;
-
-
-        tableBody.appendChild(row);
-    });
-
-    const bookingType = resource.bookingType;
-
-    if (bookingType === "Instant") {
-        const script = document.createElement("script");
-        script.src = "user-instant.js";
-        document.body.appendChild(script);
-    } 
-    else if (bookingType === "Request") {
-        const script = document.createElement("script");
-        script.src = "user-request.js";
-        document.body.appendChild(script);
+    for (let hour = 12; hour <= 17; hour++) {
+      row.innerHTML += `
+        <td class="available" data-room="${room}" data-time="${hour}">
+          available
+        </td>
+      `;
     }
+
+    tableBody.appendChild(row);
+  });
+
+  // 5. Overlay bookings
+  updateBookedSlots();
+
+  // 6. Load booking type script
+  if (resource.bookingType === "Instant") {
+    const script = document.createElement("script");
+    script.src = "user-instant.js";
+    document.body.appendChild(script);
+  } else if (resource.bookingType === "Request") {
+    const script = document.createElement("script");
+    script.src = "user-request.js";
+    document.body.appendChild(script);
+  }
 }
 
-//automatically choose date
-let ele = document.getElementById("date");
-var today = new Date();
-var d = String(today.getDate()).padStart(2, '0');
-var m = String(today.getMonth() + 1).padStart(2, '0');
-var y = today.getFullYear();
-ele.value = y + "-" + m + "-" + d;
+// ---------------------- UPDATE BOOKED/PENDING SLOTS ----------------------
+async function updateBookedSlots() {
+  const selectedDate = document.getElementById("date").value; // ISO format yyyy-mm-dd
 
-loadAvailabilities(resourceID);
+  let bookings = [];
+  try {
+    const res = await fetch("http://localhost:4000/api/bookings");
+    bookings = await res.json();
+  } catch {
+    console.warn("Server offline, cannot load bookings.");
+    return;
+  }
+
+  document.querySelectorAll("td[data-room]").forEach(cell => {
+    const room = cell.dataset.room;
+    const time = cell.dataset.time;
+
+    const match = bookings.find(
+      b =>
+        b.resource === room &&
+        String(b.hour) === String(time) &&
+        b.date === selectedDate
+    );
+
+    if (match) {
+      cell.classList.remove("available");
+      cell.classList.add(match.status); // "booked" or "pending"
+      cell.textContent = match.status;
+    } else {
+      if (cell.textContent !== "X") {
+        cell.classList.remove("booked", "pending");
+        cell.classList.add("available");
+        cell.textContent = "available";
+      }
+    }
+  });
+}
+
+// ---------------------- AUTO-CHOOSE DATE ----------------------
+window.onload = () => {
+  const ele = document.getElementById("date");
+  ele.value = new Date().toISOString().split("T")[0]; // today
+  loadAvailabilities(resourceID);
+};
+
+document.getElementById("date").addEventListener("change", updateBookedSlots);
