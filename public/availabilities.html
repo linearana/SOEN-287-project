@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> <!-- Filled dynamically --> </title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <header>
+    <img src="images/concordia-logo.png" alt="Campus Booking Logo" class="logo" width="250px">
+    <h1>Campus Resource Booking!</h1>
+    <div>
+      <nav>
+        <ul>
+          <li><a href="user-home.html" class="active">Home</a></li>
+          <li><a href="user-resources.html">Resources</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  <main>
+    <h2 id="resourceTitle">  <!-- Filled dynamically --> </h2>
+    <div class = "rules">
+      <p id="rulesUser">
+        <!-- Filled dynamically -->
+      </p>
+    </div>
+    <!-- Date picker -->
+    <div class="date-picker">
+      <label for="date">Choose a date: </label>
+      <input type="date" id="date" name="date" onchange="updateBookedSlots()">
+    </div>
+
+    <table class="atable">
+        <thead>
+        <tr>
+            <th>Room</th>
+            <th>12:00</th>
+            <th>13:00</th>
+            <th>14:00</th>
+            <th>15:00</th>
+            <th>16:00</th>
+            <th>17:00</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        <!-- Filled dynamically -->
+        </tbody>
+
+        <tfoot>
+            <tr>
+            <td colspan="7">Please click on an available time slot to book it</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div id="message"> <!-- Filled dynamically --> </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Campus Booking System</p>
+  </footer>
+  <script src="user-availabilities.js"></script>
+</body>
+</html>
