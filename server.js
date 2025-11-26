@@ -296,6 +296,24 @@ app.delete("/api/bookings/:id", (req, res) => {
   res.json({ message: "Booking deleted" });
 });
 
+app.patch("/api/bookings/:username", (req, res) => {
+  const oldEmail = req.params.username;
+  const newEmail = req.body.username;
+
+  let bookings = readJSON(BOOKINGS_FILE);
+
+  // Update every booking that has the old email
+  bookings.forEach(b => {
+    if (b.username === oldEmail) {
+      b.username = newEmail;
+    }
+  });
+
+  writeJSON(BOOKINGS_FILE, bookings);
+
+  res.json({ message: "Bookings email updated" });
+});
+
 // admin controls
 app.put("/api/bookings/update", (req, res) => {
   let bookings = readJSON(BOOKINGS_FILE);

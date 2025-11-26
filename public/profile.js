@@ -1,9 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   if (!currentUser) {
     window.location.href = "login.html";
     return;
   }
+
 
   const editFirstName = document.getElementById("editFirstName");
   const editLastName = document.getElementById("editLastName");
@@ -21,14 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
   editLastName.value = currentUser.lastName;
   studentId.textContent = currentUser.studentId;
   editEmail.value = currentUser.email;
-  if (currentUser.picture) {
-  preview.src = currentUser.picture;
-} else {
-  preview.src = "/images/user.png";
-}
+  try {
+    // Fetch latest user data from server
+    const res = await fetch(`/api/users/${currentUser.id}`);
+    const userData = await res.json();
 
-  if (currentUser.picture) {
-    preview.src = currentUser.picture;
+    preview.src = userData.picture || currentUser.picture || "images/user.png";
+  } catch (err) {
+    console.error("Failed to load user picture:", err);
+    preview.src = currentUser.picture || "images/user.png"; // fallback
   }
 
   saveBtn.addEventListener("click", async () => {
@@ -57,6 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
         message.textContent = `❌ ${data.error || "Update failed"}`;
         return;
       }
+
+      const resBookings = await fetch(`http://localhost:4000/api/bookings/${currentUser.email}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: editEmail.value
+            })
+      });
 
       sessionStorage.setItem("currentUser", JSON.stringify(data.user));
       preview.src = data.user.picture; // show uploaded image
