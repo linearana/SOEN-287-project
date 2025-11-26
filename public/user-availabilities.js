@@ -117,67 +117,51 @@ async function loadAvailabilities(resourceID) {
 
 async function updateBookedSlots() {
   const dateInput = document.getElementById("date");
-  if (!dateInput) {
-    console.error("No #date input found");
-    return;
-  }
+  if (!dateInput || !dateInput.value) return;
 
-  const selectedDate = dateInput.value; 
-  if (!selectedDate) {
-    console.log("No date selected yet → skip overlay");
-    return;
-  }
+  const selectedDate = dateInput.value;
 
   let bookings = [];
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     bookings = await res.json();
   } catch (err) {
-    console.warn("Server offline, cannot load bookings.", err);
+    console.warn("Cannot load bookings:", err);
     return;
   }
 
   document.querySelectorAll("td[data-room]").forEach(cell => {
     const room = cell.dataset.room;
-    const time = cell.dataset.time;
+    const time = Number(cell.dataset.time);
 
+    // Reset to available first
+    cell.className = "available";
+    cell.textContent = "available";
+
+    // Find booking for this cell
     const match = bookings.find(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === selectedDate
+      b => b.resource === room && Number(b.hour) === time && b.date === selectedDate
     );
 
-    if (match) {
-  const status = String(match.status).toLowerCase();
+    if (!match) return; // no booking → stays available
 
-  cell.classList.remove("available", "booked", "pending", "unavailable");
+    const status = String(match.status).toLowerCase();
 
-  if (match) {
-  const status = String(match.status).toLowerCase();
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (status === "unavailable") {
-    cell.classList.add("unavailable");
-    cell.textContent = "X";         
-  } else if (status === "pending") {
-    cell.classList.add("pending");
-    cell.textContent = "Pending";
-  } else { // booked or anything else
-    cell.classList.add("booked");
-    cell.textContent = "Booked";
-  }
-} else {
-  if (cell.textContent !== "X") {    
-    cell.classList.remove("booked", "pending", "unavailable");
-    cell.classList.add("available");
-    cell.textContent = "available";
-  }
-}
-
-}
-
-    });
+    if (status === "unavailable") {
+      cell.className = "unavailable";
+      cell.textContent = "X";
+    } else if (status === "pending") {
+      cell.className = "pending";
+      cell.textContent = "Pending";
+    } else if (status === "booked") {
+      cell.className = "booked";
+      cell.textContent = "Booked";
+    } else {
+      // fallback
+      cell.className = "available";
+      cell.textContent = "available";
+    }
+  });
 }
 
 

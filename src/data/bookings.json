@@ -439,5 +439,68 @@
     "date": "2025-12-20",
     "hour": "13",
     "status": "Pending"
+  },
+  {
+    "id": 1764128598393,
+    "username": "__ADMIN__",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-28",
+    "hour": "12",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764128599337,
+    "username": "__ADMIN__",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-28",
+    "hour": "13",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764130025393,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "FA 3-546",
+    "item": "Art Studios",
+    "date": "2025-12-04",
+    "hour": "12",
+    "status": "Pending"
+  },
+  {
+    "id": 1764130045240,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "NI 555",
+    "item": "Engineering Labs",
+    "date": "2025-12-04",
+    "hour": "15",
+    "status": "Booked"
+  },
+  {
+    "id": 1764130060018,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "LB 328",
+    "item": "Study Rooms",
+    "date": "2025-11-26",
+    "hour": "17",
+    "status": "Booked"
+  },
+  {
+    "id": 1764130076114,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "CO 678",
+    "item": "Film Equipment",
+    "date": "2025-12-04",
+    "hour": "15",
+    "status": "Declined"
+  },
+  {
+    "id": 1764130087797,
+    "username": "l_josefe@live.concordia.ca",
+    "resource": "JH 765",
+    "item": "Conference Rooms",
+    "date": "2025-11-26",
+    "hour": "15",
+    "status": "Booked"
   }
 ]

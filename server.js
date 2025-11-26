@@ -178,7 +178,7 @@ app.post("/api/bookings/check", (req, res) => {
 app.post("/api/bookings", (req, res) => {
   const bookings = readJSON(BOOKINGS_FILE);
 
-  const isAdminBlock = req.body.status === "Unavailable";
+  const isAdminBlock = req.body.status.toLowerCase() === "unavailable";
 
   const ACTIVE_BOOKING_STATUSES = ["Booked", "Pending"];
 

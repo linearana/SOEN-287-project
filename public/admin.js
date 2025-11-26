@@ -1,5 +1,6 @@
 console.log("admin.js loaded");
 
+/* ------------------ GLOBALS ------------------ */
 
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
@@ -18,6 +19,8 @@ const HOURS = [12, 13, 14, 15, 16, 17];
 let currentResource = null;
 
 
+/* ------------------ INIT DATE ------------------ */
+
 function ensureDateDefault() {
   if (!dateInput) return;
   if (!dateInput.value) {
@@ -30,7 +33,7 @@ function ensureDateDefault() {
 }
 
 function getSelectedDate() {
-  const val = dateInput ? dateInput.value.trim() : "";
+  const val = dateInput?.value.trim();
   if (!val) {
     alert("⚠️ Please select a date first.");
     throw new Error("No date selected");
@@ -39,8 +42,11 @@ function getSelectedDate() {
 }
 
 
+/* ------------------ BUILD TABLE ------------------ */
+
 async function buildAdminTable() {
   if (!tableBody) return;
+
   if (!resourceID) {
     console.error("❌ No ?id=... in URL for resource.");
     return;
@@ -64,7 +70,6 @@ async function buildAdminTable() {
 
   currentResource = resource;
 
-  // Set titles / headings
   document.title = resource.title + " - Admin";
   const h1 = document.querySelector("h1");
   if (h1) h1.textContent = "Admin " + resource.title + " | Campus Booking";
@@ -75,36 +80,24 @@ async function buildAdminTable() {
     rulesEl.textContent = resource.rulesResource;
   }
 
-  // Clear table body
   tableBody.innerHTML = "";
 
-  // Rooms list from resource
   const roomsArray = resource.rooms.split(",").map(r => r.trim());
 
   roomsArray.forEach((roomName, indexRoom) => {
     const row = document.createElement("tr");
 
-    // Room name cell
     const roomCell = document.createElement("td");
     roomCell.textContent = roomName;
     row.appendChild(roomCell);
 
-    // Time slot cells
     HOURS.forEach((hour, slotIndex) => {
       const td = document.createElement("td");
       td.dataset.room = roomName;
       td.dataset.time = String(hour);
 
-      let baseStatus = "available";
-      if (
-        Array.isArray(resource.roomsStatus) &&
-        resource.roomsStatus[indexRoom] &&
-        resource.roomsStatus[indexRoom][slotIndex]
-      ) {
-        baseStatus = resource.roomsStatus[indexRoom][slotIndex];
-      }
-
-      if (baseStatus === "unavailable" || baseStatus === "X") {
+      const base = resource.roomsStatus?.[indexRoom]?.[slotIndex];
+      if (base === "unavailable" || base === "X") {
         td.classList.add("unavailable");
         td.textContent = "X";
       } else {
@@ -121,15 +114,14 @@ async function buildAdminTable() {
   await updateAdminSlots();
 }
 
+
+/* ------------------ UPDATE SLOTS (FIXED) ------------------ */
+
 async function updateAdminSlots() {
   if (!tableBody) return;
 
   let date;
-  try {
-    date = getSelectedDate();
-  } catch {
-    return;
-  }
+  try { date = getSelectedDate(); } catch { return; }
 
   let bookings = [];
   try {
@@ -140,53 +132,59 @@ async function updateAdminSlots() {
     return;
   }
 
-  const resourceTitle = currentResource ? currentResource.title : null;
+  const resourceTitle = currentResource?.title ?? null;
   if (resourceTitle) {
     bookings = bookings.filter(b => b.item === resourceTitle);
   }
 
-  // Reset cells
-  tableBody.querySelectorAll("td[data-room]").forEach(cell => {
-    if (cell.textContent === "X") {
-      cell.className = "unavailable";
-      return;
+  const bookingMap = new Map();
+  bookings.forEach(b => {
+    if (b.date === date) {
+      bookingMap.set(`${b.resource}|${b.hour}`, b.status.toLowerCase());
     }
-    cell.className = "available";
-    cell.textContent = "available";
   });
 
-  // Apply bookings
-  tableBody.querySelectorAll("td[data-room]").forEach(cell => {
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
+  const rows = Array.from(tableBody.querySelectorAll("tr"));
 
-    const match = bookings.find(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === date
-    );
+  rows.forEach((row, indexRoom) => {
+    const cells = row.querySelectorAll("td[data-room]");
 
-    if (!match) return;
+    cells.forEach(cell => {
+      const room = cell.dataset.room;
+      const time = cell.dataset.time;
 
-    const status = String(match.status || "").toLowerCase();
-    cell.className = "";
+      const slotIndex = HOURS.indexOf(Number(time));
+      const base = currentResource.roomsStatus?.[indexRoom]?.[slotIndex];
 
-    if (status === "unavailable") {
-      cell.classList.add("unavailable");
-      cell.textContent = "X";
-    } else if (status === "pending") {
-      cell.classList.add("pending");
-      cell.textContent = "Pending";
-    } else if (status === "booked") {
-      cell.classList.add("booked");
-      cell.textContent = "Booked";
-    } else {
-      cell.classList.add("booked");
-      cell.textContent = match.status;
-    }
+      // RESET TO BASE STATE
+      if (base === "unavailable" || base === "X") {
+        cell.className = "unavailable";
+        cell.textContent = "X";
+      } else {
+        cell.className = "available";
+        cell.textContent = "available";
+      }
+
+      // APPLY BOOKING STATUS
+      const key = `${room}|${time}`;
+      if (!bookingMap.has(key)) return;
+
+      const status = bookingMap.get(key);
+      cell.className = status;
+
+      if (status === "unavailable") {
+        cell.textContent = "X";
+      } else if (status === "pending") {
+        cell.textContent = "Pending";
+      } else if (status === "booked") {
+        cell.textContent = "Booked";
+      }
+    });
   });
 }
+
+
+/* ------------------ ACTIONS ------------------ */
 
 async function makeSlotUnavailable(room, time, date) {
   try {
@@ -207,7 +205,7 @@ async function makeSlotUnavailable(room, time, date) {
       });
       if (messageBox) {
         messageBox.innerHTML +=
-          `✅ Booking cancelled for ${room} at ${time}:00 on ${date}.<br>`;
+          `❌ Removed existing booking for ${room} at ${time}:00 on ${date}.<br>`;
       }
     }
 
@@ -225,8 +223,14 @@ async function makeSlotUnavailable(room, time, date) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(blockBooking)
     });
+
+    if (messageBox) {
+      messageBox.innerHTML +=
+        `❌ Marked ${room} at ${time}:00 as unavailable for ${date}.<br>`;
+    }
+
   } catch (err) {
-    console.error("Error making slot unavailable:", err);
+    console.error("Error blocking slot:", err);
     alert("⚠️ Server error while updating availability.");
   }
 
@@ -254,18 +258,22 @@ async function makeSlotAvailable(room, time, date) {
 
     if (blocks.length > 0 && messageBox) {
       messageBox.innerHTML +=
-        `🔁 Availability restored for ${room} at ${time}:00 on ${date}.<br>`;
+        `🔁 Restored availability for ${room} at ${time}:00 on ${date}.<br>`;
     }
   } catch (err) {
-    console.error("Error making slot available:", err);
+    console.error("Error restoring slot:", err);
     alert("⚠️ Server error while restoring availability.");
   }
 
   await updateAdminSlots();
 }
 
+
+/* ------------------ CLICK HANDLER ------------------ */
+
 function attachClickHandler() {
   if (!tableBody) return;
+
   tableBody.addEventListener("click", async e => {
     const cell = e.target.closest("td");
     if (!cell || !cell.dataset.room || !cell.dataset.time) return;
@@ -280,30 +288,39 @@ function attachClickHandler() {
       await makeSlotUnavailable(room, time, date);
     } else if (cell.classList.contains("unavailable")) {
       await makeSlotAvailable(room, time, date);
-    } else if (cell.classList.contains("booked") || cell.classList.contains("pending")) {
+    } else if (
+      cell.classList.contains("booked") ||
+      cell.classList.contains("pending")
+    ) {
       await makeSlotUnavailable(room, time, date);
     }
   });
 }
 
+
+/* ------------------ CONFIRM CHANGES ------------------ */
+
 function confirmChanges() {
   if (!messageBox) return;
+
   if (messageBox.innerHTML === "") {
     alert("No changes to confirm.");
     return;
   }
-  if (confirm("Apply all changes? (Changes are already saved; this just clears messages.)")) {
+
+  if (confirm("Apply all changes? (They are already saved — this just clears messages.)")) {
     messageBox.innerHTML = "";
   }
 }
+
+
+/* ------------------ DOM READY ------------------ */
 
 document.addEventListener("DOMContentLoaded", () => {
   ensureDateDefault();
   buildAdminTable().then(() => attachClickHandler());
 
   if (dateInput) {
-    dateInput.addEventListener("change", () => {
-      updateAdminSlots();
-    });
+    dateInput.addEventListener("change", () => updateAdminSlots());
   }
 });
