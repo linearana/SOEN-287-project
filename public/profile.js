@@ -58,6 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      const resBookings = await fetch(`http://localhost:4000/api/bookings/${currentUser.email}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: editEmail.value
+            })
+      });
+
       sessionStorage.setItem("currentUser", JSON.stringify(data.user));
       preview.src = data.user.picture; // show uploaded image
       message.textContent = "✅ Profile updated successfully!";
