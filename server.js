@@ -247,9 +247,9 @@ const user = users.find(u => u.email === req.body.username);
 if (user) {
   let message;
   if (status === "Booked") {
-    message = `Hey ${user.firstName}, you have booked ${req.body.item}.`;
+    message = `Hey ${user.firstName}, you have booked ${b.item} in ${b.resource} on ${b.date} at ${b.hour}:00`;
   } else if (status === "Pending") {
-    message = `Hey ${user.firstName}, your booking for ${req.body.item} was sent to admin for approval. You will get a decision within 3 business days.`;
+    message = `Hi ${user.firstName}, your booking for ${b.item} in ${b.resource} on ${b.date} at ${b.hour}:00 was sent to admin for approval. You will get a decision within 3 business days.`;
   }
   sendEmail(user.email, "Booking Notification", message)
   .then(() => console.log("Email sent to", user.email))
@@ -283,7 +283,7 @@ app.delete("/api/bookings/:id", (req, res) => {
     const users = readJSON(USERS_FILE);
     const user = users.find(u => u.email === booking.username);
     if (user) {
-      const message = `Hey ${user.firstName}, your booking for ${booking.item} has been cancelled.`;
+      const message = `Hi ${user.firstName}, your booking for ${b.item} in ${b.resource} on ${b.date} at ${b.hour}:00 has been cancelled.`;
       sendEmail(user.email, "Booking Notification", message)
       .then(() => console.log("Email sent to", user.email))
       .catch(err => console.error("Email error:", err));
@@ -331,17 +331,14 @@ const user = users.find(u => u.email === bookings[index].username);
 if (user) {
   let message;
   if (req.body.status === "Booked") {
-    message = `Hey ${user.firstName}, your booking for ${bookings[index].item} has been approved.`;
+    message = `Hi ${user.firstName}, your booking for ${b.item} in ${b.resource} on ${b.date} at ${b.hour}:00 has been approved.`;
   } else if (req.body.status === "Declined") {
-    message = `Hey ${user.firstName}, your booking for ${bookings[index].item} has been denied.`;
+    message = `Hi ${user.firstName}, your booking for ${b.item} in ${b.resource} on ${b.date} at ${b.hour}:00 has been declined.`;
   }
   sendEmail(user.email, "Booking Notification", message)
   .then(() => console.log("Email sent to", user.email))
   .catch(err => console.error("Email error:", err));
-
 }
-
-
   res.json({ message: "Booking updated" });
 });
 
