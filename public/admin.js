@@ -1,48 +1,28 @@
-console.log("admin.js loaded");
+console.log("admin-availability.js loaded");
 
 // ---------------------- LOGIN CHECK ----------------------
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
-  alert("⚠️ You must be logged in to access admin tools.");
+  alert("⚠️ You must be logged in to manage availability.");
   window.location.href = "login.html";
 }
 
-const messageBox      = document.getElementById("message");
-const tableBody       = document.getElementById("tableBody");
-const dateInput       = document.getElementById("date");
-const resourceTitleEl = document.getElementById("resourceTitle");
-const urlParams       = new URLSearchParams(window.location.search);
-const resourceID      = Number(urlParams.get("id"));
+// ---------------------- GLOBAL STATE ----------------------
+const urlParams = new URLSearchParams(window.location.search);
+const resourceID = Number(urlParams.get("id")); // e.g. admin-avail.html?id=3
+
+const messageBox = document.getElementById("message");
+const tableBody = document.getElementById("tableBody");
+const dateInput = document.getElementById("date");
 
 const HOURS = [12, 13, 14, 15, 16, 17];
-let currentResource = null;
 
-// ---------------------- DATE HELPERS ----------------------
-function ensureDateDefault() {
-  if (!dateInput) return;
-  if (!dateInput.value) {
-    const today = new Date();
-    const d = String(today.getDate()).padStart(2, "0");
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const y = today.getFullYear();
-    dateInput.value = `${y}-${m}-${d}`;
-  }
-}
+let adminResource = null; // will hold the resource object (including roomsStatus)
 
-function getSelectedDate() {
-  const val = dateInput ? dateInput.value.trim() : "";
-  if (!val) {
-    alert("⚠️ Please select a date first.");
-    throw new Error("No date selected");
-  }
-  return val;
-}
-
-// ---------------------- BUILD TABLE ----------------------
-async function buildAdminTable() {
-  if (!tableBody) return;
+// ---------------------- LOAD RESOURCE + BUILD TABLE ----------------------
+async function loadAdminAvailability() {
   if (!resourceID) {
-    console.error("❌ No ?id=... in URL for resource.");
+    console.error("No resource id in URL (?id=...)");
     return;
   }
 
@@ -58,59 +38,50 @@ async function buildAdminTable() {
 
   const resource = resources.find(r => Number(r.id) === resourceID);
   if (!resource) {
+    console.error("Resource not found for id:", resourceID);
     alert("Resource not found.");
     return;
   }
 
-  currentResource = resource;
+  adminResource = resource; // keep in memory so we can update roomsStatus
 
-  // Set titles / headings
-  document.title = resource.title + " - Admin";
+  // Optional: update page titles/headings
   const h1 = document.querySelector("h1");
-  if (h1) h1.textContent = "Admin " + resource.title + " | Campus Booking";
-  if (resourceTitleEl) resourceTitleEl.textContent = resource.title;
+  if (h1) h1.textContent = "Admin " + resource.title + " Availability";
 
-  const rulesEl = document.getElementById("rulesAdmin");
-  if (rulesEl && resource.rulesResource) {
-    rulesEl.textContent = resource.rulesResource;
+  const titleEl = document.getElementById("resourceTitle");
+  if (titleEl) titleEl.textContent = resource.title;
+
+  if (!tableBody) {
+    console.error('❌ No <tbody id="tableBody"> found in HTML');
+    return;
   }
 
-  // Clear table body
   tableBody.innerHTML = "";
 
-  // Rooms list from resource
   const roomsArray = resource.rooms.split(",").map(r => r.trim());
 
-  roomsArray.forEach((roomName, indexRoom) => {
+  roomsArray.forEach((roomName, roomIndex) => {
     const row = document.createElement("tr");
 
-    // Room name cell
+    // room name
     const roomCell = document.createElement("td");
     roomCell.textContent = roomName;
     row.appendChild(roomCell);
 
-    // Time slot cells
-    HOURS.forEach((hour, slotIndex) => {
+    // time slots
+    HOURS.forEach((hour, timeIndex) => {
+      const status =
+        resource.roomsStatus?.[roomIndex]?.[timeIndex] || "available";
+
       const td = document.createElement("td");
+      td.dataset.roomIndex = roomIndex;   // index into roomsStatus
+      td.dataset.timeIndex = timeIndex;   // index into roomsStatus row
       td.dataset.room = roomName;
       td.dataset.time = String(hour);
 
-      let baseStatus = "available";
-      if (
-        Array.isArray(resource.roomsStatus) &&
-        resource.roomsStatus[indexRoom] &&
-        resource.roomsStatus[indexRoom][slotIndex]
-      ) {
-        baseStatus = resource.roomsStatus[indexRoom][slotIndex];
-      }
-
-      if (baseStatus === "unavailable" || baseStatus === "X") {
-        td.classList.add("unavailable");
-        td.textContent = "X";
-      } else {
-        td.classList.add("available");
-        td.textContent = "available";
-      }
+      td.classList.add(status); // available/unavailable/booked (if you want)
+      td.textContent = status === "unavailable" ? "unavailable" : "available";
 
       row.appendChild(td);
     });
@@ -118,200 +89,118 @@ async function buildAdminTable() {
     tableBody.appendChild(row);
   });
 
-  await updateAdminSlots();
+  console.log("Admin availability table built for", resource.title);
 }
 
-// ---------------------- OVERLAY BOOKINGS ----------------------
-async function updateAdminSlots() {
-  if (!tableBody) return;
+// ---------------------- CLICK HANDLER: TOGGLE AVAILABILITY ----------------------
+if (tableBody) {
+  tableBody.addEventListener("click", e => {
+    const cell = e.target.closest("td[data-room-index]");
+    if (!cell || !adminResource) return;
 
-  let date;
-  try {
-    date = getSelectedDate();
-  } catch {
-    return;
-  }
-
-  let bookings = [];
-  try {
-    const res = await fetch("http://localhost:4000/api/bookings");
-    bookings = await res.json();
-  } catch (err) {
-    console.error("Cannot load bookings:", err);
-    return;
-  }
-
-  const resourceTitle = currentResource ? currentResource.title : null;
-  if (resourceTitle) {
-    bookings = bookings.filter(b => b.item === resourceTitle);
-  }
-
-  // Reset cells
-  tableBody.querySelectorAll("td[data-room]").forEach(cell => {
-    if (cell.textContent === "X") {
-      cell.className = "unavailable";
-      return;
-    }
-    cell.className = "available";
-    cell.textContent = "available";
-  });
-
-  // Apply bookings
-  tableBody.querySelectorAll("td[data-room]").forEach(cell => {
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
-
-    const match = bookings.find(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === date
-    );
-
-    if (!match) return;
-
-    const status = String(match.status || "").toLowerCase();
-    cell.className = "";
-
-    if (status === "unavailable") {
-      cell.classList.add("unavailable");
-      cell.textContent = "X";
-    } else if (status === "pending") {
-      cell.classList.add("pending");
-      cell.textContent = "Pending";
-    } else if (status === "booked") {
-      cell.classList.add("booked");
-      cell.textContent = "Booked";
-    } else {
-      cell.classList.add("booked");
-      cell.textContent = match.status;
-    }
-  });
-}
-
-// ---------------------- SLOT FUNCTIONS ----------------------
-async function makeSlotUnavailable(room, time, date) {
-  try {
-    const res = await fetch("http://localhost:4000/api/bookings");
-    const bookings = await res.json();
-
-    const existing = bookings.find(
-      b => b.resource === room && String(b.hour) === String(time) && b.date === date && b.status !== "Unavailable"
-    );
-
-    if (existing) {
-      await fetch(`http://localhost:4000/api/bookings/${existing.id}`, { method: "DELETE" });
-      if (messageBox) {
-        messageBox.innerHTML += `✅ Booking cancelled for ${room} at ${time}:00 on ${date}.<br>`;
-      }
-    }
-
-    const blockBooking = {
-      username: "__ADMIN__",
-      resource: room,
-      item: resourceTitleEl ? resourceTitleEl.textContent.trim() : "",
-      date,
-      hour: String(time),
-      status: "Unavailable"
-    };
-
-    await fetch("http://localhost:4000/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(blockBooking)
-    });
-
-    // Update cell immediately
-    const cell = tableBody.querySelector(`td[data-room="${room}"][data-time="${time}"]`);
-    if (cell) {
-      cell.className = "unavailable";
-      cell.textContent = "X";
-    }
-
-    if (messageBox) {
-      messageBox.innerHTML += `❌ Slot marked unavailable for ${room} at ${time}:00 on ${date}.<br>`;
-    }
-  } catch (err) {
-    console.error("Error making slot unavailable:", err);
-    alert("⚠️ Server error while updating availability.");
-  }
-}
-
-async function makeSlotAvailable(room, time, date) {
-  try {
-    const res = await fetch("http://localhost:4000/api/bookings");
-    const bookings = await res.json();
-
-    const blocks = bookings.filter(
-      b => b.resource === room && String(b.hour) === String(time) && b.date === date && b.status === "Unavailable"
-    );
-
-    for (const b of blocks) {
-      await fetch(`http://localhost:4000/api/bookings/${b.id}`, { method: "DELETE" });
-    }
-
-    // Update cell immediately
-    const cell = tableBody.querySelector(`td[data-room="${room}"][data-time="${time}"]`);
-    if (cell) {
-      cell.className = "available";
-      cell.textContent = "available";
-    }
-
-    if (messageBox) {
-      messageBox.innerHTML += `🔁 Availability restored for ${room} at ${time}:00 on ${date}.<br>`;
-    }
-  } catch (err) {
-    console.error("Error making slot available:", err);
-    alert("⚠️ Server error while restoring availability.");
-  }
-}
-
-// ---------------------- CLICK HANDLER ----------------------
-function attachClickHandler() {
-  if (!tableBody) return;
-  tableBody.addEventListener("click", async e => {
-    const cell = e.target.closest("td");
-    if (!cell || !cell.dataset.room || !cell.dataset.time) return;
-
-    let date;
-    try { date = getSelectedDate(); } catch { return; }
+    const roomIndex = Number(cell.dataset.roomIndex);
+    const timeIndex = Number(cell.dataset.timeIndex);
 
     const room = cell.dataset.room;
     const time = cell.dataset.time;
+    const date = (dateInput && dateInput.value) || "selected date";
 
+    let actionText = "";
+
+    // available -> unavailable
     if (cell.classList.contains("available")) {
-      await makeSlotUnavailable(room, time, date);
-    } else if (cell.classList.contains("unavailable")) {
-      await makeSlotAvailable(room, time, date);
-    } else if (cell.classList.contains("booked") || cell.classList.contains("pending")) {
-      // Admin click cancels booking → mark unavailable
-      await makeSlotUnavailable(room, time, date);
+      cell.classList.remove("available");
+      cell.classList.add("unavailable");
+      cell.textContent = "unavailable";
+
+      adminResource.roomsStatus[roomIndex][timeIndex] = "unavailable";
+      actionText = `✅ Availability removed for ${room} at ${time}:00 on ${date}`;
     }
+    // booked -> unavailable (optional, if you overlay bookings)
+    else if (cell.classList.contains("booked")) {
+      cell.classList.remove("booked");
+      cell.classList.add("unavailable");
+      cell.textContent = "unavailable";
+
+      adminResource.roomsStatus[roomIndex][timeIndex] = "unavailable";
+      actionText =
+        `✅ Booking cancelled and slot made unavailable for ${room} ` +
+        `at ${time}:00 on ${date}. User will be notified.`;
+    }
+    // unavailable -> available
+    else {
+      cell.classList.remove("unavailable");
+      cell.classList.add("available");
+      cell.textContent = "available";
+
+      adminResource.roomsStatus[roomIndex][timeIndex] = "available";
+      actionText = `🔁 Availability restored for ${room} at ${time}:00 on ${date}`;
+    }
+
+    if (messageBox && actionText) {
+      messageBox.innerHTML += actionText + "<br>";
+    }
+
+    console.log("Updated roomsStatus:", adminResource.roomsStatus);
   });
 }
 
-// ---------------------- CONFIRM CHANGES ----------------------
-function confirmChanges() {
-  if (!messageBox) return;
-  if (messageBox.innerHTML === "") {
+// ---------------------- CONFIRM CHANGES: SAVE TO SERVER ----------------------
+async function confirmChanges() {
+  if (!adminResource) {
+    alert("No resource loaded.");
+    return;
+  }
+
+  if (!messageBox || messageBox.innerHTML.trim() === "") {
     alert("No changes to confirm.");
     return;
   }
-  if (confirm("Apply all changes? (Changes are already saved; this just clears messages.)")) {
+
+  const ok = confirm("Apply all availability changes for this resource?");
+  if (!ok) return;
+
+  try {
+    const res = await fetch(`http://localhost:4000/api/resources/${resourceID}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        roomsStatus: adminResource.roomsStatus
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Error saving roomsStatus:", data);
+      alert("❌ Failed to save changes: " + (data.error || "Unknown error."));
+      return;
+    }
+
+    alert("✅ Availability changes saved.");
     messageBox.innerHTML = "";
-    updateAdminSlots(); // refresh table from bookings.json
+  } catch (err) {
+    console.error("Server error saving roomsStatus:", err);
+    alert("⚠️ Server error saving changes.");
   }
+}
+
+// Make confirmChanges available to the button onclick in HTML
+window.confirmChanges = confirmChanges;
+
+// ---------------------- AUTO-CHOOSE DATE ----------------------
+if (dateInput) {
+  const today = new Date();
+  const d = String(today.getDate()).padStart(2, "0");
+  const m = String(today.getMonth() + 1).padStart(2, "0");
+  const y = today.getFullYear();
+  dateInput.value = `${y}-${m}-${d}`;
 }
 
 // ---------------------- INITIAL LOAD ----------------------
 document.addEventListener("DOMContentLoaded", () => {
-  ensureDateDefault();
-  buildAdminTable().then(() => attachClickHandler());
-
-  if (dateInput) {
-    dateInput.addEventListener("change", () => {
-      updateAdminSlots();
-    });
-  }
+  loadAdminAvailability();
 });
+
+
 

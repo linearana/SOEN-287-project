@@ -1,146 +1,105 @@
-// ---------------------- GET RESOURCE ID ----------------------
-const urlParams = new URLSearchParams(window.location.search);
-const resourceID = urlParams.get("id");
+console.log("user-request.js loaded (Request-type booking)");
 
-const messageBox = document.getElementById("message");
-const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
-
-let bookingInProgress = false;
-
-// ---------------------- UPDATE BOOKED / PENDING / UNAVAILABLE ----------------------
-async function updateBookedSlots() {
-  const selectedDate = document.getElementById("date").value; // ISO yyyy-mm-dd
-
-  let bookings = [];
-  try {
-    const res = await fetch("http://localhost:4000/api/bookings");
-    bookings = await res.json();
-  } catch {
-    console.warn("Server offline, cannot load bookings.");
-    return;
-  }
-
-  document.querySelectorAll("td[data-room]").forEach(cell => {
-    const room = cell.dataset.room;
-    const time = cell.dataset.time;
-
-    const match = bookings.find(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === selectedDate
-    );
-
-    // Reset
-    cell.classList.remove("booked", "pending", "unavailable");
-    if (cell.textContent === "X") {
-      cell.classList.add("unavailable");
-      return;
-    }
-
-    if (!match) {
-      cell.classList.add("available");
-      cell.textContent = "available";
-      return;
-    }
-
-    const status = String(match.status || "").toLowerCase();
-
-    if (status === "unavailable") {
-      cell.classList.add("unavailable");
-      cell.textContent = "X";
-    } else if (status === "booked") {
-      cell.classList.add("booked");
-      cell.textContent = "booked";
-    } else if (status === "pending") {
-      cell.classList.add("pending");
-      cell.textContent = "pending";
-    } else {
-      cell.classList.add("booked");
-      cell.textContent = match.status;
-    }
-  });
+// ---------------------- BASIC SETUP ----------------------
+const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+if (!currentUser) {
+  alert("⚠️ You must be logged in.");
+  window.location.href = "login.html";
 }
 
-// ---------------------- CLICK HANDLER ----------------------
-document.getElementById("tableBody").addEventListener("click", async (e) => {
-  const cell = e.target.closest("td[data-room]");
-  if (!cell) return;
+const messageBox = document.getElementById("message");
+const dateInput = document.getElementById("date");
+const resourceTypeName = document
+  .getElementById("resourceTitle")
+  .textContent
+  .trim();
 
-  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  if (!currentUser) {
-    alert("⚠️ You must be logged in.");
-    window.location.href = "login.html";
-    return;
+// ---------------------- ENFORCE 7-DAYS-IN-ADVANCE ----------------------
+(function enforceMinDateForRequest() {
+  if (!dateInput) return;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const minDateObj = new Date(today);
+  minDateObj.setDate(minDateObj.getDate() + 7); // today + 7 days
+
+  const minISO = minDateObj.toISOString().split("T")[0];
+  dateInput.min = minISO;
+
+  // If no date or invalid date selected, default to min
+  if (!dateInput.value || dateInput.value < minISO) {
+    dateInput.value = minISO;
   }
 
-  // don't click booked / pending / unavailable
+  console.log("Request resource → min selectable date:", dateInput.min);
+})();
+
+// ---------------------- CLICK HANDLER (BOOKING LOGIC) ----------------------
+async function handleCellClick(event) {
+  const cell = event.target.closest("td[data-room]");
+  if (!cell) return;
+
+  // Don't book unavailable/booked/pending cells
   if (
+    cell.classList.contains("unavailable") ||
     cell.classList.contains("booked") ||
-    cell.classList.contains("pending") ||
-    cell.classList.contains("unavailable")
+    cell.classList.contains("pending")
   ) {
     return;
   }
 
-  const dateInput = document.getElementById("date").value.trim();
-  if (!dateInput) {
-    alert("⚠️ Select a date first.");
+  const rawDate = dateInput.value;
+  if (!rawDate) {
+    alert("⚠️ Please select a date.");
     return;
   }
 
-  // enforce 7-day minimum
-  const today = new Date();
-  const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 7);
-
-  const selectedDate = new Date(dateInput);
-  if (selectedDate < minDate) {
-    alert("⚠️ You can only book at least 7 days in advance.");
+  // Enforce min date again in JS (in case browser ignores min)
+  if (dateInput.min && rawDate < dateInput.min) {
+    alert("⚠️ This resource must be booked at least 7 days in advance.");
+    dateInput.value = dateInput.min;
     return;
   }
 
   const room = cell.dataset.room;
   const time = cell.dataset.time;
 
-  if (bookingInProgress) {
-    return;
-  }
-
+  // ---------------------- CHECK EXISTING BOOKINGS (FRONTEND GUARD) ----------------------
   let bookings = [];
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     bookings = await res.json();
   } catch (err) {
-    console.warn("SERVER OFFLINE → cannot validate existing bookings.");
-  }
-
-  // one request per resource type per day
-  const existingBooking = bookings.find(
-    b =>
-      b.username === currentUser.email &&
-      b.item === resourceTypeName &&
-      b.date === dateInput &&
-      (b.status === "Booked" || b.status === "Pending")
-  );
-
-  if (existingBooking) {
-    alert("⚠️ You already booked this resource type for that day.");
+    console.warn("Cannot contact server to verify existing bookings.", err);
+    alert("⚠️ Cannot verify existing bookings. Try again later.");
     return;
   }
 
+  const alreadyHasBooking = bookings.some(b =>
+    b.username === currentUser.email &&
+    b.item === resourceTypeName &&
+    b.date === rawDate &&
+    ["Booked", "Pending", "booked", "pending"].includes(String(b.status))
+  );
+
+  if (alreadyHasBooking) {
+    alert("❌ You already have a booking for this resource on that date.");
+    return;
+  }
+
+  // ---------------------- CREATE BOOKING OBJECT ----------------------
   const booking = {
     id: Date.now(),
     username: currentUser.email,
-    resource: room,
-    item: resourceTypeName,
-    date: dateInput,
-    hour: String(time)
-    // backend will set status to Pending for Request type
+    resource: room,           // specific room (e.g., "FA 3-546")
+    item: resourceTypeName,   // resource type (e.g., "Art Studios")
+    date: rawDate,            // ISO "yyyy-mm-dd"
+    hour: time                // "12", "13", etc.
+    // status will be set by backend (Request → Pending)
   };
 
-  bookingInProgress = true;
-
+  // ---------------------- SEND TO SERVER ----------------------
   try {
     const res = await fetch("http://localhost:4000/api/bookings", {
       method: "POST",
@@ -150,37 +109,35 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
 
     if (!res.ok) {
       const data = await res.json();
-      alert("Error: " + data.error);
-      bookingInProgress = false;
+      alert("❌ " + (data.error || "Booking failed."));
       return;
     }
-  } catch {
+  } catch (err) {
+    console.error("Booking POST failed:", err);
     alert("⚠️ Cannot contact server.");
-    bookingInProgress = false;
     return;
   }
 
-  messageBox.textContent =
-    `📩 Request sent for ${room} at ${time}:00 on ${dateInput}`;
+  // ---------------------- UPDATE UI LOCALLY ----------------------
+  cell.classList.remove("available");
+  cell.classList.add("pending");
+  cell.textContent = "Pending";
 
-  await updateBookedSlots();
-  bookingInProgress = false;
-});
+  if (messageBox) {
+    messageBox.textContent =
+      `📩 Request sent for ${room} at ${time}:00 on ${rawDate}. ` +
+      `You will receive a confirmation once an administrator reviews it.`;
+  }
 
-// ---------------------- AUTO-CHOOSE DATE (7 DAYS AHEAD) ----------------------
-window.onload = () => {
-  const ele = document.getElementById("date");
-  const today = new Date();
-  today.setDate(today.getDate() + 7);
+  // Optionally sync with backend state again
+  if (typeof updateBookedSlots === "function") {
+    updateBookedSlots();
+  }
+}
 
-  const minDate = today.toISOString().split("T")[0];
-  ele.value = minDate;
-  ele.min = minDate;
+// ---------------------- ATTACH LISTENER ----------------------
+const tableBody = document.getElementById("tableBody");
+if (tableBody) {
+  tableBody.addEventListener("click", handleCellClick);
+}
 
-  updateBookedSlots();
-};
-
-document.getElementById("date").addEventListener("change", () => {
-  updateBookedSlots();
-  bookingInProgress = false;
-});

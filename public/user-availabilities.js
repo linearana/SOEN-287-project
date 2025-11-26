@@ -1,18 +1,20 @@
-console.log("user-availability.js loaded");
-
 // ---------------------- GET RESOURCE ID ----------------------
 const urlParams = new URLSearchParams(window.location.search);
 const resourceID = urlParams.get("id");
 
 const messageBox = document.getElementById("message");
 
-// ---------------------- BUILD TABLE ----------------------
+// We'll reuse the hours you already use everywhere
+const HOURS = [12, 13, 14, 15, 16, 17];
+
+// ---------------------- BUILD TABLE (STRUCTURE ONLY) ----------------------
 async function loadAvailabilities(resourceID) {
   if (!resourceID) {
     console.error("No resourceID in URL (e.g. ?id=3)");
     return;
   }
 
+  // 1. Get resource metadata
   let resources;
   try {
     const resResources = await fetch("http://localhost:4000/api/resources");
@@ -23,45 +25,24 @@ async function loadAvailabilities(resourceID) {
   }
 
   const resource = resources.find(r => String(r.id) === String(resourceID));
+
   if (!resource) {
     console.error("Resource not found for id:", resourceID);
     return;
   }
 
-  const ele = document.getElementById("date");
-  if (ele) {
-    const today = new Date();
-    const todayStr = today.toISOString().split("T")[0];
-
-    if (!ele.value) {
-      ele.value = todayStr;
-    }
-
-    if (resource.bookingType === "Instant") {
-      ele.setAttribute("min", todayStr);
-      if (ele.value < todayStr) {
-        ele.value = todayStr;
-      }
-    } else if (resource.bookingType === "Request") {
-      const minDate = new Date();
-      minDate.setDate(today.getDate() + 8);
-      const minStr = minDate.toISOString().split("T")[0];
-
-      ele.setAttribute("min", minStr);
-      if (ele.value < minStr) {
-        ele.value = minStr;
-      }
-    }
-  }
-
+  // 2. Update page info
   document.title = resource.title + " | Campus Booking";
-  document.getElementById("resourceTitle").textContent = resource.title;
+  const titleEl = document.getElementById("resourceTitle");
+  if (titleEl) titleEl.textContent = resource.title;
 
+  // Some entries use rulesResource, some use rules → fallback
   const rulesEl = document.getElementById("rulesUser");
   if (rulesEl) {
     rulesEl.textContent = resource.rulesResource || resource.rules || "";
   }
 
+  // 3. Build table skeleton based ONLY on rooms (not roomsStatus anymore)
   const roomsArray = resource.rooms.split(",").map(r => r.trim());
   const tableBody = document.getElementById("tableBody");
   if (!tableBody) {
@@ -69,25 +50,19 @@ async function loadAvailabilities(resourceID) {
     return;
   }
 
-  tableBody.innerHTML = "";
+  tableBody.innerHTML = ""; // clear old rows
 
-  const HOURS = [12, 13, 14, 15, 16, 17];
-
-  roomsArray.forEach((room, roomIndex) => {
+  roomsArray.forEach(room => {
     const row = document.createElement("tr");
 
     // room name
     row.innerHTML = `<td>${room}</td>`;
 
-    HOURS.forEach((hour, timeIndex) => {
-      const baseStatus =
-        resource.roomsStatus?.[roomIndex]?.[timeIndex] || "available";
-
-      let cellText = baseStatus === "unavailable" ? "X" : "available";
-
+    // for each hour create an "available" slot; real status will come from bookings.json
+    HOURS.forEach(hour => {
       row.innerHTML += `
-        <td class="${baseStatus}" data-room="${room}" data-time="${hour}">
-          ${cellText}
+        <td class="available" data-room="${room}" data-time="${hour}">
+          available
         </td>
       `;
     });
@@ -95,8 +70,10 @@ async function loadAvailabilities(resourceID) {
     tableBody.appendChild(row);
   });
 
+  // 4. Overlay bookings for the current date (bookings.json drives status)
   await updateBookedSlots();
 
+  // 5. Load behavior script based on bookingType
   if (resource.bookingType === "Instant") {
     const script = document.createElement("script");
     script.src = "user-instant.js";
@@ -110,7 +87,7 @@ async function loadAvailabilities(resourceID) {
   }
 }
 
-// ---------------------- UPDATE BOOKINGS ----------------------
+// ---------------------- UPDATE SLOTS FROM bookings.json ----------------------
 async function updateBookedSlots() {
   const dateInput = document.getElementById("date");
   if (!dateInput) {
@@ -118,7 +95,7 @@ async function updateBookedSlots() {
     return;
   }
 
-  const selectedDate = dateInput.value;
+  const selectedDate = dateInput.value; // expecting yyyy-mm-dd
   if (!selectedDate) {
     console.log("No date selected yet → skip overlay");
     return;
@@ -133,7 +110,29 @@ async function updateBookedSlots() {
     return;
   }
 
-  document.querySelectorAll("td[data-room]").forEach(cell => {
+  // Optional but cleaner: only consider bookings for THIS resource type
+  const resourceTitle = document
+    .getElementById("resourceTitle")
+    ?.textContent
+    .trim();
+
+  if (resourceTitle) {
+    bookings = bookings.filter(b => b.item === resourceTitle);
+  }
+
+  // Also only consider this selected date
+  bookings = bookings.filter(b => b.date === selectedDate);
+
+  const cells = document.querySelectorAll("td[data-room]");
+
+  // 1️⃣ Reset ALL cells to "available" before applying bookings
+  cells.forEach(cell => {
+    cell.className = "available";
+    cell.textContent = "available";
+  });
+
+  // 2️⃣ Apply bookings from bookings.json for this day
+  cells.forEach(cell => {
     const room = cell.dataset.room;
     const time = cell.dataset.time;
 
@@ -144,32 +143,32 @@ async function updateBookedSlots() {
         b.date === selectedDate
     );
 
-    // Reset cell first
-    cell.classList.remove("available", "booked", "pending", "unavailable");
-    cell.classList.add("available");
-    cell.textContent = "available";
+    if (!match) return;
 
-    if (match) {
-      const status = String(match.status).toLowerCase();
+    const status = String(match.status || "").toLowerCase();
 
-      if (status === "unavailable") {
-        cell.classList.remove("available");
-        cell.classList.add("unavailable");
-        cell.textContent = "X";
-      } else if (status === "pending") {
-        cell.classList.remove("available");
-        cell.classList.add("pending");
-        cell.textContent = "Pending";
-      } else if (status === "booked") {
-        cell.classList.remove("available");
-        cell.classList.add("booked");
-        cell.textContent = "Booked";
-      }
+    // wipe old classes
+    cell.className = "";
+
+    if (status === "unavailable") {
+      // admin block
+      cell.classList.add("unavailable");
+      cell.textContent = "X";
+    } else if (status === "pending") {
+      cell.classList.add("pending");
+      cell.textContent = "Pending";
+    } else if (status === "booked") {
+      cell.classList.add("booked");
+      cell.textContent = "Booked";
+    } else {
+      // any other status we didn't expect: still treat as booked-ish
+      cell.classList.add("booked");
+      cell.textContent = match.status;
     }
   });
 }
 
-// ---------------------- INITIAL LOAD ----------------------
+// ---------------------- AUTO-CHOOSE DATE & INITIAL LOAD ----------------------
 window.onload = () => {
   const ele = document.getElementById("date");
   if (ele && !ele.value) {
@@ -177,3 +176,6 @@ window.onload = () => {
   }
   loadAvailabilities(resourceID);
 };
+
+document.getElementById("date").addEventListener("change", updateBookedSlots);
+

@@ -11,7 +11,7 @@
         "available",
         "available",
         "available",
-        "available",
+        "unavailable",
         "booked",
         "available"
       ],
@@ -19,15 +19,7 @@
         "available",
         "available",
         "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
-        "available",
-        "booked",
-        "available",
+        "unavailable",
         "available",
         "available"
       ],
@@ -35,7 +27,7 @@
         "available",
         "available",
         "available",
-        "available",
+        "unavailable",
         "available",
         "available"
       ],
@@ -43,7 +35,15 @@
         "available",
         "available",
         "available",
+        "unavailable",
         "available",
+        "available"
+      ],
+      [
+        "available",
+        "available",
+        "available",
+        "unavailable",
         "available",
         "available"
       ]
@@ -61,15 +61,7 @@
     "roomsStatus": [
       [
         "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
-        "available",
+        "unavailable",
         "available",
         "available",
         "available",
@@ -77,7 +69,23 @@
       ],
       [
         "available",
+        "unavailable",
         "available",
+        "available",
+        "unavailable",
+        "available"
+      ],
+      [
+        "available",
+        "unavailable",
+        "available",
+        "available",
+        "unavailable",
+        "available"
+      ],
+      [
+        "available",
+        "unavailable",
         "available",
         "available",
         "available",
@@ -85,15 +93,7 @@
       ],
       [
         "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
-        "available",
+        "unavailable",
         "available",
         "available",
         "available",
@@ -114,29 +114,29 @@
       [
         "available",
         "available",
+        "unavailable",
+        "available",
+        "available",
+        "available"
+      ],
+      [
+        "unavailable",
+        "available",
+        "available",
+        "available",
+        "unavailable",
+        "available"
+      ],
+      [
+        "unavailable",
+        "available",
         "available",
         "available",
         "available",
         "available"
       ],
       [
-        "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
+        "unavailable",
         "available",
         "available",
         "available",
@@ -219,7 +219,7 @@
         "available",
         "available",
         "available",
-        "available",
+        "unavailable",
         "available",
         "available"
       ],
@@ -227,7 +227,7 @@
         "available",
         "available",
         "available",
-        "available",
+        "unavailable",
         "available",
         "available"
       ],
@@ -235,7 +235,7 @@
         "available",
         "booked",
         "available",
-        "available",
+        "unavailable",
         "available",
         "available"
       ]
