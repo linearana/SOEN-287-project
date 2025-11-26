@@ -1,8 +1,10 @@
-// ---------------------- GET RESOURCE ID ----------------------
-urlParams = new URLSearchParams(window.location.search);
-resourceID = urlParams.get("id");
+console.log("user-availability.js loaded");
 
-messageBox = document.getElementById("message");
+// ---------------------- GET RESOURCE ID ----------------------
+const urlParams = new URLSearchParams(window.location.search);
+const resourceID = urlParams.get("id");
+
+const messageBox = document.getElementById("message");
 
 // ---------------------- BUILD TABLE ----------------------
 async function loadAvailabilities(resourceID) {
@@ -21,7 +23,6 @@ async function loadAvailabilities(resourceID) {
   }
 
   const resource = resources.find(r => String(r.id) === String(resourceID));
-
   if (!resource) {
     console.error("Resource not found for id:", resourceID);
     return;
@@ -52,7 +53,7 @@ async function loadAvailabilities(resourceID) {
       }
     }
   }
-  
+
   document.title = resource.title + " | Campus Booking";
   document.getElementById("resourceTitle").textContent = resource.title;
 
@@ -68,7 +69,7 @@ async function loadAvailabilities(resourceID) {
     return;
   }
 
-  tableBody.innerHTML = ""; 
+  tableBody.innerHTML = "";
 
   const HOURS = [12, 13, 14, 15, 16, 17];
 
@@ -82,12 +83,7 @@ async function loadAvailabilities(resourceID) {
       const baseStatus =
         resource.roomsStatus?.[roomIndex]?.[timeIndex] || "available";
 
-      let cellText;
-      if (baseStatus === "unavailable") {
-        cellText = "X";
-      } else {
-        cellText = "available";
-      }
+      let cellText = baseStatus === "unavailable" ? "X" : "available";
 
       row.innerHTML += `
         <td class="${baseStatus}" data-room="${room}" data-time="${hour}">
@@ -114,7 +110,7 @@ async function loadAvailabilities(resourceID) {
   }
 }
 
-
+// ---------------------- UPDATE BOOKINGS ----------------------
 async function updateBookedSlots() {
   const dateInput = document.getElementById("date");
   if (!dateInput) {
@@ -122,7 +118,7 @@ async function updateBookedSlots() {
     return;
   }
 
-  const selectedDate = dateInput.value; 
+  const selectedDate = dateInput.value;
   if (!selectedDate) {
     console.log("No date selected yet → skip overlay");
     return;
@@ -148,39 +144,32 @@ async function updateBookedSlots() {
         b.date === selectedDate
     );
 
-    if (match) {
-  const status = String(match.status).toLowerCase();
-
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (match) {
-  const status = String(match.status).toLowerCase();
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (status === "unavailable") {
-    cell.classList.add("unavailable");
-    cell.textContent = "X";         
-  } else if (status === "pending") {
-    cell.classList.add("pending");
-    cell.textContent = "Pending";
-  } else { // booked or anything else
-    cell.classList.add("booked");
-    cell.textContent = "Booked";
-  }
-} else {
-  if (cell.textContent !== "X") {    
-    cell.classList.remove("booked", "pending", "unavailable");
+    // Reset cell first
+    cell.classList.remove("available", "booked", "pending", "unavailable");
     cell.classList.add("available");
     cell.textContent = "available";
-  }
+
+    if (match) {
+      const status = String(match.status).toLowerCase();
+
+      if (status === "unavailable") {
+        cell.classList.remove("available");
+        cell.classList.add("unavailable");
+        cell.textContent = "X";
+      } else if (status === "pending") {
+        cell.classList.remove("available");
+        cell.classList.add("pending");
+        cell.textContent = "Pending";
+      } else if (status === "booked") {
+        cell.classList.remove("available");
+        cell.classList.add("booked");
+        cell.textContent = "Booked";
+      }
+    }
+  });
 }
 
-}
-
-    });
-}
-
-
+// ---------------------- INITIAL LOAD ----------------------
 window.onload = () => {
   const ele = document.getElementById("date");
   if (ele && !ele.value) {

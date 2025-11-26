@@ -1,15 +1,13 @@
-//get resource ID
-urlParams = new URLSearchParams(window.location.search);
-resourceID = urlParams.get("id");
+// ---------------------- GET RESOURCE ID ----------------------
+const urlParams = new URLSearchParams(window.location.search);
+const resourceID = urlParams.get("id");
 
-messageBox = document.getElementById("message");
+const messageBox = document.getElementById("message");
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
-// ---------------------- LOAD BOOKED SLOTS ----------------------
+// ---------------------- LOAD BOOKED / BLOCKED SLOTS ----------------------
 async function updateBookedSlots() {
-  const dateInput = document.getElementById("date").value;
-
-  if (!dateInput) return; // no date selected yet
+  const dateInput = document.getElementById("date").value; // ISO yyyy-mm-dd
 
   let bookings = [];
   try {
@@ -25,25 +23,50 @@ async function updateBookedSlots() {
     const time = cell.dataset.time;
 
     const match = bookings.find(
-      b => b.resource === room && String(b.hour) === String(time) && b.date === dateInput
+      b =>
+        b.resource === room &&
+        String(b.hour) === String(time) &&
+        b.date === dateInput
     );
 
-    if (match) {
-      cell.classList.remove("available");
-      cell.classList.add("booked");
-      cell.textContent = "booked";
-    } else if (cell.textContent !== "unavailable") {
-      cell.classList.remove("booked");
+    // Reset first (but keep hard X if you ever had structural X)
+    cell.classList.remove("booked", "pending", "unavailable");
+    if (cell.textContent === "X") {
+      cell.classList.add("unavailable");
+      return;
+    }
+
+    if (!match) {
       cell.classList.add("available");
       cell.textContent = "available";
+      return;
+    }
+
+    const status = String(match.status || "").toLowerCase();
+
+    if (status === "unavailable") {
+      cell.classList.add("unavailable");
+      cell.textContent = "X";
+    } else if (status === "booked") {
+      cell.classList.add("booked");
+      cell.textContent = "booked";
+    } else if (status === "pending") {
+      cell.classList.add("pending");
+      cell.textContent = "pending";
+    } else {
+      // any other unknown status – treat as booked
+      cell.classList.add("booked");
+      cell.textContent = match.status;
     }
   });
 }
 
+// ---------------------- PREVENT DOUBLE-CLICK ONLY ----------------------
+let bookingInProgress = false;
+
 // ---------------------- BOOK SLOT ----------------------
 document.querySelectorAll("td[data-room]").forEach(cell => {
   cell.addEventListener("click", async () => {
-    // login check
     const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
     if (!currentUser) {
       alert("You must be logged in.");
@@ -57,15 +80,22 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       return;
     }
 
-    const [y, m, d] = dateInput.split("-");
-    const datePretty = new Date(y, m - 1, d).toLocaleDateString();
     const room = cell.dataset.room;
     const time = cell.dataset.time;
 
-    console.log("Clicked:", room, time);
+    // don’t book blocked or already booked cells
+    if (cell.classList.contains("unavailable") ||
+        cell.classList.contains("booked") ||
+        cell.classList.contains("pending")) {
+      return;
+    }
 
-    // cannot book unavailable cells or booked ones
-    if (cell.textContent === "unavailable" || cell.textContent === "booked") return;
+    if (bookingInProgress) {
+      // just stop double-click spam; server also protects anyway
+      return;
+    }
+
+    bookingInProgress = true;
 
     let bookings = [];
     try {
@@ -75,17 +105,18 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       console.warn("SERVER OFFLINE → cannot validate existing bookings.");
     }
 
-    // this is just a friendly pre-check; backend still enforces the rule
+    // one booking per resource type *per day* (different days allowed)
     const existingBooking = bookings.find(
       b =>
         b.username === currentUser.email &&
         b.item === resourceTypeName &&
         b.date === dateInput &&
-        (b.status === "booked" || b.status === "pending")
+        (b.status === "Booked" || b.status === "Pending")
     );
 
     if (existingBooking) {
       alert("⚠️ You already booked this resource type for that day.");
+      bookingInProgress = false;
       return;
     }
 
@@ -94,9 +125,9 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       username: currentUser.email,
       resource: room,
       item: resourceTypeName,
-      date: dateInput, // yyyy-mm-dd (matches server)
-      hour: time,
-      status: "booked" // backend will override to "Booked" if Instant
+      date: dateInput,
+      hour: time
+      // status will be forced to "Booked" on backend for Instant type
     };
 
     try {
@@ -109,54 +140,31 @@ document.querySelectorAll("td[data-room]").forEach(cell => {
       if (!res.ok) {
         const data = await res.json();
         alert("Error: " + data.error);
+        bookingInProgress = false;
         return;
       }
     } catch (err) {
       alert("Server unreachable.");
+      bookingInProgress = false;
       return;
     }
 
-    // UI update
-    cell.classList.add("booked");
-    cell.classList.remove("available");
-    cell.textContent = "booked";
-
-    // update resource availability (your existing PATCH)
-    await fetch(`http://localhost:4000/api/resources/${resourceID}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        newRoomStatus: "booked",
-        roomIndex: room,
-        timeIndex: time
-      })
-    });
-
     messageBox.textContent =
-      `✔ Booking confirmed: ${room} at ${time}:00 on ${datePretty}`;
+      `✔ Booking confirmed: ${room} at ${time}:00 on ${dateInput}`;
 
-    updateBookedSlots();
+    await updateBookedSlots();
+    bookingInProgress = false; // allow another booking (on another day, etc.)
   });
 });
 
 // ---------------------- DATE HANDLING ----------------------
 window.onload = () => {
-  let ele = document.getElementById("date");
-  const today = new Date();
-  const d = String(today.getDate()).padStart(2, "0");
-  const m = String(today.getMonth() + 1).padStart(2, "0");
-  const y = today.getFullYear();
-  const todayStr = `${y}-${m}-${d}`;
-
-  // user can't book in the past for instant bookings
-  ele.min = todayStr;
-
-  // if no date chosen yet, default to today
-  if (!ele.value) {
-    ele.value = todayStr;
-  }
-
+  const ele = document.getElementById("date");
+  ele.value = new Date().toISOString().split("T")[0]; // today
   updateBookedSlots();
 };
 
-document.getElementById("date").addEventListener("change", updateBookedSlots);
+document.getElementById("date").addEventListener("change", () => {
+  updateBookedSlots();
+  bookingInProgress = false; // new date → allow booking again
+});

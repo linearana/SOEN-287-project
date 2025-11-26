@@ -1,6 +1,6 @@
 console.log("admin.js loaded");
 
-
+// ---------------------- LOGIN CHECK ----------------------
 const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 if (!currentUser) {
   alert("⚠️ You must be logged in to access admin tools.");
@@ -17,7 +17,7 @@ const resourceID      = Number(urlParams.get("id"));
 const HOURS = [12, 13, 14, 15, 16, 17];
 let currentResource = null;
 
-
+// ---------------------- DATE HELPERS ----------------------
 function ensureDateDefault() {
   if (!dateInput) return;
   if (!dateInput.value) {
@@ -38,7 +38,7 @@ function getSelectedDate() {
   return val;
 }
 
-
+// ---------------------- BUILD TABLE ----------------------
 async function buildAdminTable() {
   if (!tableBody) return;
   if (!resourceID) {
@@ -121,6 +121,7 @@ async function buildAdminTable() {
   await updateAdminSlots();
 }
 
+// ---------------------- OVERLAY BOOKINGS ----------------------
 async function updateAdminSlots() {
   if (!tableBody) return;
 
@@ -188,26 +189,20 @@ async function updateAdminSlots() {
   });
 }
 
+// ---------------------- SLOT FUNCTIONS ----------------------
 async function makeSlotUnavailable(room, time, date) {
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
     const bookings = await res.json();
 
     const existing = bookings.find(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === date &&
-        b.status !== "Unavailable"
+      b => b.resource === room && String(b.hour) === String(time) && b.date === date && b.status !== "Unavailable"
     );
 
     if (existing) {
-      await fetch(`http://localhost:4000/api/bookings/${existing.id}`, {
-        method: "DELETE"
-      });
+      await fetch(`http://localhost:4000/api/bookings/${existing.id}`, { method: "DELETE" });
       if (messageBox) {
-        messageBox.innerHTML +=
-          `✅ Booking cancelled for ${room} at ${time}:00 on ${date}.<br>`;
+        messageBox.innerHTML += `✅ Booking cancelled for ${room} at ${time}:00 on ${date}.<br>`;
       }
     }
 
@@ -225,12 +220,21 @@ async function makeSlotUnavailable(room, time, date) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(blockBooking)
     });
+
+    // Update cell immediately
+    const cell = tableBody.querySelector(`td[data-room="${room}"][data-time="${time}"]`);
+    if (cell) {
+      cell.className = "unavailable";
+      cell.textContent = "X";
+    }
+
+    if (messageBox) {
+      messageBox.innerHTML += `❌ Slot marked unavailable for ${room} at ${time}:00 on ${date}.<br>`;
+    }
   } catch (err) {
     console.error("Error making slot unavailable:", err);
     alert("⚠️ Server error while updating availability.");
   }
-
-  await updateAdminSlots();
 }
 
 async function makeSlotAvailable(room, time, date) {
@@ -239,31 +243,30 @@ async function makeSlotAvailable(room, time, date) {
     const bookings = await res.json();
 
     const blocks = bookings.filter(
-      b =>
-        b.resource === room &&
-        String(b.hour) === String(time) &&
-        b.date === date &&
-        b.status === "Unavailable"
+      b => b.resource === room && String(b.hour) === String(time) && b.date === date && b.status === "Unavailable"
     );
 
     for (const b of blocks) {
-      await fetch(`http://localhost:4000/api/bookings/${b.id}`, {
-        method: "DELETE"
-      });
+      await fetch(`http://localhost:4000/api/bookings/${b.id}`, { method: "DELETE" });
     }
 
-    if (blocks.length > 0 && messageBox) {
-      messageBox.innerHTML +=
-        `🔁 Availability restored for ${room} at ${time}:00 on ${date}.<br>`;
+    // Update cell immediately
+    const cell = tableBody.querySelector(`td[data-room="${room}"][data-time="${time}"]`);
+    if (cell) {
+      cell.className = "available";
+      cell.textContent = "available";
+    }
+
+    if (messageBox) {
+      messageBox.innerHTML += `🔁 Availability restored for ${room} at ${time}:00 on ${date}.<br>`;
     }
   } catch (err) {
     console.error("Error making slot available:", err);
     alert("⚠️ Server error while restoring availability.");
   }
-
-  await updateAdminSlots();
 }
 
+// ---------------------- CLICK HANDLER ----------------------
 function attachClickHandler() {
   if (!tableBody) return;
   tableBody.addEventListener("click", async e => {
@@ -281,11 +284,13 @@ function attachClickHandler() {
     } else if (cell.classList.contains("unavailable")) {
       await makeSlotAvailable(room, time, date);
     } else if (cell.classList.contains("booked") || cell.classList.contains("pending")) {
+      // Admin click cancels booking → mark unavailable
       await makeSlotUnavailable(room, time, date);
     }
   });
 }
 
+// ---------------------- CONFIRM CHANGES ----------------------
 function confirmChanges() {
   if (!messageBox) return;
   if (messageBox.innerHTML === "") {
@@ -294,9 +299,11 @@ function confirmChanges() {
   }
   if (confirm("Apply all changes? (Changes are already saved; this just clears messages.)")) {
     messageBox.innerHTML = "";
+    updateAdminSlots(); // refresh table from bookings.json
   }
 }
 
+// ---------------------- INITIAL LOAD ----------------------
 document.addEventListener("DOMContentLoaded", () => {
   ensureDateDefault();
   buildAdminTable().then(() => attachClickHandler());
@@ -307,3 +314,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+

@@ -1,15 +1,16 @@
 console.log("availability.js loaded");
 
-urlParams = new URLSearchParams(window.location.search);
-resourceIDParam = urlParams.get("id");
-resourceID = resourceIDParam ? Number(resourceIDParam) : null;
+const urlParams = new URLSearchParams(window.location.search);
+const resourceIDParam = urlParams.get("id");
+const resourceID = resourceIDParam ? Number(resourceIDParam) : null;
 
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 const dateInput = document.getElementById("date");
-messageBox = document.getElementById("message") || { textContent: "" };
+const messageBox = document.getElementById("message") || { textContent: "" };
 
 const TIMES = [12, 13, 14, 15, 16, 17];
 
+// ---------------------- BUILD TABLE ----------------------
 async function buildTableFromResourcePublic() {
   console.log("buildTableFromResourcePublic() called");
 
@@ -96,6 +97,7 @@ async function buildTableFromResourcePublic() {
   await updateBookedSlotsPublic();
 }
 
+// ---------------------- UPDATE BOOKINGS ----------------------
 async function updateBookedSlotsPublic() {
   const selectedDate = dateInput.value;
   if (!selectedDate) {
@@ -121,52 +123,44 @@ async function updateBookedSlotsPublic() {
     const match = bookings.find(
       b =>
         b.resource === room &&
-        b.hour === time &&
-        b.date === selectedDate &&
-        (b.status === "Booked" ||
-         b.status === "Pending" ||
-         b.status === "booked" ||
-         b.status === "pending")
+        String(b.hour) === String(time) &&
+        b.date === selectedDate
     );
 
+    // Reset cell first
+    cell.classList.remove("available", "booked", "pending", "unavailable");
+    cell.textContent = "available";
+    cell.classList.add("available");
+
     if (match) {
-  const status = String(match.status).toLowerCase();
+      const status = String(match.status).toLowerCase();
 
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (match) {
-  const status = String(match.status).toLowerCase();
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (status === "unavailable") {
- if (match) {
-  const status = String(match.status).toLowerCase();
-  cell.classList.remove("available", "booked", "pending", "unavailable");
-
-  if (status === "unavailable") {
-    cell.classList.add("unavailable");
-    cell.textContent = "X";           
-  } else if (status === "pending") {
-    cell.classList.add("pending");
-    cell.textContent = "Pending";
-  } else { 
-    cell.classList.add("booked");
-    cell.textContent = "Booked";
-  }
-  }
-  }
-  }
-  }
+      if (status === "unavailable") {
+        cell.classList.remove("available");
+        cell.classList.add("unavailable");
+        cell.textContent = "X";
+      } else if (status === "pending") {
+        cell.classList.remove("available");
+        cell.classList.add("pending");
+        cell.textContent = "Pending";
+      } else if (status === "booked") {
+        cell.classList.remove("available");
+        cell.classList.add("booked");
+        cell.textContent = "Booked";
+      }
+    }
   });
 }
 
+// ---------------------- CLICK HANDLERS ----------------------
 function handlePublicCellClick() {
   const cell = this;
 
   if (
     cell.textContent === "unavailable" ||
-    cell.textContent === "booked" ||
-    cell.textContent === "pending"
+    cell.textContent === "Booked" ||
+    cell.textContent === "Pending" ||
+    cell.textContent === "X"
   ) {
     return;
   }
@@ -191,6 +185,7 @@ function attachPublicClickHandlers() {
   console.log("Public click handlers attached to cells:", cells.length);
 }
 
+// ---------------------- INITIAL LOAD ----------------------
 window.addEventListener("load", async () => {
   console.log("window.load fired on PUBLIC availability page");
 
@@ -203,3 +198,4 @@ window.addEventListener("load", async () => {
 });
 
 dateInput.addEventListener("change", updateBookedSlotsPublic);
+

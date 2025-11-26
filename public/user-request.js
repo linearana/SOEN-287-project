@@ -5,10 +5,11 @@ const resourceID = urlParams.get("id");
 const messageBox = document.getElementById("message");
 const resourceTypeName = document.getElementById("resourceTitle").textContent.trim();
 
-// ---------------------- UPDATE BOOKED / PENDING / UNAVAILABLE SLOTS ----------------------
+let bookingInProgress = false;
+
+// ---------------------- UPDATE BOOKED / PENDING / UNAVAILABLE ----------------------
 async function updateBookedSlots() {
   const selectedDate = document.getElementById("date").value; // ISO yyyy-mm-dd
-  if (!selectedDate) return;
 
   let bookings = [];
   try {
@@ -30,24 +31,38 @@ async function updateBookedSlots() {
         b.date === selectedDate
     );
 
-    if (match) {
-      // Normalize status for CSS: "Booked" -> "booked", etc.
-      const statusClass = match.status.toLowerCase(); // booked / pending / unavailable
+    // Reset
+    cell.classList.remove("booked", "pending", "unavailable");
+    if (cell.textContent === "X") {
+      cell.classList.add("unavailable");
+      return;
+    }
 
-      cell.classList.remove("available", "booked", "pending", "unavailable");
-      cell.classList.add(statusClass);
-      cell.textContent = statusClass; // keep lower-case labels in the table
+    if (!match) {
+      cell.classList.add("available");
+      cell.textContent = "available";
+      return;
+    }
+
+    const status = String(match.status || "").toLowerCase();
+
+    if (status === "unavailable") {
+      cell.classList.add("unavailable");
+      cell.textContent = "X";
+    } else if (status === "booked") {
+      cell.classList.add("booked");
+      cell.textContent = "booked";
+    } else if (status === "pending") {
+      cell.classList.add("pending");
+      cell.textContent = "pending";
     } else {
-      if (cell.textContent !== "X") {
-        cell.classList.remove("booked", "pending", "unavailable");
-        cell.classList.add("available");
-        cell.textContent = "available";
-      }
+      cell.classList.add("booked");
+      cell.textContent = match.status;
     }
   });
 }
 
-// ---------------------- CLICK HANDLER (SEND REQUEST) ----------------------
+// ---------------------- CLICK HANDLER ----------------------
 document.getElementById("tableBody").addEventListener("click", async (e) => {
   const cell = e.target.closest("td[data-room]");
   if (!cell) return;
@@ -59,8 +74,14 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
     return;
   }
 
-  // if slot is already not bookable, do nothing
-  if (["booked", "unavailable", "pending"].includes(cell.textContent)) return;
+  // don't click booked / pending / unavailable
+  if (
+    cell.classList.contains("booked") ||
+    cell.classList.contains("pending") ||
+    cell.classList.contains("unavailable")
+  ) {
+    return;
+  }
 
   const dateInput = document.getElementById("date").value.trim();
   if (!dateInput) {
@@ -68,13 +89,13 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
     return;
   }
 
-  // 🔹 Enforce 7-day minimum in advance
+  // enforce 7-day minimum
   const today = new Date();
   const minDate = new Date(today);
   minDate.setDate(today.getDate() + 7);
 
-  const selectedDateObj = new Date(dateInput);
-  if (selectedDateObj < minDate) {
+  const selectedDate = new Date(dateInput);
+  if (selectedDate < minDate) {
     alert("⚠️ You can only book at least 7 days in advance.");
     return;
   }
@@ -82,7 +103,10 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
   const room = cell.dataset.room;
   const time = cell.dataset.time;
 
-  // ---------------------- CHECK EXISTING BOOKINGS (same user + item + date) ----------------------
+  if (bookingInProgress) {
+    return;
+  }
+
   let bookings = [];
   try {
     const res = await fetch("http://localhost:4000/api/bookings");
@@ -91,7 +115,7 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
     console.warn("SERVER OFFLINE → cannot validate existing bookings.");
   }
 
-  // Backend uses "Booked" / "Pending" (capitalized)
+  // one request per resource type per day
   const existingBooking = bookings.find(
     b =>
       b.username === currentUser.email &&
@@ -105,17 +129,17 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
     return;
   }
 
-  // ---------------------- CREATE BOOKING OBJECT ----------------------
   const booking = {
     id: Date.now(),
     username: currentUser.email,
-    resource: room,              // specific room
-    item: resourceTypeName,      // resource type (Art Studios, Engineering Labs...)
-    date: dateInput,             // ISO yyyy-mm-dd
-    hour: String(time),
-    // Backend will set status based on bookingType, but we can be explicit:
-    status: "Pending"
+    resource: room,
+    item: resourceTypeName,
+    date: dateInput,
+    hour: String(time)
+    // backend will set status to Pending for Request type
   };
+
+  bookingInProgress = true;
 
   try {
     const res = await fetch("http://localhost:4000/api/bookings", {
@@ -127,35 +151,36 @@ document.getElementById("tableBody").addEventListener("click", async (e) => {
     if (!res.ok) {
       const data = await res.json();
       alert("Error: " + data.error);
+      bookingInProgress = false;
       return;
     }
   } catch {
     alert("⚠️ Cannot contact server.");
+    bookingInProgress = false;
     return;
   }
-
-  // Update clicked cell visually
-  cell.classList.remove("available");
-  cell.classList.add("pending");
-  cell.textContent = "pending";
 
   messageBox.textContent =
     `📩 Request sent for ${room} at ${time}:00 on ${dateInput}`;
 
-  updateBookedSlots();
+  await updateBookedSlots();
+  bookingInProgress = false;
 });
 
-// ---------------------- DATE DEFAULT (7 DAYS AHEAD) ----------------------
+// ---------------------- AUTO-CHOOSE DATE (7 DAYS AHEAD) ----------------------
 window.onload = () => {
   const ele = document.getElementById("date");
   const today = new Date();
-  today.setDate(today.getDate() + 7); // enforce 7 days ahead for initial value
+  today.setDate(today.getDate() + 7);
 
   const minDate = today.toISOString().split("T")[0];
   ele.value = minDate;
-  ele.min = minDate; // prevent selecting earlier dates in the picker
+  ele.min = minDate;
 
   updateBookedSlots();
 };
 
-document.getElementById("date").addEventListener("change", updateBookedSlots);
+document.getElementById("date").addEventListener("change", () => {
+  updateBookedSlots();
+  bookingInProgress = false;
+});

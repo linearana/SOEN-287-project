@@ -18,15 +18,6 @@
     "status": "booked"
   },
   {
-    "id": 1764050816499,
-    "username": "l_josefe@live.concordia.ca",
-    "resource": "LB 328",
-    "item": "Study Rooms",
-    "date": "2025-11-25",
-    "hour": "12",
-    "status": "booked"
-  },
-  {
     "id": 1764049843799,
     "username": "ni@gmail.com",
     "resource": "NI 368",
@@ -36,29 +27,11 @@
     "status": "Declined"
   },
   {
-    "id": 1764049960488,
-    "username": "ni@gmail.com",
-    "resource": "JH 120",
-    "item": "Conference Rooms",
-    "date": "2025-11-25",
-    "hour": "14",
-    "status": "booked"
-  },
-  {
     "id": 1764049978438,
     "username": "ni@gmail.com",
     "resource": "LB 315",
     "item": "Study Rooms",
     "date": "2025-11-26",
-    "hour": "12",
-    "status": "booked"
-  },
-  {
-    "id": 1764052336824,
-    "username": "__ADMIN__",
-    "resource": "LB 251",
-    "item": "Study Rooms",
-    "date": "2025-11-25",
     "hour": "12",
     "status": "booked"
   },
@@ -153,24 +126,6 @@
     "status": "Pending"
   },
   {
-    "id": 1764106363911,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 120",
-    "item": "Conference Rooms",
-    "date": "2025-11-27",
-    "hour": "15",
-    "status": "Booked"
-  },
-  {
-    "id": 1764110053693,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 765",
-    "item": "Conference Rooms",
-    "date": "2025-11-28",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
     "id": 1764110146218,
     "username": "nermin.ibrahimli0105@gmail.com",
     "resource": "LB 259",
@@ -189,255 +144,102 @@
     "status": "Pending"
   },
   {
-    "id": 1764111166356,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "NI 160",
+    "id": 1764121752116,
+    "username": "__ADMIN__",
+    "resource": "NI 436",
     "item": "Engineering Labs",
-    "date": "2025-12-26",
-    "hour": "15",
-    "status": "Pending"
-  },
-  {
-    "id": 1764112550026,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 259",
-    "item": "Study Rooms",
-    "date": "2026-02-16",
+    "date": "2025-11-25",
     "hour": "14",
-    "status": "Booked"
+    "status": "Unavailable"
   },
   {
-    "id": 1764112652948,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "FA 3-547",
-    "item": "Art Studios",
-    "date": "2025-12-03",
-    "hour": "13",
-    "status": "Pending"
-  },
-  {
-    "id": 1764113040456,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 259",
-    "item": "Study Rooms",
-    "date": "2025-11-27",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113043982,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 315",
-    "item": "Study Rooms",
-    "date": "2025-11-28",
-    "hour": "14",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113047127,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 311",
-    "item": "Study Rooms",
-    "date": "2025-11-29",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113047687,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 315",
-    "item": "Study Rooms",
-    "date": "2025-11-29",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113048447,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 328",
-    "item": "Study Rooms",
-    "date": "2025-11-29",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113049239,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 259",
-    "item": "Study Rooms",
-    "date": "2025-11-29",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113050032,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 251",
-    "item": "Study Rooms",
-    "date": "2025-11-29",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113228164,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 311",
-    "item": "Study Rooms",
-    "date": "2025-11-30",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113229076,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 259",
-    "item": "Study Rooms",
-    "date": "2025-11-30",
-    "hour": "14",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113230028,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 251",
-    "item": "Study Rooms",
-    "date": "2025-11-30",
-    "hour": "14",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113230763,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 315",
-    "item": "Study Rooms",
-    "date": "2025-11-30",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113231355,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 328",
-    "item": "Study Rooms",
-    "date": "2025-11-30",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113298670,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 251",
-    "item": "Study Rooms",
-    "date": "2025-12-11",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113299117,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 259",
-    "item": "Study Rooms",
-    "date": "2025-12-11",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113299557,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 311",
-    "item": "Study Rooms",
-    "date": "2025-12-11",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113299917,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 315",
-    "item": "Study Rooms",
-    "date": "2025-12-11",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113300309,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "LB 328",
-    "item": "Study Rooms",
-    "date": "2025-12-11",
-    "hour": "13",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113623558,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 120",
-    "item": "Conference Rooms",
-    "date": "2026-03-01",
-    "hour": "12",
-    "status": "Booked"
-  },
-  {
-    "id": 1764113784315,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 120",
-    "item": "Conference Rooms",
-    "date": "2025-11-26",
-    "hour": "12",
-    "status": "Booked"
-  },
-  {
-    "id": 1764114654913,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 765",
-    "item": "Conference Rooms",
-    "date": "2025-11-29",
-    "hour": "17",
-    "status": "Booked"
-  },
-  {
-    "id": 1764114659765,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "JH 765",
-    "item": "Conference Rooms",
-    "date": "2025-11-30",
-    "hour": "17",
-    "status": "Booked"
-  },
-  {
-    "id": 1764114965769,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "FA 5-101",
-    "item": "Art Studios",
-    "date": "2025-12-05",
-    "hour": "13",
-    "status": "Pending"
-  },
-  {
-    "id": 1764114971039,
-    "username": "nermin.ibrahimli0105@gmail.com",
-    "resource": "FA 3-547",
-    "item": "Art Studios",
-    "date": "2025-12-06",
-    "hour": "13",
-    "status": "Pending"
-  },
-  {
-    "id": 1764115008362,
-    "username": "nermin.ibrahimli0105@gmail.com",
+    "id": 1764121752741,
+    "username": "__ADMIN__",
     "resource": "NI 555",
     "item": "Engineering Labs",
-    "date": "2025-12-19",
-    "hour": "17",
-    "status": "Pending"
+    "date": "2025-11-25",
+    "hour": "14",
+    "status": "Unavailable"
   },
   {
-    "id": 1764115013202,
-    "username": "nermin.ibrahimli0105@gmail.com",
+    "id": 1764121753237,
+    "username": "__ADMIN__",
     "resource": "NI 1553",
     "item": "Engineering Labs",
-    "date": "2025-12-20",
-    "hour": "13",
-    "status": "Pending"
+    "date": "2025-11-25",
+    "hour": "14",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764121774037,
+    "username": "__ADMIN__",
+    "resource": "JH 765",
+    "item": "Conference Rooms",
+    "date": "2025-11-25",
+    "hour": "12",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764121774390,
+    "username": "__ADMIN__",
+    "resource": "JH 120",
+    "item": "Conference Rooms",
+    "date": "2025-11-25",
+    "hour": "12",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764121774733,
+    "username": "__ADMIN__",
+    "resource": "JH 987",
+    "item": "Conference Rooms",
+    "date": "2025-11-25",
+    "hour": "12",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764122084086,
+    "username": "__ADMIN__",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "17",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764122084493,
+    "username": "__ADMIN__",
+    "resource": "LB 259",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "17",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764122084854,
+    "username": "__ADMIN__",
+    "resource": "LB 311",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "17",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764122085254,
+    "username": "__ADMIN__",
+    "resource": "LB 315",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "17",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764122085574,
+    "username": "__ADMIN__",
+    "resource": "LB 328",
+    "item": "Study Rooms",
+    "date": "2025-11-25",
+    "hour": "17",
+    "status": "Unavailable"
   }
 ]
