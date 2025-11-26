@@ -502,5 +502,41 @@
     "date": "2025-11-26",
     "hour": "15",
     "status": "Booked"
+  },
+  {
+    "id": 1764131555676,
+    "username": "__ADMIN__",
+    "resource": "CO 678",
+    "item": "Film Equipment",
+    "date": "2025-12-05",
+    "hour": "13",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764131676189,
+    "username": "__ADMIN__",
+    "resource": "LB 251",
+    "item": "Study Rooms",
+    "date": "2025-11-27",
+    "hour": "16",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764131807740,
+    "username": "__ADMIN__",
+    "resource": "FA 3-546",
+    "item": "Art Studios",
+    "date": "2025-12-05",
+    "hour": "14",
+    "status": "Unavailable"
+  },
+  {
+    "id": 1764131834220,
+    "username": "__ADMIN__",
+    "resource": "NI 368",
+    "item": "Engineering Labs",
+    "date": "2025-12-05",
+    "hour": "15",
+    "status": "Unavailable"
   }
 ]

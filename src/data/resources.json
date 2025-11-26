@@ -242,33 +242,5 @@
     ],
     "status": "enabled",
     "image": "/images/conference-room.jpg"
-  },
-  {
-    "id": 1764087712529,
-    "title": "Test Rooms",
-    "description": "test test",
-    "rulesResource": "test\r\ntest",
-    "bookingType": "Instant",
-    "rooms": "UI-345,UI-234",
-    "roomsStatus": [
-      [
-        "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ],
-      [
-        "available",
-        "available",
-        "available",
-        "available",
-        "available",
-        "available"
-      ]
-    ],
-    "status": "disabled",
-    "image": "/images/test-rooms.jpg"
   }
 ]
